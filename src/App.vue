@@ -1,8 +1,13 @@
 <template>
   <div id="app">
     <v-header></v-header>
-    <Menu></Menu>
-    <Content></Content>
+    <div class="container-fluid">
+  <div class="row">
+        <Menu></Menu>
+          <Content></Content>
+  </div>
+
+    </div>
   </div>
 </template>
 
