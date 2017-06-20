@@ -1,18 +1,17 @@
 <template>
-  <div class="hello">
-
+  <div class="survey">
+    {{msg}}
   </div>
 </template>
 
 <script>
-export default {
-  name: 'hello',
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
-    }
+  export default {
+      data() {
+          return {
+              msg: 'I am Survey'
+          }
+      }
   }
-}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

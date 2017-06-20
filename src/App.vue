@@ -1,23 +1,25 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view></router-view>
+    <v-header></v-header>
+    <Menu></Menu>
+    <Content></Content>
   </div>
 </template>
 
 <script>
+import Head from '@/components/Head/Head'
+import Menu from '@/components/Menu/Menu'
+import Content from '@/components/Content/Content'
 export default {
-  name: 'app'
+  name: 'app',
+  components: {
+      'v-header': Head,
+      Menu: Menu,
+      Content: Content
+  }
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="sass">
+  @import '../src/assets/reset.css'
 </style>
