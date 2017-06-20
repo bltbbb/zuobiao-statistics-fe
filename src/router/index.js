@@ -6,16 +6,16 @@ import TrendAnalysis from '@/components/MenuList/TrendAnalysis'
 Vue.use(Router)
 
 export default new Router({
-  routes: [
-    {
-      path: '/Survey',
-      name: 'Hello',
-      component: Survey
-    },
-    {
-      path: '/TrendAnalysis',
-      name: 'TrendAnalysis',
-      component: TrendAnalysis
-    }
-  ]
+    routes: [
+        {
+            path: '/Survey',
+            name: 'Hello',
+            component: Survey
+        },
+        {
+            path: '/TrendAnalysis',
+            name: 'TrendAnalysis',
+            component: TrendAnalysis
+        }
+    ]
 })

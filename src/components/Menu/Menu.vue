@@ -28,11 +28,11 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="sass">
 .menu-wrapper
-  float: left
-  display: inline-block
+  float:left
+  display:inline-block
   width: 10%
   height: 1000px
-  background: rgb(251,251,251)
+  background:rgb(251,251,251)
   .menu-item
 
 </style>

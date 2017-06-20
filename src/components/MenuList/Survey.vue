@@ -1,17 +1,17 @@
 <template>
-  <div class="survey">
-    {{msg}}
-  </div>
+    <div class="survey">
+        {{msg}}
+    </div>
 </template>
 
 <script>
-  export default {
-      data() {
-          return {
-              msg: 'I am Survey'
-          }
-      }
-  }
+    export default {
+        data() {
+        return {
+            msg: 'I am Survey'
+        }
+        }
+    }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
