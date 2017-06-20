@@ -16,6 +16,14 @@ export default {
       'v-header': Head,
       Menu: Menu,
       Content: Content
+  },
+  methods: {
+      cFn(){
+          console.log($('#app'))
+      }
+  },
+  created(){
+    this.cFn()
   }
 }
 </script>

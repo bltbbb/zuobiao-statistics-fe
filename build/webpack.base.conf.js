@@ -2,6 +2,7 @@ var path = require('path')
 var utils = require('./utils')
 var config = require('../config')
 var vueLoaderConfig = require('./vue-loader.conf')
+var webpack = require("webpack")
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -47,7 +48,7 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loaders: ["style", "css", "sass"]
+        loaders: ["style-loader", "css-loader", "sass-loader"]
       },
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
@@ -58,5 +59,12 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin('common.js'),
+    new webpack.ProvidePlugin({
+      jQuery: "jquery",
+      $: "jquery"
+    })
+  ]
 }
