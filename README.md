@@ -1,6 +1,6 @@
 # zuobiao-statistic
 
-> A Vue.js project
+> 坐标统计
 
 ## Build Setup
 
