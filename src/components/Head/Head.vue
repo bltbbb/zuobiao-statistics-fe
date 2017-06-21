@@ -30,5 +30,5 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
-  @import '../../assets/css/page/header.scss'
+  @import '../../assets/css/page/header.scss';
 </style>
