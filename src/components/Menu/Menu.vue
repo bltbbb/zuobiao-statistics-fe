@@ -1,6 +1,6 @@
 <template>
   <div class="menu-wrapper">
-    <div class="col-sm-3 col-md-2 sidebar">
+    <div class="col-sm-3 col-md-1 sidebar">
       <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
         <div class="panel panel-default">
           <div class="panel-heading" role="tab" id="headingOne">
@@ -50,7 +50,7 @@
         </div>
       </div>
     </div>
-    <div class=" col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <div class=" col-sm-9 col-sm-offset-3 col-md-11 col-md-offset-1 main">
       <!--各级菜单对应组件渲染位置 即右侧内容-->
       <router-view></router-view>
     </div>
