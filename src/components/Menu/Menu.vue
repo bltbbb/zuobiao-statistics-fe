@@ -1,7 +1,7 @@
 <template>
   <div class="menu-wrapper">
     <div class="col-sm-3 col-md-2 sidebar">
-      <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+      <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
         <div class="panel panel-default">
           <div class="panel-heading" role="tab" id="headingOne">
             <h4 class="panel-title">
