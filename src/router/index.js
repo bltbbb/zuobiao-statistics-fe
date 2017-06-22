@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import App from '@/components/MenuList/Survey'
+import Content from '@/components/Content/Content'
 import Survey from '@/components/MenuList/Survey'
-import TrendAnalysis from '@/components/MenuList/TrendAnalysis'
 import Login from '@/components/Login/Login'
 
 Vue.use(Router)
@@ -10,22 +9,30 @@ Vue.use(Router)
 export default new Router({
     routes: [
         {
-            path: '/Survey',
-            name: 'Hello',
-            component: Survey
+          path: '/',
+          redirect: '/Content/Survey'
         },
         {
-            path: '/TrendAnalysis',
-            name: 'TrendAnalysis',
-            component: TrendAnalysis
+          path: '/',
+          name: 'root',
+          component: Content
         },
         {
-        path: '/Login',
-        name: 'Login',
-        meta: {
-          showComponent: true
+            path: '/Content',
+            name: 'Content',
+            component: Content,
+            children: [{
+              path: '/Content/Survey',
+              component: Survey
+            }]
         },
-        component: Login
-      },
+        {
+          path: '/Login',
+          name: 'Login',
+          meta: {
+            showComponent: true
+          },
+          component: Login
+        }
     ]
 })

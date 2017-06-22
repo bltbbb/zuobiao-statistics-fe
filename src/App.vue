@@ -1,12 +1,8 @@
 <template>
   <div id="app">
-    <v-header v-if="!$route.meta.showComponent"></v-header>
-    <div class="container-fluid">
-      <div class="row">
-          <v-menu v-if="!$route.meta.showComponent"></v-menu>
-      </div>
-    </div>
-    <router-view></router-view>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 

@@ -28,9 +28,9 @@
 <script>
   import Vue from 'vue'
   import VueCookie from 'vue-cookie'
-  Vue.use(VueCookie);
   import axios from 'axios'
 
+  Vue.use(VueCookie);
   export default {
     data(){
         return {
@@ -63,8 +63,10 @@
           let params = new URLSearchParams();
           params.append('loginName', this.userName);
           params.append('password', this.password);
-          this.showError = true;
-          this.errorText = '登录失败'
+//          this.showError = true;
+//          this.errorText = '登录失败'
+
+          //测试接口 登录成功后将获取的token保存在cookie中
           axios.post('http://192.168.1.41:9999/authc/login', params).then((res)=>{
               if(res.status === 0){
                 this.$cookie.set('adoptToken', res.adoptToken, 1);

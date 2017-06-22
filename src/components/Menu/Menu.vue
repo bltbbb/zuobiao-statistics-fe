@@ -6,7 +6,7 @@
           <div class="panel-heading" role="tab" id="headingOne">
             <h4 class="panel-title">
               <div role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-              <router-link to="Survey"><span class="glyphicon glyphicon-th" aria-hidden="true"></span>概况</router-link><span class="sr-only">(current)</span>
+              <router-link to="/Content/Survey"><span class="glyphicon glyphicon-th" aria-hidden="true"></span>概况</router-link><span class="sr-only">(current)</span>
               </div>
             </h4>
           </div>
