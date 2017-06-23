@@ -1,20 +1,20 @@
 <template>
   <div class="head">
     <el-breadcrumb separator="/">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>应用概况</el-breadcrumb-item>
+      <img src="../../assets/img/logo2.png" style="float: left;">
       <div class="nav-top">
+        <a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>应用概况</a>
         <a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>账号</a>
         <a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>退出</a>
       </div>
 
     </el-breadcrumb>
-<!--    <el-menu :default-active="activeIndex2" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-      <el-menu-item index="1"></el-menu-item>
-      <el-menu-item index="3"><a href="https://www.ele.me" target="_blank">退出</a></el-menu-item>
-      <el-menu-item index="1">账号</el-menu-item>
-      <el-menu-item index="3"><a href="https://www.ele.me" target="_blank">应用概况</a></el-menu-item>
-    </el-menu>-->
+    <!--    <el-menu :default-active="activeIndex2" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+          <el-menu-item index="1"></el-menu-item>
+          <el-menu-item index="3"><a href="https://www.ele.me" target="_blank">退出</a></el-menu-item>
+          <el-menu-item index="1">账号</el-menu-item>
+          <el-menu-item index="3"><a href="https://www.ele.me" target="_blank">应用概况</a></el-menu-item>
+        </el-menu>-->
     <!--   <nav class="navbar navbar-inverse navbar-fixed-top">
              <div class="container-fluid">
                <div class="navbar-header">

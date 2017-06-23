@@ -1,7 +1,7 @@
 <template>
   <div class="menu-wrapper">
     <el-menu default-active="2" class="el-menu-vertical-demo menu" @open="handleOpen" @close="handleClose" theme="dark">
-      <li class="logo"><img src="../../assets/img/logo.png"></li>
+<!--      <li class="logo"><img src="../../assets/img/logo.png"></li>-->
       <el-menu-item index="1">
         <router-link to="/Content/Survey" style="text-align: left"><i class="el-icon-menu"></i>概况</router-link>
       </el-menu-item>

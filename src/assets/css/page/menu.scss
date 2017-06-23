@@ -55,13 +55,13 @@
 .menu {
   width: 180px;
   position: fixed;
-  top: 0;
+  top: 60px;
   bottom: 0;
   left: 0;
   z-index: 1001;
   overflow: hidden;
   transition: all .28s ease-out;
-  // background: #889ff8;
+/*  background: #889ff8;*/
   color: #fff;
 }
 
@@ -81,16 +81,16 @@
 }
 
 .el-menu-item a, .el-submenu__title a {
-  color: rgb(191, 193, 217);
+  color: #fff;
   text-underline: none;
   text-decoration: none;
   display: block;
   text-align: center;
 }
 
-.el-submenu .el-menu {
-  // background: #889ff8;
-}
+/*.el-submenu .el-menu {
+  background: #889ff8 !important;
+}*/
 
 .logo {
   margin: 10px;
