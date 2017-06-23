@@ -1,6 +1,14 @@
 body {
-  padding-top: 60px;
+  /*  padding-top: 60px;*/
   font-family: "微软雅黑", Helvetica, Arial, sans-serif;
+}
+
+.el-menu--horizontal .el-menu-item {
+  float: right
+}
+
+.el-menu--horizontal .el-menu-item .logo {
+  float: left
 }
 
 /*
@@ -57,7 +65,18 @@ body {
 /*
  * Main content
  */
-
+.head {
+  margin-left: 180px;
+  height: 60px;
+  line-height: 60px;
+  .el-breadcrumb {
+    line-height: 60px;
+    padding: 0 20px;
+  }
+}
+.nav-top{
+  float:right;
+}
 .main {
   padding: 0;
 }
