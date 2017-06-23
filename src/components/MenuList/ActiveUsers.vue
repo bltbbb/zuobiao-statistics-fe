@@ -1,5 +1,5 @@
 <template>
-  <div class="trendanalysis">
+  <div class="ActiveUsers content-box">
     {{msg}}
   </div>
 </template>
@@ -8,12 +8,11 @@
   export default {
     data() {
       return {
-        msg: 'I am trendanalysis'
+        msg: 'I am ActiveUsers'
       }
     }
   }
 </script>
-
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="sass">
   .content

@@ -72,9 +72,20 @@
   padding-top: 20px;
 }
 
-
 .el-menu-item, .el-submenu__title {
-  color: #fff;
+  color: rgb(191, 193, 217);
+}
+
+.el-submenu .el-menu-item {
+  padding: 0 !important;
+}
+
+.el-menu-item a, .el-submenu__title a {
+  color: rgb(191, 193, 217);
+  text-underline: none;
+  text-decoration: none;
+  display: block;
+  text-align: center;
 }
 
 .el-submenu .el-menu {

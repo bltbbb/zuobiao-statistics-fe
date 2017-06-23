@@ -1,38 +1,91 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Content from '@/components/Content/Content'
+//趋势分析
 import Survey from '@/components/MenuList/Survey'
+import Trend from '@/components/MenuList/Trend'
+import ActiveUsers from '@/components/MenuList/ActiveUsers'
+import Retained from '@/components/MenuList/Retained'
+import Statistics from '@/components/MenuList/Statistics'
+//用户
+import Users from '@/components/MenuList/Users'
+import Map from '@/components/MenuList/Map'
+import Terminal from '@/components/MenuList/Terminal'
+//埋点
+import BuriedPoint from '@/components/MenuList/BuriedPoint'
+import Error from '@/components/MenuList/Error'
+
 import Login from '@/components/Login/Login'
 
 Vue.use(Router)
 
 export default new Router({
-    routes: [
-        {
-          path: '/',
-          redirect: '/Content/Survey'
+  routes: [
+    {
+      path: '/',
+      redirect: '/Content/Survey'
+    },
+    {
+      path: '/',
+      name: 'root',
+      component: Content
+    },
+    {
+      path: '/Content',
+      name: 'Content',
+      component: Content,
+      children: [{
+        path: '/Content/Survey',
+        component: Survey
+      }
+        //趋势分析
+        , {
+          path: '/Content/Trend',
+          component: Trend
         },
         {
-          path: '/',
-          name: 'root',
-          component: Content
+          path: '/Content/ActiveUsers',
+          component: ActiveUsers
         },
         {
-            path: '/Content',
-            name: 'Content',
-            component: Content,
-            children: [{
-              path: '/Content/Survey',
-              component: Survey
-            }]
+          path: '/Content/Retained',
+          component: Retained
         },
         {
-          path: '/Login',
-          name: 'Login',
-          meta: {
-            showComponent: true
-          },
-          component: Login
+          path: '/Content/Statistics',
+          component: Statistics
+        },
+        //用户分析
+        {
+          path: '/Content/Users',
+          component: Users
+        },
+        {
+          path: '/Content/Map',
+          component: Map
+        },
+        {
+          path: '/Content/Terminal',
+          component: Terminal
+        },
+        {
+          path: '/Content/BuriedPoint',
+          component: BuriedPoint
+        },
+        {
+          path: '/Content/Error',
+          component: Error
         }
-    ]
+
+      ]
+    },
+    {
+      path: '/Login',
+      name: 'Login',
+      meta: {
+        showComponent: true
+      },
+      component: Login
+    }
+  ]
 })
