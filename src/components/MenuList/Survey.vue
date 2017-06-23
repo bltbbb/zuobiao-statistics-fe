@@ -23,8 +23,8 @@
     <div class="all">
       <!-- 平台切换-->
       <el-tabs type="border-card">
-        <el-tab-pane  v-for="gameName in gameNames">
-          <span slot="label"><i class="el-icon-date"></i> {{gameName}}</span>
+        <el-tab-pane v-for="gameName in gameNames" :key="gameName.id">
+          <span slot="label"><i class="el-icon-date"></i> {{gameName.plat}}</span>
           <div class="box">
             <div class="box-list" v-for="dataList in dataLists">
               <div class="">{{dataList.title}}</div>
@@ -34,23 +34,16 @@
           </div>
         </el-tab-pane>
       </el-tabs>
-<!--      <ul>
-        <li class="collection-item"
-            v-for="gameName in gameNames"
-            @click="selected(gameName)"
-            :class="{active: activeName == gameName}">{{gameName}}
-        </li>
-      </ul>-->
     </div>
     <!-- 平台对应数据-->
 
     <template>
       <el-select v-model="value" placeholder="请选择">
         <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
+          v-for="select in options"
+          :key="select.value"
+          :label="select.label"
+          :value="select.value">
         </el-option>
       </el-select>
     </template>
@@ -76,8 +69,12 @@
           /*     {title: "过去7天平均日使用时长", message: 'Bar', number: "8096798"}*/
         ],
         // 平台切换
-        gameNames: ['全平台', 'IOS端', '安卓端', 'PC端', 'WEB端'],
-        activeName: '全平台',
+        gameNames: [{id: "1", plat: '全平台'},
+          {id: "1", plat: '安卓端'},
+          {id: "1", plat: 'PC端'},
+          {id: "1", plat: 'WEB端'}
+        ],
+        plat: '全平台',
         // 平台对应数据-->
         dataLists: [
           {title: "", today: "今日", yday: "昨日"},
@@ -97,48 +94,48 @@
       }
 
     }
-  ,
-  // 平台图表格-->
-  mounted()
-  {
-    this.drawLine();
-  }
-  ,
-  methods: {
-    selected: function (gameName) {
-      this.activeName = gameName
-    }
-  ,
-    // 图表格绘制
-    drawLine()
+    ,
+    // 平台图表格-->
+    mounted()
     {
-      // 基于准备好的dom，初始化echarts实例
-      let myChart = echarts.init(document.getElementById('myChart'));
-      // 绘制图表
-      myChart.setOption({
-        title: {text: '全平台注册用户'},
-        tooltip: {
-          trigger: 'axis'
-        },
-        legend: {
-          data: ['今天', '昨天']
-        },
-        xAxis: {
-          data: ["0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59"]
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [{
-          name: '注册用户',
-          type: 'line',
-          data: [5, 20, 36, 10, 10, 20]
-        }]
-
-      });
-      window.onresize = myChart.resize;
+      this.drawLine();
     }
-  }
+    ,
+    methods: {
+      selected: function (gameName) {
+        this.activeName = gameName
+      }
+      ,
+      // 图表格绘制
+      drawLine()
+      {
+        // 基于准备好的dom，初始化echarts实例
+        let myChart = echarts.init(document.getElementById('myChart'));
+        // 绘制图表
+        myChart.setOption({
+          title: {text: '全平台注册用户'},
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['今天', '昨天']
+          },
+          xAxis: {
+            data: ["0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59"]
+          },
+          yAxis: {
+            type: 'value'
+          },
+          series: [{
+            name: '注册用户',
+            type: 'line',
+            data: [5, 20, 36, 10, 10, 20]
+          }]
+
+        });
+        window.onresize = myChart.resize;
+      }
+    }
 
   }
 </script>
