@@ -1,3 +1,4 @@
+<!--终端分析-->
 <template>
   <div class="Terminal content-box">
     {{msg}}

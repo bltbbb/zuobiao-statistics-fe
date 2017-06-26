@@ -1,7 +1,10 @@
 <template>
   <div class="head">
     <el-breadcrumb separator="/">
-      <img src="../../assets/img/logo2.png" style="float: left;">
+      <div class="logo">
+        <img src="../../assets/img/logo2.png" style="float: left;">
+      </div>
+
       <div class="nav-top">
         <a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>应用概况</a>
         <a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>账号</a>

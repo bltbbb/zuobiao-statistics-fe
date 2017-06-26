@@ -1,3 +1,4 @@
+<!--错误报告-->
 <template>
   <div class="Error content-box">
     {{msg}}

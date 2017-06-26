@@ -3,8 +3,8 @@
     <!--    {{msg}}-->
     <!--  第一部分-->
     <div class="part1">
-      <ul class="first-top">
-        <li v-for="item in list">
+      <el-row :gutter="20">
+        <el-col :span="8"  v-for="item in list" :key="item.id"><div class="grid-content bg-purple">
           <div class="top-title">{{item.title}}
             <el-popover
               placement="bottom"
@@ -13,11 +13,12 @@
               trigger="hover">
               <i class="el-icon-information" slot="reference"></i>
             </el-popover>
-
           </div>
           <h1>{{item.number}}</h1>
-        </li>
-      </ul>
+        </div></el-col>
+
+      </el-row>
+
     </div>
     <!--  第二部分-->
     <div class="all">
@@ -58,6 +59,7 @@
   // 引入提示框和title组件
   require('echarts/lib/component/tooltip');
   require('echarts/lib/component/title');
+  require('echarts/lib/component/legend');
   export default {
     data () {
       return {
@@ -142,5 +144,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="sass">
+  @import '../../assets/css/page/public.scss';
   @import '../../assets/css/page/index.scss';
 </style>
