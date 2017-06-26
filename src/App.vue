@@ -6,19 +6,24 @@
   </div>
 </template>
 <script>
-  import Head from '@/components/Head/Head'
-  import Menu from '@/components/Menu/Menu'
-  import Content from '@/components/Content/Content'
+  import Vue from 'vue'
 
   export default {
     name: 'app',
-    components: {
-      'v-header': Head,
-      'v-menu': Menu
+    mounted(){
+      //组件开始挂载时获取用户信息
+      //this.getUserInfo();
+    },
+    methods:{
+//      getUserInfo(){
+//          setTimeout(()=>{
+//              console.log(this.$store)
+//          },500)
+//      }
     }
   }
 </script>
 
 <style lang="sass">
-  @import '../src/assets/reset.css';
+  @import '../src/assets/reset.css'
 </style>

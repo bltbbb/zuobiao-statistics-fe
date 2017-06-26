@@ -8,13 +8,11 @@
     <transition name="slide-down">
       <div class="login-table" v-show="showTable">
         <div class="login-content">
-          <div class="img-wrapper"><img src="../../assets/img/logo.png" alt=""></div>
-          <div class="clearfix">
-            <label for="userName"><span class="glyphicon glyphicon-user"></span></label>
+          <div class="img-wrapper"><img src="../../assets/img/login-logo.png" alt=""></div>
+          <div class="clearfix nameBar">
             <input type="text" id="userName" placeholder="请输入用户名" v-model="userName" :class="{danger:userEmpty}" @focus="userEmpty = false">
           </div>
-          <div class="clearfix">
-            <label for="password"><span class="glyphicon glyphicon-lock"></span></label>
+          <div class="clearfix pwBar">
             <input type="text" id="password" placeholder="请输入密码" v-model="password" :class="{danger:pwEmpty}" @focus="pwEmpty = false">
           </div>
         </div>
@@ -60,17 +58,36 @@
             this.errorText = '请输入密码'
             return;
           }
-          let params = new URLSearchParams();
-          params.append('loginName', this.userName);
-          params.append('password', this.password);
-//          this.showError = true;
-//          this.errorText = '登录失败'
+
+          //登录参数
+          let loginParams = new URLSearchParams();
+          loginParams.append('loginName', this.userName);
+          loginParams.append('password', this.password);
+
+
 
           //测试接口 登录成功后将获取的token保存在cookie中
-          axios.post('http://192.168.1.41:9999/authc/login', params).then((res)=>{
-              if(res.status === 0){
-                this.$cookie.set('adoptToken', res.adoptToken, 1);
-              }
+          axios.post('http://192.168.1.40:9999/authc/login', loginParams).then((res)=>{
+              if(res.data.status === 0){
+                this.$cookie.set('adoptToken', res.data.result.adoptToken, 1);
+
+                //获取token参数 请求菜单接口
+                let tokenParams = new URLSearchParams();
+                tokenParams.append('adoptToken', res.data.result.adoptToken);
+
+                //请求
+                axios.post('http://192.168.1.40:9999/getAuthMenus',tokenParams).then((res)=>{
+                  this.$store.state.menuInfo = res.data
+                  this.$router.push('/Content/Survey');    //跳转
+                })
+              }else if(res.status === 1){
+                this.showError = true;
+                this.errorText = '用户名不存在'
+              }else
+              {
+                this.showError = true;
+                this.errorText = '用户名或密码错误'
+            }
           });
         }
     },
@@ -113,6 +130,10 @@
         img
           display: block
           margin: 0 auto 50px
+      .nameBar
+        overflow: hidden
+      .pwBar
+        overflow: hidden
       input
         border-top: none
         border-left: none
@@ -145,6 +166,8 @@
         color: rgba(0,0,0,0.5)
         padding: 5px 8px
         margin: 8px 0 15px 0
+        height: 20px
+        font-size: 14px
 
     /*登录框动画*/
   .slide-down-enter-active
