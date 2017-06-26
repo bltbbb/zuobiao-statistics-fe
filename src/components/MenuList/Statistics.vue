@@ -1,3 +1,4 @@
+<!--功能统计-->
 <template>
   <div class="statistics content-box">
     {{msg}}

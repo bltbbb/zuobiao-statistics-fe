@@ -1,22 +1,246 @@
+<!--趋势分析-->
 <template>
   <div class="trend content-box">
-    {{msg}}
+    <div class="title-box">
+      <el-radio-group v-model="radio3">
+        <el-radio-button label="今天"></el-radio-button>
+        <el-radio-button label="昨天"></el-radio-button>
+        <el-radio-button label="最近7天"></el-radio-button>
+        <el-radio-button label="最近30天"></el-radio-button>
+        <el-radio-button label="最近60天"></el-radio-button>
+        <el-radio-button label="自定义" class="time-box">
+          <el-date-picker v-model="value6" type="daterange" placeholder="" class="data-piker">
+          </el-date-picker>
+        </el-radio-button>
+      </el-radio-group>
+      <div class="title-select-box">
+        <el-select v-model="value" placeholder="平台">
+          <el-option
+            v-for="plat in plats"
+            :key="plat.value"
+            :label="plat.label"
+            :value="plat.value">
+          </el-option>
+        </el-select>
+        <el-select v-model="val" placeholder="渠道">
+          <el-option
+            v-for="canal in canals"
+            :key="canal.val"
+            :label="canal.label"
+            :value="canal.val">
+          </el-option>
+        </el-select>
+        <el-select v-model="Eval" placeholder="版本">
+          <el-option
+            v-for="edition in editions"
+            :key="edition.Eval"
+            :label="edition.label"
+            :value="edition.Eval">
+          </el-option>
+        </el-select>
+      </div>
+    </div>
+    <div class="trend-box">
+      <div class="part1">
+        <el-row :gutter="20">
+          <el-col :span="6" v-for="item in list" :key="item.id">
+            <div class="grid-content bg-purple">
+              <div class="top-title">{{item.title}}
+                <el-popover
+                  placement="bottom"
+                  v-bind:title="item.message"
+                  width="200"
+                  trigger="hover">
+                  <i class="el-icon-information" slot="reference"></i>
+                </el-popover>
+              </div>
+              <h1>{{item.number}}</h1>
+            </div>
+          </el-col>
+
+        </el-row>
+      </div>
+      <div id="TendChart" class="chart" :style="{width: '100%', height: '400px'}"></div>
+      <el-radio-group v-model="radio2" class="radio-box">
+        <el-radio :label="1">新用户</el-radio>
+        <el-radio :label="2">新用户占比</el-radio>
+        <el-radio :label="3">老用户</el-radio>
+        <el-radio :label="4">老用户占比</el-radio>
+        <el-radio :label="5">启动用户</el-radio>
+        <el-radio :label="6">启动次数</el-radio>
+        <el-radio :label="7">每次使用时长</el-radio>
+        <el-radio :label="8">每人使用时长</el-radio>
+      </el-radio-group>
+      <!--表格-->
+      <el-table
+        :data="tableData"
+        style="width: 100%">
+        <el-table-column
+          prop="date"
+          label="日期"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="注册用户"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="注册用户占比">
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="登录用户">
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="登录次数">
+        </el-table-column>
+      </el-table>
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
+                     class="radio-box"
+                     :page-sizes="[20, 50, 100]" :page-size="20" layout="total, sizes, prev, pager, next, jumper"
+                     :total="100">
+      </el-pagination>
+    </div>
+
   </div>
 </template>
-
 <script>
+  // 引入基本模板
+  let echarts = require('echarts/lib/echarts');
+  // 引入柱状图组件
+  require('echarts/lib/chart/line');
+  // 引入提示框和title组件
+  require('echarts/lib/component/tooltip');
+  require('echarts/lib/component/title');
+  require('echarts/lib/component/legend');
   export default {
     data() {
       return {
-        msg: 'I am trendanalysis'
+        radio3: '今天',
+        plats: [{
+          value: '1',
+          label: '全平台'
+        }, {
+          value: '2',
+          label: 'iOS'
+        },
+          {
+            value: '3',
+            label: 'Android'
+          },
+          {
+            value: '4',
+            label: 'PC'
+          },
+          {
+            value: '5',
+            label: 'web'
+          }
+        ],
+        value: '1',
+        canals: [{
+          val: '1',
+          label: '全部渠道'
+        }],
+        val: '1',
+        editions: [{
+          Eval: '1',
+          label: '全部版本'
+        },
+          {
+            Eval: '2',
+            label: '1.4'
+          }],
+        Eval: "1",
+        // 第一部分
+        list: [
+          {id: "1", title: "注册用户", message: 'Foo', number: "8096798"},
+          {id: "2", title: "注册用户占比", message: 'Bar', number: "8096798"},
+          {id: "3", title: "登录用户", message: 'Bar', number: "8096798"},
+          {id: "4", title: "登录次数", message: 'Bar', number: "8096798"}
+          /*          {id: "5", title: "每次使用时长", message: 'Bar', number: "8096798"},
+           {id: "6",title: "每人使用时长", message: 'Bar', number: "8096798"}*/
+        ],
+        radio2: 1,
+        // 表格数据
+        tableData: [{
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄'
+        }, {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄'
+        }, {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1516 弄'
+        }],
+        currentPage4: 4,
+        value6: new Date()
+      }
+    }
+    ,
+    // 平台图表格-->
+    mounted()
+    {
+      this.drawLine();
+    }
+    ,
+    methods: {
+      selected: function (gameName) {
+        this.activeName = gameName
+      }
+      ,
+      // 图表格绘制
+      drawLine()
+      {
+        // 基于准备好的dom，初始化echarts实例
+        let myChart = echarts.init(document.getElementById('TendChart'));
+        // 绘制图表
+        myChart.setOption({
+          title: {text: '全平台注册用户'},
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['今天', '昨天']
+          },
+          xAxis: {
+            data: ["0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59"]
+          },
+          yAxis: {
+            type: 'value'
+          },
+          series: [{
+            name: '注册用户',
+            type: 'line',
+            data: [5, 20, 36, 10, 10, 20]
+          }]
+
+        });
+        window.onresize = myChart.resize;
+      },
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
       }
     }
   }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="sass">
-  .content
-    display: inline-block
-    width: 90%
+<style lang="scss">
+  @import '../../assets/css/page/public.scss';
+  @import '../../assets/css/page/trend.scss';
 </style>
+

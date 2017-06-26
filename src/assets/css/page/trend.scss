@@ -1,0 +1,44 @@
+.content-box {
+  margin-top: 40px;
+  background: #f0f0f0;
+  padding: 0;
+}
+
+.title-box {
+  background: #f0f0f0;
+  padding: 20px;
+}
+
+.title-select-box {
+  float: right;
+}
+
+.trend-box {
+  background: #fff;
+  padding: 0 20px;
+}
+
+.el-input__inner {
+  border: none;
+}
+
+.is-active {
+  .data-piker .el-input__icon + .el-input__inner {
+    color: #fff;
+    background-color: #7a8fe0;
+  }
+}
+
+.data-piker {
+  .el-input__icon + .el-input__inner {
+    height: 100%;
+    padding: 0 14px 0 0;
+  }
+}
+
+.time-box {
+  .el-radio-button__inner {
+    padding: 8px 0 10px 0
+  }
+
+}

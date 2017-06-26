@@ -1,3 +1,4 @@
+<!--埋点分析-->
 <template>
   <div class="BuriedPoint content-box">
     {{msg}}

@@ -51,7 +51,7 @@ abbr, acronym {
 }
 
 /*==for FF/chrome/opera/IE8==*/
-.content-box {
+.Survey.content-box {
   background: #fff;
   overflow: hidden;
   padding: 20px;

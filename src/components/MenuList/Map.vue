@@ -1,3 +1,4 @@
+<!--地域分布-->
 <template>
   <div class="Map content-box">
     {{msg}}
