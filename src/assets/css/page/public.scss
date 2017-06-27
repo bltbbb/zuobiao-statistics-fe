@@ -13,6 +13,7 @@
     .bg-purple {
       padding: 20px 16px;
       color: #fff;
+      min-height: 60px;
     }
   }
   .el-col:nth-child(1) .bg-purple {
@@ -33,6 +34,9 @@
   .el-col:nth-child(6) .bg-purple {
     background: #52c3fb;
   }
+  .el-col:nth-child(7) .bg-purple {
+    background: #8a65ce;
+  }
   .bg-purple-light {
     background: #e5e9f2;
   }
@@ -50,6 +54,33 @@
   }
 }
 
+.el-input__inner {
+  border: none;
+}
+
+.is-active {
+  .data-piker .el-input__icon + .el-input__inner {
+    color: #fff;
+    background-color: #7a8fe0;
+  }
+}
+
+.data-piker {
+  .el-input__icon + .el-input__inner {
+    height: 100% !important;
+    padding: 0 18px 0 10px;
+  }
+  .el-input__inner {
+    border: none;
+  }
+}
+
+.time-box {
+  .el-radio-button__inner {
+    padding: 8px 0 10px 0
+  }
+}
+
 .radio-box {
   margin: 20px auto;
   width: 100%;
@@ -63,7 +94,8 @@
 .title-box {
   overflow: hidden;
 }
-.calendar-box{
+
+.calendar-box {
   width: 100%;
-  margin:20px 0;
+  margin: 20px 0;
 }
