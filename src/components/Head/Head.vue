@@ -6,9 +6,9 @@
       </div>
 
       <div class="nav-top">
-        <a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>应用概况</a>
-        <a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>账号</a>
-        <a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>退出</a>
+        <a href="#"><i class="el-icon-date"></i></span>应用概况</a>
+        <a href="#"><i class="el-icon-date"></i></span>账号</a>
+        <a href="#"><i class="el-icon-date"></i></span>退出</a>
       </div>
 
     </el-breadcrumb>

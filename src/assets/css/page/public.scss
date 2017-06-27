@@ -54,7 +54,6 @@
   }
 }
 
-
 .is-active {
   .data-piker .el-input__icon + .el-input__inner {
     color: #fff;
@@ -95,4 +94,9 @@
 .calendar-box {
   width: 100%;
   margin: 20px 0;
+}
+
+.select-box {
+  width: 100%;
+  overflow: hidden;
 }

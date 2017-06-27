@@ -10,10 +10,12 @@ body {
 .el-menu--horizontal .el-menu-item .logo {
   float: left
 }
-.logo{
-  float:left;
-  margin:14px 0 0 10px
+
+.logo {
+  float: left;
+  margin: 14px 0 0 10px
 }
+
 /*
  * Global add-ons
  */
@@ -83,6 +85,26 @@ body {
 
 .nav-top {
   float: right;
+  a {
+    border-left: 1px solid #ededed;
+    min-height: 60px;
+    font-size: 12px;
+    display: block;
+    float: left;
+    color: #9d9d9d;
+    padding-right: 20px;
+    padding-left: 20px;
+    text-decoration: none;
+  }
+  a:hover {
+    color: #7a8fe0;
+  }
+  a:active {
+    color: #7a8fe0;
+  }
+  i {
+    margin-right: 5px;
+  }
 }
 
 .main {
@@ -127,12 +149,7 @@ body {
         margin-right: 5px;
       }
     }
-    li a:hover {
-      color: #7a8fe0;
-    }
-    li a:active {
-      color: #7a8fe0;
-    }
+
     .router-link-active {
       color: #7a8fe0;
     }

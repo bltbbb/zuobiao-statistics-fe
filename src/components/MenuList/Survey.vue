@@ -37,17 +37,16 @@
       </el-tabs>
     </div>
     <!-- 平台对应数据-->
-
-    <template>
-      <el-select v-model="value" placeholder="请选择">
-        <el-option
-          v-for="select in options"
-          :key="select.value"
-          :label="select.label"
-          :value="select.value">
-        </el-option>
-      </el-select>
-    </template>
+      <div class="select-box">
+        <el-select v-model="value" placeholder="请选择">
+          <el-option
+            v-for="select in options"
+            :key="select.value"
+            :label="select.label"
+            :value="select.value">
+          </el-option>
+        </el-select>
+      </div>
     <div id="myChart" class="chart" :style="{width: '100%', height: '400px'}"></div>
   </div>
 </template>
