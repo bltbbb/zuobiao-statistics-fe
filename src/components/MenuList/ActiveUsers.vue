@@ -38,7 +38,7 @@
         <el-radio :label="1">登录用户</el-radio>
         <el-radio :label="2">日活/月活</el-radio>
       </el-radio-group>
-      <Calendar @timeValue="getTableTime" class="calendar-box"></Calendar>
+ <!--     <Calendar @timeValue="getTableTime" class="calendar-box"></Calendar>-->
       <!--表格-->
       <el-table
         :data="tableData"
