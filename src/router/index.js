@@ -26,11 +26,6 @@ export default new Router({
       redirect: '/Content/Survey'
     },
     {
-      path: '/',
-      name: 'root',
-      component: Content
-    },
-    {
       path: '/Content',
       name: 'Content',
       component: Content,

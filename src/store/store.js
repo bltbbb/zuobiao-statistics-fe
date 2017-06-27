@@ -5,6 +5,7 @@
  *@desc: Vuex 管理组件状态通信
  **/
 import Vue from 'vue'
+import lockr from 'lockr'
 import Vuex from 'vuex'
 
 Vue.use(Vuex)
@@ -24,6 +25,9 @@ export default new Vuex.Store({
     //更新用户信息
     updateUserInfo(state, newUserInfo) {
       state.userInfo = newUserInfo;
+    },
+    updateMenuInfo(state) {
+      state.menuInfo = lockr.get('menuInfo')
     }
   }
 })

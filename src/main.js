@@ -8,6 +8,7 @@ import router from './router'
 import Vuex from 'vuex'
 import store from './store/store'
 import VueCookie from 'vue-cookie'
+import axios from 'axios'
 
 Vue.use(Vuex);
 Vue.use(ElementUI);
@@ -29,19 +30,21 @@ new Vue({
    created() {
      this.checkLogin();
    },
-  methods:{
-
-//  checkLogin 初步设计为验证cookie中是否储存了adoptToken值
-//  此方法在安全上有漏洞 可改为在验证存在adoptToken后再验证token值是否当前有效
+  methods: {
     checkLogin(){
+      let tokenParams = new URLSearchParams();
+      tokenParams.append('adoptToken', this.$cookie.get('adoptToken'));
       //检查是否存在Token
-      if(!this.$cookie.get('adoptToken')){
+      if (!this.$cookie.get('adoptToken')) {
         //如果没有登录状态则跳转到登录页
         this.$router.push('/login');
-      }else{
-        //否则跳转到登录后的页面
-        this.$router.push('/Content/Survey');
-        this.$cookie.delete('adoptToken')
+      }
+      else {
+        axios.post('http://192.168.1.201:9999/isAuthenticated', tokenParams).then((res)=>{
+          if(res.data.status == 1){
+            this.$router.push('/login');
+          }
+        })
       }
     }
   }
