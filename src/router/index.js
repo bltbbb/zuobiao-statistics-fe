@@ -14,6 +14,7 @@ import Terminal from '@/components/MenuList/Terminal'
 //埋点
 import BuriedPoint from '@/components/MenuList/BuriedPoint'
 import Error from '@/components/MenuList/Error'
+import AnalysisRegister from '@/components/MenuList/AnalysisRegister'
 
 import Login from '@/components/Login/Login'
 
@@ -66,6 +67,11 @@ export default new Router({
         {
           path: '/Content/BuriedPoint',
           component: BuriedPoint
+        },
+        {
+          path: '/Content/AnalysisRegister',
+          name: 'AnalysisRegister',
+          component: AnalysisRegister
         },
         {
           path: '/Content/Error',
