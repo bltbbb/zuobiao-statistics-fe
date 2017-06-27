@@ -96,8 +96,6 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-  .calendar{
-    float:left
-  }
+<style lang="scss">
+  @import '../../assets/css/page/calendar.scss';
 </style>

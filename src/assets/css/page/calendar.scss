@@ -1,0 +1,45 @@
+.calendar {
+  float: left
+}
+
+.el-input__inner {
+  border: none;
+}
+
+.is-active {
+  .data-piker .el-input__icon + .el-input__inner {
+    color: #fff;
+    background-color: #7a8fe0;
+  }
+}
+
+.data-piker {
+  .el-input__icon + .el-input__inner {
+    height: 100% !important;
+    padding: 0 18px 0 10px;
+  }
+  .el-input__inner {
+    border: none;
+  }
+  .el-input__inner {
+    height: 100% !important;
+    padding: 0 18px 0 10px !important;
+  }
+}
+
+.time-box {
+  .el-radio-button__inner {
+    padding: 8px 0 10px 0
+  }
+}
+
+.radio-box {
+  margin: 20px auto;
+  width: 100%;
+  text-align: center;
+}
+
+.el-date-editor--daterange.el-input {
+  width: 100%;
+}
+
