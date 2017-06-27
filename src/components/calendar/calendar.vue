@@ -1,5 +1,5 @@
 <template id="calendar">
-  <div class="hello">
+  <div class="calendar">
     <el-radio-group v-model="radio3" @change=dataChange>
       <el-radio-button name="1" label="今天"></el-radio-button>
       <el-radio-button name="2" label="昨天"></el-radio-button>
@@ -16,11 +16,11 @@
 </template>
 <script>
   export default {
-    name: 'hello',
+    name: 'calendar',
     data () {
       return {
         radio3: '今天',
-        value6: [new Date(), new Date()],
+        value6: [new Date(), new Date()]
       }
     },
     // 平台图表格-->
@@ -96,5 +96,8 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="sass">
+<style scoped lang="scss">
+  .calendar{
+    float:left
+  }
 </style>

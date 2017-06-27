@@ -49,11 +49,21 @@
 
   }
 }
-.radio-box{
+
+.radio-box {
   margin: 20px auto;
   width: 100%;
   text-align: center;
 }
-.el-date-editor--daterange.el-input{
+
+.el-date-editor--daterange.el-input {
   width: 100%;
+}
+
+.title-box {
+  overflow: hidden;
+}
+.calendar-box{
+  width: 100%;
+  margin:20px 0;
 }
