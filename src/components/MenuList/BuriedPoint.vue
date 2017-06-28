@@ -2,9 +2,8 @@
 <template>
   <!--tabe-->
   <div class="ActiveUsers content-box">
-
+    <div class="header-wrapper"><h1>埋点分析<i class="el-icon-information"></i></h1></div>
     <div class="title-box">
-      <p class="incident-title">埋点分析</p>
     <!--导航-->
     <el-radio-group v-model="radio3">
       <el-radio-button label="今天"></el-radio-button>
@@ -168,6 +167,7 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+  @import '../../assets/css/page/public.scss';
   .incident-title{
     display: block;
     font-size: 20px;
@@ -186,12 +186,12 @@
     background: #f0f0f0;
     padding: 0;
   }
-  .title-box {
+/*  .title-box {
     background: #f0f0f0;
     padding: 20px;
     margin-bottom: 20px;
 
-  }
+  }*/
   .title-select-box {
     float: right;
   }

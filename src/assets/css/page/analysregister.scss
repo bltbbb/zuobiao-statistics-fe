@@ -1,0 +1,51 @@
+.content-box {
+  margin-top: 40px;
+  background: #f0f0f0;
+  padding: 0;
+}
+
+
+.title-select-box {
+  float: right;
+}
+
+
+.time-box {
+  .el-radio-button__inner {
+    padding: 8px 0 10px 0
+  }
+
+}
+.content-box {
+  margin-top: 40px;
+  background-color: #ffffff;
+}
+
+/* 顶部导航 */
+
+.el-button--text{
+  float: right;
+  margin-right: 20px;
+  font-size: 16px;
+}
+.title-select-box{
+  float: right;
+}
+.el-radio-button{
+  top: -5px;
+}
+
+/* 图表 */
+#chart-box{
+  border: solid 1px red;
+  margin-top: 40px;
+  background-color: #ffffff;
+  color: #ff0;
+}
+/* 数据 */
+#data-box{
+  color: #f00;
+}
+.page-select{
+  float:right;
+}

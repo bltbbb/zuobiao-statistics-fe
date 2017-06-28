@@ -1,6 +1,7 @@
 <!--错误报告-->
 <template>
   <div class="Error content-box">
+    <div class="header-wrapper"><h1>错误报告<i class="el-icon-information"></i></h1></div>
     <div class="title-box">
       <Calendar @timeValue="getTime"></Calendar>
       <div class="title-select-box">

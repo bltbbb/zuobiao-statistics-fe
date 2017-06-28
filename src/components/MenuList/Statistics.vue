@@ -1,6 +1,7 @@
 <!--功能统计-->
 <template>
   <div class="statistics content-box">
+    <div class="header-wrapper"><h1>功能统计<i class="el-icon-information"></i></h1></div>
     <div class="title-box">
       <el-radio-group v-model="chatType" class="chat">
         <el-radio-button label="单聊"></el-radio-button>

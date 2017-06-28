@@ -1,7 +1,7 @@
 <!--终端分析-->
 <template>
   <div class="Terminal content-box">
-    <div class="header-wrapper"><h1>用户属性<i class="el-icon-information"></i></h1></div>
+    <div class="header-wrapper"><h1>终端分析<i class="el-icon-information"></i></h1></div>
     <div class="title-box">
       <Calendar></Calendar>
       <div class="title-select-box">
@@ -171,7 +171,8 @@
     margin-top: 40px
     background: #fff
     .header-wrapper
-      padding: 20px
+      padding: 10px
+      background:#f0f0f0
       h1
         color: #000
         font-size: 18px
@@ -182,7 +183,7 @@
           font-size: 16px
     .title-box
       overflow: hidden
-      background: #f0f0f0
+      background: #fff
       padding: 20px
       .title-select-box
         float: right

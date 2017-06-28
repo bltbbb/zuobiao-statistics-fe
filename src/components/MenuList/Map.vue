@@ -245,7 +245,8 @@
     margin-top: 40px
     background: #fff
     .header-wrapper
-      padding: 20px
+      padding: 10px
+      background:#f0f0f0
       h1
         color: #000
         font-size: 18px
@@ -256,7 +257,7 @@
           font-size: 16px
     .title-box
       overflow: hidden
-      background: #f0f0f0
+      background: #fff
       padding: 20px
       .title-select-box
         float: right

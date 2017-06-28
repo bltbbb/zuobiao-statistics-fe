@@ -1,6 +1,7 @@
 <!--趋势分析-->
 <template>
   <div class="trend content-box">
+    <div class="header-wrapper"><h1>趋势分析</h1></div>
     <div class="title-box">
       <Calendar @timeValue="getTime"></Calendar>
       <div class="title-select-box">

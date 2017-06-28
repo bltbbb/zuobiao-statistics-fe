@@ -1,71 +1,81 @@
 <!--注册界面-->
 <template>
   <div class="content-box">
-    <div id="header-box" class="content">
-      <div class="page-select">
-        <el-select v-model="value" placeholder="注册界面">
+    <div class="header-wrapper"><h1>埋点页面</h1>
+      <el-select v-model="pageVal" placeholder="平台" class="page-select">
+        <el-option
+          v-for="page in pages"
+          :key="page.pageVal"
+          :label="page.label"
+          :value="page.pageVal">
+        </el-option>
+      </el-select>
+    </div>
+    <div class="title-box">
+      <Calendar @timeValue="getTime"></Calendar>
+      <div class="title-select-box">
+        <el-select v-model="value" placeholder="平台">
           <el-option
-            v-for="plat in pages"
+            v-for="plat in plats"
             :key="plat.value"
             :label="plat.label"
             :value="plat.value">
           </el-option>
         </el-select>
-        <el-button  type="text"><<&nbsp;返回</el-button>
+        <el-select v-model="val" placeholder="渠道">
+          <el-option
+            v-for="canal in canals"
+            :key="canal.val"
+            :label="canal.label"
+            :value="canal.val">
+          </el-option>
+        </el-select>
+        <el-select v-model="Eval" placeholder="版本">
+          <el-option
+            v-for="edition in editions"
+            :key="edition.Eval"
+            :label="edition.label"
+            :value="edition.Eval">
+          </el-option>
+        </el-select>
       </div>
-      <div class="date-select">
-        <!--导航-->
-        <el-radio-group v-model="radio3">
-          <el-radio-button label="今天"></el-radio-button>
-          <el-radio-button label="昨天"></el-radio-button>
-          <el-radio-button label="最近7天"></el-radio-button>
-          <el-radio-button label="最近30天"></el-radio-button>
-          <el-radio-button label="最近60天"></el-radio-button>
-          <!--<div class="block">-->
-          <el-date-picker
-            v-model="value1"
-            type="date"
-            placeholder="选择日期"
-            :picker-options="pickerOptions0">
-          </el-date-picker>
-          <!--</div>-->
-        </el-radio-group>
-
-        <div class="title-select-box">
-          <el-select v-model="terrace" placeholder="平台">
-            <el-option
-              v-for="plat in plats"
-              :key="plat.value"
-              :label="plat.label"
-              :value="plat.value">
-            </el-option>
-          </el-select>
-          <el-select v-model="val" placeholder="渠道">
-            <el-option
-              v-for="canal in canals"
-              :key="canal.val"
-              :label="canal.label"
-              :value="canal.val">
-            </el-option>
-          </el-select>
-          <el-select v-model="Eval" placeholder="版本">
-            <el-option
-              v-for="edition in editions"
-              :key="edition.Eval"
-              :label="edition.label"
-              :value="edition.Eval">
-            </el-option>
-          </el-select>
-        </div>
-
-      </div>
-
-
     </div>
-    <div id="chart-box" class="content" style="width: 500px;height: 500px;"></div>
-    <div id="data-box" class="content">222</div>
-  </div>
+    <div class="trend-box">
+      <div class="part1">
+      </div>
+      <div id="TendChart" class="chart" :style="{width: '100%', height: '400px'}"></div>
+      <el-radio-group v-model="radio2" class="radio-box">
+        <el-radio :label="1">事件数量</el-radio>
+        <el-radio :label="2">触发用户数</el-radio>
 
+      </el-radio-group>
+      <!--表格-->
+      <el-table
+        :data="tableData"
+        style="width: 100%">
+        <el-table-column
+          prop="date"
+          label="日期"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="事件数量"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="触发用户数">
+        </el-table-column>
+
+      </el-table>
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
+                     class="radio-box"
+                     :page-sizes="[20, 50, 100]" :page-size="20" layout="total, sizes, prev, pager, next, jumper"
+                     :total="100">
+      </el-pagination>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -77,48 +87,36 @@
   require('echarts/lib/component/tooltip');
   require('echarts/lib/component/title');
   require('echarts/lib/component/legend');
+  import Calendar from '@/components/calendar/Calendar'
   export default {
     data() {
       return {
-        msg: 'I am Users',
-        pages: [
-        {
-          value: '1',
-          label: '注册界面'
+        pages: [{
+          pageVal: '1',
+          label: '注冊界面'
         },
-        {
-          value: '2',
-          label: '注册成功'
-        },
-        {
-          value: '3',
-          label: '登录界面'
-        },
-        {
-          value: '4',
-          label: '登录成功'
-        },
-        {
-          value: '5',
-          label: '找回密码界面'
-        },
-        {
-          value: '6',
-          label: '重置密码成功'
-        }
-        ],
-        value: '',
-
-        //  时间选择
-        pickerOptions0: {
-          disabledDate(time) {
-            return time.getTime() > Date.now();
+          {
+            pageVal: '2',
+            label: '登录界面'
           }
-        },
-        value1: '',
-
-        radio3: '今天',
-       plats: [{
+          ,
+          {
+            pageVal: '3',
+            label: '登录成功'
+          }
+          ,
+          {
+            pageVal: '4',
+            label: '找回密码'
+          }
+          ,
+          {
+            pageVal: '5',
+            label: '重置密码成功'
+          }
+        ],
+        pageVal: "注冊界面",
+        plats: [{
           value: '1',
           label: '全平台'
         }, {
@@ -138,15 +136,12 @@
             label: 'web'
           }
         ],
-        terrace: '1',
-
-
+        value: '1',
         canals: [{
           val: '1',
           label: '全部渠道'
         }],
         val: '1',
-
         editions: [{
           Eval: '1',
           label: '全部版本'
@@ -155,56 +150,93 @@
             Eval: '2',
             label: '1.4'
           }],
-        Eval: "1"
+        Eval: "1",
+        // 第一部分
+        radio2: 1,
+        // 表格数据
+        tableData: [{
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄'
+        }, {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄'
+        }, {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1516 弄'
+        }],
+        currentPage4: 4
       }
     }
+    ,
+    // 平台图表格-->
+    mounted()
+    {
+      this.drawLine();
+    }
+    ,
+    components: {
+      Calendar
+    },
+    methods: {
+      selected: function (gameName) {
+        this.activeName = gameName
+      }
+      ,
+      // 图表格绘制
+      drawLine()
+      {
+        // 基于准备好的dom，初始化echarts实例
+        let myChart = echarts.init(document.getElementById('TendChart'));
+        // 绘制图表
+        myChart.setOption({
+          title: {text: '趋势图'},
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['今天', '昨天']
+          },
+          xAxis: {
+            data: ["0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59"]
+          },
+          yAxis: {
+            type: 'value'
+          },
+          series: [{
+            name: '注册用户',
+            type: 'line',
+            data: [5, 20, 36, 10, 10, 20]
+          }]
 
+        });
+        window.onresize = myChart.resize;
+      },
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+      },
+      //获取日历时间
+      getTime(msg){
+        console.log(msg)
+      }
+
+    }
   }
-  </script>
+
+</script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-  .content-box {
-    margin-top: 40px;
-    background-color: #ffffff;
-  }
-  .content{
-    padding-left: 40px;
-  }
-
-  /* 顶部导航 */
-  #header-box{
-    background: #f0f0f0;
-    /*padding: 20px 0 40px;*/
-    padding-top: 20px;
-    padding-bottom: 20px;
-
-  }
-  .page-select{
-    padding-bottom: 20px;
-  }
-  .el-button--text{
-    float: right;
-    margin-right: 20px;
-    font-size: 16px;
-  }
-  .title-select-box{
-    float: right;
-  }
-  .el-radio-button{
-    top: -5px;
-  }
-
-  /* 图表 */
-  #chart-box{
-    border: solid 1px red;
-    margin-top: 40px;
-    background-color: #ffffff;
-    color: #ff0;
-  }
-  /* 数据 */
-  #data-box{
-    color: #f00;
-  }
+<style lang="scss">
+  @import '../../assets/css/page/public.scss';
+  @import '../../assets/css/page/analysregister.scss';
 
 </style>

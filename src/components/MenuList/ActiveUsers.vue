@@ -1,6 +1,7 @@
 <!--活跃用户-->
 <template>
   <div class="ActiveUsers content-box">
+    <div class="header-wrapper"><h1>活跃用户<i class="el-icon-information"></i></h1></div>
     <div class="title-box">
       <Calendar @timeValue="getTime"></Calendar>
       <div class="title-select-box">
