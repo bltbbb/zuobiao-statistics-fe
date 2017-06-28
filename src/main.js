@@ -39,13 +39,13 @@ new Vue({
         //如果没有登录状态则跳转到登录页
         this.$router.push('/login');
       }
-      else {
-        axios.post('http://192.168.1.201:9999/isAuthenticated', tokenParams).then((res)=>{
-          if(res.data.status == 1){
-            this.$router.push('/login');
-          }
-        })
-      }
+      // else {
+      //   axios.post('http://192.168.1.201:9999/isAuthenticated', tokenParams).then((res)=>{
+      //     if(res.data.status == 1){
+      //       this.$router.push('/login');
+      //     }
+      //   })
+      // }
     }
   }
 })

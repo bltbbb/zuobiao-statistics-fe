@@ -2,33 +2,31 @@
 <template>
   <div class="Retained content-box">
     <div class="header-wrapper"><h1>留存用户<i class="el-icon-information"></i></h1></div>
+    <div class="title-box">
+      <Calendar></Calendar>
+      <div class="title-select-box">
+        <el-select v-model="value" placeholder="平台">
+          <el-option
+            v-for="plat in plats"
+            :key="plat.value"
+            :label="plat.label"
+            :value="plat.value">
+          </el-option>
+        </el-select>
+        <el-select v-model="val" placeholder="渠道">
+          <el-option
+            v-for="canal in canals"
+            :key="canal.val"
+            :label="canal.label"
+            :value="canal.val">
+          </el-option>
+        </el-select>
+      </div>
+    </div>
     <div class="tabs">
       <el-tabs type="border-card">
         <el-tab-pane v-for="(tab,index) in tabs" :key="index">
           <span slot="label"><i class="el-icon-date"></i> {{tab.plat}}</span>
-          <div class="Picker-wrapper">
-            <div class="datePicker">
-              <el-date-picker popper-class="pickerBlock" v-model="value7" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions2">
-              </el-date-picker>
-            </div>
-            <div class="platPicker">
-              <div class="platform">
-                <el-select v-model="select" slot="prepend" placeholder="全部平台">
-                  <el-option label="IOS" value="1"></el-option>
-                  <el-option label="Android" value="2"></el-option>
-                  <el-option label="PC" value="3"></el-option>
-                  <el-option label="WEB" value="4"></el-option>
-                </el-select>
-              </div>
-              <div class="channel">
-                <el-select v-model="select" slot="prepend" placeholder="全部渠道">
-                  <el-option label="渠道1" value="1"></el-option>
-                  <el-option label="渠道2" value="2"></el-option>
-                  <el-option label="渠道3" value="3"></el-option>
-                </el-select>
-              </div>
-            </div>
-          </div>
           <div class="table-wrapper">
             <table>
               <tr class="line">
@@ -56,6 +54,7 @@
 </template>
 
 <script>
+  import Calendar from '@/components/calendar/Calendar'
   export default {
     data() {
       return {
@@ -100,7 +99,34 @@
           {date:"2017/05/19",regUser:"999",Retention:["30","20","17","14","9","6","1"]},
           {date:"2017/05/19",regUser:"1009",Retention:["40","23","27","19","13","2","8.6"]},
           {date:"2017/05/19",regUser:"658",Retention:["32.1","20.6","19.8","14.5","10.9","6.7","3.2"]}
-        ]
+        ],
+
+        plats: [{
+          value: '1',
+          label: '全部平台'
+        }, {
+          value: '2',
+          label: 'iOS'
+        },
+          {
+            value: '3',
+            label: 'Android'
+          },
+          {
+            value: '4',
+            label: 'PC'
+          },
+          {
+            value: '5',
+            label: 'web'
+          }
+        ],
+        value: '1',
+        canals: [{
+          val: '1',
+          label: '全部渠道'
+        }],
+        val: '1',
       }
     },
     methods:{
@@ -128,6 +154,9 @@
               return '90-100'
           }
       }
+    },
+    components:{
+      Calendar
     }
   }
 </script>
@@ -149,18 +178,12 @@
           font-size: 16px
     .tabs
       padding: 20px
-    .Picker-wrapper
+    .title-box
       overflow: hidden
-      padding: 20px 0
-      .datePicker
-        float: left
-        width: 20%
-      .platPicker
+      background: #f0f0f0
+      padding: 20px
+      .title-select-box
         float: right
-        .platform
-          display: inline-block
-        .channel
-          display: inline-block
     .table-wrapper
       margin-top: 20px
       table

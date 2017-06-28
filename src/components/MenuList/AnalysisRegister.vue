@@ -62,7 +62,7 @@
 
 
     </div>
-    <div id="chart-box" class="content" :style="{width:'500px';height:'500px'"></div>
+    <div id="chart-box" class="content" style="width: 500px;height: 500px;"></div>
     <div id="data-box" class="content">222</div>
   </div>
 
