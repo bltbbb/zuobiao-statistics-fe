@@ -37,7 +37,7 @@
         style="width: 100%">
         <el-table-column type="selection" width="55">
         </el-table-column>
-        <el-table-column type="expand">
+        <el-table-column type="expand" class="expand-box">
           <template scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
               <el-table :data="tableData5" style="width: 100%">
@@ -214,6 +214,7 @@
       //查看明细
       handleLook(index, row) {
         console.log(index, row);
+        this.$router.push({name: 'ErrorDetail'});
       }
     }
   }
