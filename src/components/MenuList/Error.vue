@@ -53,8 +53,8 @@
         </el-table-column>
         <el-table-column
           label="错误类型" prop="id">
-          <template scope="scope">
-            <span @click="handleLook(scope.$index, scope.row)">{{ scope.row.id }} </span>
+          <template scope="scope" >
+            <span @click="handleLook(scope.$index, scope.row)" class="text-color">{{ scope.row.id }} </span>
           </template>
         </el-table-column>
         <el-table-column

@@ -92,6 +92,7 @@
   padding: 20px;
   overflow: hidden;
 }
+
 .calendar-box {
   width: 100%;
   margin: 20px 0;
@@ -101,20 +102,22 @@
   width: 100%;
   overflow: hidden;
 }
+
 .trend-box {
   background: #fff;
   padding: 0 20px;
 }
-.header-wrapper{
+
+.header-wrapper {
   padding: 10px;
   background: #f0f0f0;
   overflow: hidden;
-  h1{
+  h1 {
     color: #000;
     font-size: 18px;
-    float:left
+    float: left
   }
-  i{
+  i {
     display: inline-block;
     padding-left: 7px;
     color: #9d9d9d;
@@ -122,4 +125,8 @@
   }
 }
 
+.text-color {
+  color: #7a8fe0;
+  cursor: pointer;
+}
 
