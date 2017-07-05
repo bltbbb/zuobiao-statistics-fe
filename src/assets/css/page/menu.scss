@@ -61,7 +61,7 @@
   z-index: 1001;
   overflow: hidden;
   transition: all .28s ease-out;
-/*  background: #889ff8;*/
+  /*  background: #889ff8;*/
   color: #fff;
 }
 
@@ -81,11 +81,15 @@
 }
 
 .el-menu-item a, .el-submenu__title a {
-  color: #fff;
+  color: rgb(191, 193, 217);
   text-underline: none;
   text-decoration: none;
   display: block;
   text-align: center;
+}
+
+.el-menu-item .router-link-active, .el-submenu__title .router-link-active {
+  color: #fff;
 }
 
 /*.el-submenu .el-menu {

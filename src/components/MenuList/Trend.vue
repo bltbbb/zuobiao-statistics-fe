@@ -148,7 +148,7 @@
         Eval: "1",
         // 第一部分
         list: [
-          {id: "1", title: "注册用户", message: 'Foo', number: "8096798"},
+          {id: "1", title: "注册用户", message: '截止到现在登录过的独立用户', number: "8096798"},
           {id: "2", title: "注册用户占比", message: 'Bar', number: "8096798"},
           {id: "3", title: "登录用户", message: 'Bar', number: "8096798"},
           {id: "4", title: "登录次数", message: 'Bar', number: "8096798"}

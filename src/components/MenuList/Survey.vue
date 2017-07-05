@@ -27,10 +27,10 @@
         <el-tab-pane v-for="gameName in gameNames" :key="gameName.id">
           <span slot="label"><i class="el-icon-date"></i> {{gameName.plat}}</span>
           <div class="box">
-            <div class="box-list" v-for="dataList in dataLists">
-              <div class="">{{dataList.title}}</div>
-              <div class="">{{dataList.today}}</div>
-              <div class="">{{dataList.yday}}</div>
+            <div class="box-list" v-for="dataList in dataLists" @click="choice(dataList.$index, dataList.id)">
+              <div class="" name="first">{{dataList.title}}</div>
+              <div class=""  name="second">{{dataList.today}}</div>
+              <div class=""  name="third">{{dataList.yday}}</div>
             </div>
           </div>
         </el-tab-pane>
@@ -79,10 +79,10 @@
         // 平台对应数据-->
         dataLists: [
           {title: "", today: "今日", yday: "昨日"},
-          {title: "注册用户", today: "333", yday: "333"},
-          {title: "登录用户", today: "1111", yday: "33"},
-          {title: "登录次数", today: "3", yday: "3"},
-          {title: "人均登录次数", today: "3", yday: "3"}
+          {id:"1",title: "注册用户", today: "333", yday: "333"},
+          {id:"2",title: "登录用户", today: "1111", yday: "33"},
+          {id:"3",title: "登录次数", today: "3", yday: "3"},
+          {id:"4",title: "人均登录次数", today: "3", yday: "3"}
         ],
         options: [{
           value: '1',
@@ -91,7 +91,8 @@
           value: '2',
           label: '明天'
         }],
-        value: '1'
+        value: '1',
+        activeName:"first"
       }
 
     }
@@ -135,6 +136,9 @@
 
         });
         window.onresize = myChart.resize;
+      },
+      choice:function(row,value){
+         console.log(value)
       }
     }
 
