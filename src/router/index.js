@@ -7,6 +7,7 @@ import Trend from '@/components/MenuList/Trend'
 import ActiveUsers from '@/components/MenuList/ActiveUsers'
 import Retained from '@/components/MenuList/Retained'
 import Statistics from '@/components/MenuList/Statistics'
+import flow from '@/components/MenuList/flow'
 //用户
 import Users from '@/components/MenuList/Users'
 import Map from '@/components/MenuList/Map'
@@ -52,6 +53,10 @@ export default new Router({
         {
           path: '/Content/Statistics',
           component: Statistics
+        },
+        {
+          path: '/Content/flow',
+          component: flow
         },
         //用户分析
         {

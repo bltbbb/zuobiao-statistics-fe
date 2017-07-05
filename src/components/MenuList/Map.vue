@@ -130,7 +130,17 @@
         val: '1',
         options: {
           tooltip: {
-            trigger: 'item'
+            trigger: 'item',
+            transitionDuration: 0.8,
+            showDelay: 0,
+            backgroundColor: 'rgba(255,255,255,0.9)',
+            padding: 15,
+            borderWidth: 1,
+            borderColor: 'rgba(0,0,0,0.3)',
+            textStyle: {
+              color: 'rgba(0,0,0,0.9)'
+            },
+            formatter: '<div style="padding-bottom:10px;">{b}</div><div><span style="color: #5cc3ff;">累计启动次数: &nbsp;&nbsp;&nbsp;</span>{c}</div>'
           },
           visualMap: {
             min: 0,
@@ -142,7 +152,7 @@
             orient: 'horizontal',
             inverse: 'true',
             inRange: {
-              color: ['#fff','orange']
+              color: ['#fff','rgb(0, 119, 254)']
             }
           },
           series: [
@@ -152,12 +162,20 @@
               mapType: 'china',
               roam: false,
               top: 'top',
+              itemStyle: {
+                emphasis: {
+                  areaColor: '#b86dff'
+                }
+              },
               label: {
                 normal: {
                   show: false
                 },
                 emphasis: {
-                  show: true
+                  show: true,
+                  textStyle: {
+                      color: '#fff'
+                  }
                 }
               },
               data:[
@@ -194,7 +212,8 @@
                 {name: '海南',value: this.randomData() },
                 {name: '台湾',value: this.randomData() },
                 {name: '香港',value: this.randomData() },
-                {name: '澳门',value: this.randomData() }
+                {name: '澳门',value: this.randomData() },
+                {name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} }
               ]
             }
           ]
@@ -246,7 +265,7 @@
     background: #fff
     .header-wrapper
       padding: 10px
-      background:#f0f0f0
+      background: #f0f0f0
       h1
         color: #000
         font-size: 18px

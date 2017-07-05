@@ -7,3 +7,5 @@ yarn-error.log*
 *.xml
 *.iml
 .idea/
+.vscode/launch.json
+.vscode/settings.json
