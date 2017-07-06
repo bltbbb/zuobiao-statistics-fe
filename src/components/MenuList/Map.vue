@@ -1,7 +1,19 @@
 <!--地域分布-->
 <template>
   <div class="Map content-box">
-    <div class="header-wrapper"><h1>用户属性<i class="el-icon-information"></i></h1></div>
+    <div class="header-wrapper">
+      <h1>
+        用户属性
+        <el-popover
+          placement="right"
+          width="200"
+          trigger="hover"
+          popper-class="popover-class">
+          <slot>{{explain}}</slot>
+          <i class="el-icon-information" slot="reference"></i>
+        </el-popover>
+      </h1>
+    </div>
     <div class="title-box">
       <Calendar></Calendar>
       <div class="title-select-box">
@@ -95,6 +107,7 @@
   export default {
     data() {
       return {
+        explain: '这是菜单的说明文字',
         radioValue: 'regUser',
         list: [
           {id: "1", title: "注册用户", message: 'Foo', number: "8096798"},
@@ -263,17 +276,6 @@
   .Map
     margin-top: 40px
     background: #fff
-    .header-wrapper
-      padding: 10px
-      background: #f0f0f0
-      h1
-        color: #000
-        font-size: 18px
-        i
-          display: inline-block
-          padding-left: 7px
-          color: #9d9d9d
-          font-size: 16px
     .title-box
       overflow: hidden
       background: #fff

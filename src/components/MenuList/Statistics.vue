@@ -1,7 +1,19 @@
 <!--功能统计-->
 <template>
   <div class="statistics content-box">
-    <div class="header-wrapper"><h1>功能统计<i class="el-icon-information"></i></h1></div>
+    <div class="header-wrapper">
+      <h1>
+        功能统计
+        <el-popover
+          placement="right"
+          width="200"
+          trigger="hover"
+          popper-class="popover-class">
+          <slot>{{explain}}</slot>
+          <i class="el-icon-information" slot="reference"></i>
+        </el-popover>
+      </h1>
+    </div>
     <div class="title-box">
       <el-radio-group v-model="chatType" class="chat">
         <el-radio-button label="单聊"></el-radio-button>
@@ -70,6 +82,7 @@
   export default {
     data() {
       return {
+        explain: '这是菜单的说明文字',
         chatType:"单聊",
         plats: [{
           value: '1',

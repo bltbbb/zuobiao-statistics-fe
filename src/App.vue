@@ -24,6 +24,7 @@
   }
 </script>
 
-<style lang="sass">
-  @import '../src/assets/reset.css'
+<style lang="scss">
+  @import '../src/assets/reset.css';
+  @import '../src/assets/css/page/public.scss';
 </style>

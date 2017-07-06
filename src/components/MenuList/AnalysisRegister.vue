@@ -1,7 +1,20 @@
-<!--注册界面-->
+<!--埋点-->
 <template>
   <div class="content-box">
-    <div class="header-wrapper"><h1>埋点页面</h1>
+    <div class="header-wrapper">
+      <h1>
+        埋点页面
+        <el-popover
+          placement="right"
+          width="200"
+          trigger="hover"
+          popper-class="popover-class">
+          <slot>{{explain}}</slot>
+          <i class="el-icon-information" slot="reference"></i>
+        </el-popover>
+      </h1>
+    </div>
+    <div class="select-wrapper">
       <el-select v-model="pageVal" placeholder="平台" class="page-select">
         <el-option
           v-for="page in pages"
@@ -91,6 +104,7 @@
   export default {
     data() {
       return {
+        explain: '这是菜单的说明文字',
         pages: [{
           pageVal: '1',
           label: '注冊界面'

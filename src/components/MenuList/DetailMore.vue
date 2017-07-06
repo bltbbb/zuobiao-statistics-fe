@@ -1,7 +1,19 @@
 <!--错误报告-->
 <template>
   <div class="Error content-box">
-    <div class="header-wrapper"><h1>错误详情<i class="el-icon-information"></i></h1></div>
+    <div class="header-wrapper">
+      <h1>
+        错误详情
+        <el-popover
+          placement="right"
+          width="200"
+          trigger="hover"
+          popper-class="popover-class">
+          <slot>{{explain}}</slot>
+          <i class="el-icon-information" slot="reference"></i>
+        </el-popover>
+      </h1>
+    </div>
     <div class="title-box">
       <div class="title-select-box">
         <el-select v-model="val" placeholder="渠道">
@@ -178,6 +190,7 @@
   export default {
     data() {
       return {
+        explain: '这是菜单的说明文字',
         value: '1',
         canals: [{
           val: '1',

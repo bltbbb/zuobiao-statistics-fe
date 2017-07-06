@@ -2,7 +2,19 @@
 <template>
   <!--tabe-->
   <div class="ActiveUsers content-box">
-    <div class="header-wrapper"><h1>埋点分析<i class="el-icon-information"></i></h1></div>
+    <div class="header-wrapper">
+      <h1>
+        埋点分析
+        <el-popover
+          placement="right"
+          width="200"
+          trigger="hover"
+          popper-class="popover-class">
+          <slot>{{explain}}</slot>
+          <i class="el-icon-information" slot="reference"></i>
+        </el-popover>
+      </h1>
+    </div>
     <div class="title-box">
     <!--导航-->
     <el-radio-group v-model="radio3">
@@ -60,7 +72,7 @@
   export default {
     data() {
       return {
-
+        explain: '这是菜单的说明文字',
         //  页面列表
         tableData: [
           {

@@ -1,5 +1,18 @@
 <template>
   <div class="Survey content-box">
+    <div class="header-wrapper">
+      <h1>
+        概况
+        <el-popover
+          placement="right"
+          width="200"
+          trigger="hover"
+          popper-class="popover-class">
+          <slot>{{explain}}</slot>
+          <i class="el-icon-information" slot="reference"></i>
+        </el-popover>
+      </h1>
+    </div>
     <!--    {{msg}}-->
     <!--  第一部分-->
     <div class="part1">
@@ -146,7 +159,27 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="sass">
+<style scoped lang="scss">
   @import '../../assets/css/page/public.scss';
   @import '../../assets/css/page/index.scss';
+  .Survey {
+    margin-top: 40px;
+    background: #fff;
+    .part1 {
+      box-sizing: border-box;
+      padding: 20px;
+    }
+    .all {
+      box-sizing: border-box;
+      padding: 20px;
+    }
+    .select-box {
+      box-sizing: border-box;
+      padding: 20px;
+    }
+    .chart {
+      box-sizing: border-box;
+      padding: 20px;
+    }
+  }
 </style>

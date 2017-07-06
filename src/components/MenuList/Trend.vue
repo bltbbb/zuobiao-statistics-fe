@@ -1,7 +1,19 @@
 <!--趋势分析-->
 <template>
   <div class="trend content-box">
-    <div class="header-wrapper"><h1>趋势分析</h1></div>
+    <div class="header-wrapper">
+      <h1>
+        趋势分析
+        <el-popover
+          placement="right"
+          width="200"
+          trigger="hover"
+          popper-class="popover-class">
+          <slot>{{explain}}</slot>
+          <i class="el-icon-information" slot="reference"></i>
+        </el-popover>
+      </h1>
+    </div>
     <div class="title-box">
       <Calendar @timeValue="getTime"></Calendar>
       <div class="title-select-box">
@@ -38,10 +50,11 @@
             <div class="grid-content bg-purple">
               <div class="top-title">{{item.title}}
                 <el-popover
-                  placement="bottom"
-                  v-bind:title="item.message"
+                  placement="right"
                   width="200"
-                  trigger="hover">
+                  trigger="hover"
+                  popper-class="popover-class">
+                  <slot>{{item.message}}</slot>
                   <i class="el-icon-information" slot="reference"></i>
                 </el-popover>
               </div>
@@ -111,6 +124,7 @@
   export default {
     data() {
       return {
+        explain: '这是菜单的说明文字',
         plats: [{
           value: '1',
           label: '全平台'
@@ -149,11 +163,9 @@
         // 第一部分
         list: [
           {id: "1", title: "注册用户", message: '截止到现在登录过的独立用户', number: "8096798"},
-          {id: "2", title: "注册用户占比", message: 'Bar', number: "8096798"},
-          {id: "3", title: "登录用户", message: 'Bar', number: "8096798"},
-          {id: "4", title: "登录次数", message: 'Bar', number: "8096798"}
-          /*          {id: "5", title: "每次使用时长", message: 'Bar', number: "8096798"},
-           {id: "6",title: "每人使用时长", message: 'Bar', number: "8096798"}*/
+          {id: "2", title: "注册用户占比", message: '截止到现在的注册用户占比', number: "8096798"},
+          {id: "3", title: "登录用户", message: '截止到现在的注册用户占比', number: "8096798"},
+          {id: "4", title: "登录次数", message: '截止到现在的登录次数', number: "8096798"}
         ],
         radio2: 1,
         // 表格数据
@@ -229,7 +241,7 @@
       },
       //获取日历时间
       getTime(msg){
-        console.log(msg)
+        console.log(msg[0].toLocaleDateString(),msg[1].toLocaleDateString())
       }
 
     }
@@ -241,5 +253,17 @@
 <style lang="scss">
   @import '../../assets/css/page/public.scss';
   @import '../../assets/css/page/trend.scss';
+
+  .popover-class {
+    border-radius: 3px;
+  }
+
+  .top-title {
+    padding-bottom: 8px;
+    .el-icon-information {
+      display: inline-block;
+      margin-left: 5px;
+    }
+  }
 </style>
 

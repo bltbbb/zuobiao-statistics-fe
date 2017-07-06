@@ -1,7 +1,19 @@
 <!--流量分析-->
 <template>
   <div class="flow">
-    <div class="header-wrapper"><h1>流量分析<i class="el-icon-information"></i></h1></div>
+    <div class="header-wrapper">
+      <h1>
+        流量分析
+        <el-popover
+          placement="right"
+          width="200"
+          trigger="hover"
+          popper-class="popover-class">
+          <slot>{{explain}}</slot>
+          <i class="el-icon-information" slot="reference"></i>
+        </el-popover>
+      </h1>
+    </div>
     <div class="title-box">
       <Calendar @timeValue="getTime"></Calendar>
       <el-input v-model="searchName" class="searchInput" label-width="50px" placeholder="搜索账号或昵称" icon="search"></el-input>
@@ -117,6 +129,7 @@
   export default {
     data() {
       return {
+        explain: '这是菜单的说明文字',
         chatType:"单聊",
         plats: [{
           value: '1',
@@ -180,7 +193,8 @@
           {id: '12987122', email: 'mht@qq.com', user: '微信-张小龙', time: '2017-6-22  19:23:38', all:'130M', wifi: '60%', g: '40%',sys: 'Android'
             , text: '5M',sVioce: '3M', img: '20M', file: '9M', sVideo: '15M', vioce: '25M', video: '30M' }
         ],
-        radioValue: '2'
+        radioValue: '2',
+        currentPage4: 4
       }
     }
     ,
@@ -275,17 +289,6 @@
   .flow
     margin-top: 40px
     background: #fff
-    .header-wrapper
-      padding: 10px
-      background: #f0f0f0
-      h1
-        color: #000
-        font-size: 18px
-        i
-          display: inline-block
-          padding-left: 7px
-          color: #9d9d9d
-          font-size: 16px
     .title-box
       overflow: hidden
       background: #fff

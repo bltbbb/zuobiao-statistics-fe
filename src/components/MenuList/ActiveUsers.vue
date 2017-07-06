@@ -1,7 +1,19 @@
 <!--活跃用户-->
 <template>
   <div class="ActiveUsers content-box">
-    <div class="header-wrapper"><h1>活跃用户<i class="el-icon-information"></i></h1></div>
+    <div class="header-wrapper">
+      <h1>
+        活跃用户
+        <el-popover
+          placement="right"
+          width="200"
+          trigger="hover"
+          popper-class="popover-class">
+          <slot>{{explain}}</slot>
+          <i class="el-icon-information" slot="reference"></i>
+        </el-popover>
+      </h1>
+    </div>
     <div class="title-box">
       <Calendar @timeValue="getTime"></Calendar>
       <div class="title-select-box">
@@ -93,6 +105,7 @@
   export default {
     data() {
       return {
+        explain: '这是菜单的说明文字',
         plats: [{
           value: '1',
           label: '全平台'
