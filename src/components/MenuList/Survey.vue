@@ -75,6 +75,7 @@
   export default {
     data () {
       return {
+        explain: '这是菜单的说明文字',
         // 第一部分
         list: [
           {id: "1", title: "累积用户", message: 'Foo', number: "8096798"},
@@ -144,7 +145,23 @@
           series: [{
             name: '注册用户',
             type: 'line',
-            data: [5, 20, 36, 10, 10, 20]
+            data: [5, 20, 36, 10, 10, 20],
+            areaStyle: {
+              normal: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                  offset: 0,
+                  color: 'rgba(122, 143, 224,0.5)'
+                }, {
+                  offset: 1,
+                  color: 'rgba(122, 143, 224,0.2)'
+                }], false)
+              }
+            },
+            itemStyle: {
+              normal: {
+                color: '#7a8fe0'
+              }
+            }
           }]
 
         });

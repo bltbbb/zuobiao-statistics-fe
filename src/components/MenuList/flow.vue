@@ -251,16 +251,16 @@
               normal: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                   offset: 0,
-                  color: 'rgba(199, 237, 250,0.5)'
+                  color: 'rgba(122, 143, 224,0.5)'
                 }, {
                   offset: 1,
-                  color: 'rgba(199, 237, 250,0.2)'
+                  color: 'rgba(122, 143, 224,0.2)'
                 }], false)
               }
             },
             itemStyle: {
               normal: {
-                color: '#58c8da'
+                color: '#7a8fe0'
               }
             }
           }]

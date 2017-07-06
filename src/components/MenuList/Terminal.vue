@@ -170,6 +170,8 @@
       drawLine(){
           let myChart = echarts.init(document.getElementById('chart-content'))
           myChart.setOption(this.options)
+
+          window.onresize = myChart.resize;
       }
     },
     mounted(){

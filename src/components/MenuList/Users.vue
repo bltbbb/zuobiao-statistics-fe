@@ -290,6 +290,7 @@
         let indChart = echarts.init(document.getElementById('industry'));
         indChart.setOption(this.indOptions)
 
+        window.onresize = indChart.resize;
       }
     },
     mounted(){
