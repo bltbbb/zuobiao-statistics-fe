@@ -8,6 +8,7 @@ import router from './router'
 import Vuex from 'vuex'
 import store from './store/store'
 import VueCookie from 'vue-cookie'
+import lockr from 'lockr'
 import axios from 'axios'
 
 Vue.use(Vuex);
@@ -36,12 +37,15 @@ new Vue({
       tokenParams.append('adoptToken', this.$cookie.get('adoptToken'));
       //检查是否存在Token
       if (!this.$cookie.get('adoptToken')) {
-        //如果没有登录状态则跳转到登录页
+        //如果没有登录状态则跳转到登录页 并移除localstorege
+        lockr.rm("menuInfo");
         this.$router.push('/login');
       }
+      //为方便开发 不启用验证token
       // else {
       //   axios.post('http://192.168.1.201:9999/isAuthenticated', tokenParams).then((res)=>{
       //     if(res.data.status == 1){
+     //        lockr.rm("menuInfo");
       //       this.$router.push('/login');
       //     }
       //   })

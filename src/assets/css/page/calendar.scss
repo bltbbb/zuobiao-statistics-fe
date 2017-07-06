@@ -38,3 +38,11 @@
   width: 100%;
 }
 
+.time-box .el-radio-button__orig-radio:checked+.el-radio-button__inner {
+  background-color: transparent;
+}
+.time-box.is-active .data-piker .el-input__icon + .el-input__inner {
+  background: inherit;
+  color: #1f2d3d;
+}
+

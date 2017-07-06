@@ -51,12 +51,7 @@ abbr, acronym {
 }
 
 /*==for FF/chrome/opera/IE8==*/
-.Survey.content-box {
-  background: #fff;
-  overflow: hidden;
-  padding: 20px;
-  margin-top: 80px;
-}
+
 
 .chart {
   margin-top: 40px;
