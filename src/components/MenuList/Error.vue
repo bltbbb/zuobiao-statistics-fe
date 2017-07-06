@@ -39,7 +39,7 @@
         </el-table-column>
         <el-table-column type="expand" class="expand-box">
           <template scope="props">
-            <el-form label-position="left" inline class="demo-table-expand">
+            <el-form label-position="left" inline class="table-expand">
               <el-table :data="tableData5" style="width: 100%">
                 <el-table-column label="错误设备" prop="id">
                 </el-table-column>

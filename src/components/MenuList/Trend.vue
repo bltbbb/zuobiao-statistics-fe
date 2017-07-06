@@ -5,7 +5,7 @@
     <div class="title-box">
       <Calendar @timeValue="getTime"></Calendar>
       <div class="title-select-box">
-        <el-select v-model="plat" placeholder="平台">
+        <el-select v-model="value" placeholder="平台">
           <el-option
             v-for="plat in plats"
             :key="plat.value"
@@ -13,7 +13,7 @@
             :value="plat.value">
           </el-option>
         </el-select>
-        <el-select v-model="canal" placeholder="渠道">
+        <el-select v-model="val" placeholder="渠道">
           <el-option
             v-for="canal in canals"
             :key="canal.val"
@@ -21,7 +21,7 @@
             :value="canal.val">
           </el-option>
         </el-select>
-        <el-select v-model="edition" placeholder="版本">
+        <el-select v-model="Eval" placeholder="版本">
           <el-option
             v-for="edition in editions"
             :key="edition.Eval"
@@ -38,12 +38,10 @@
             <div class="grid-content bg-purple">
               <div class="top-title">{{item.title}}
                 <el-popover
-                  placement="right"
-                  popper-class="border-r"
+                  placement="bottom"
                   v-bind:title="item.message"
                   width="200"
                   trigger="hover">
-                  <div class="content">{{item.content}}</div>
                   <i class="el-icon-information" slot="reference"></i>
                 </el-popover>
               </div>
@@ -133,28 +131,29 @@
             label: 'web'
           }
         ],
-        plat: '1',
+        value: '1',
         canals: [{
           val: '1',
           label: '全部渠道'
         }],
-        canal: '1',
+        val: '1',
         editions: [{
           Eval: '1',
           label: '全部版本'
-          },
+        },
           {
             Eval: '2',
             label: '1.4'
-          }
-        ],
-        edition: "1",
+          }],
+        Eval: "1",
         // 第一部分
         list: [
-          {id: "1", title: "注册用户", message: 'Foo', number: "8096798", content: "我是注册用户的说明"},
-          {id: "2", title: "注册用户占比", message: 'Bar', number: "8096798", content: "我是注册用户占比的说明"},
-          {id: "3", title: "登录用户", message: 'Bar', number: "8096798", content: "我是登录用户的说明"},
-          {id: "4", title: "登录次数", message: 'Bar', number: "8096798", content: "我是登录次数的说明"}
+          {id: "1", title: "注册用户", message: '截止到现在登录过的独立用户', number: "8096798"},
+          {id: "2", title: "注册用户占比", message: 'Bar', number: "8096798"},
+          {id: "3", title: "登录用户", message: 'Bar', number: "8096798"},
+          {id: "4", title: "登录次数", message: 'Bar', number: "8096798"}
+          /*          {id: "5", title: "每次使用时长", message: 'Bar', number: "8096798"},
+           {id: "6",title: "每人使用时长", message: 'Bar', number: "8096798"}*/
         ],
         radio2: 1,
         // 表格数据
@@ -176,13 +175,6 @@
           address: '上海市普陀区金沙江路 1516 弄'
         }],
         currentPage4: 4
-      }
-    }
-    ,
-    watch: {
-      radio2:function () {
-        //select切换异步操作
-        console.log(this.radio2)
       }
     }
     ,
@@ -237,7 +229,7 @@
       },
       //获取日历时间
       getTime(msg){
-        console.log(msg[0].toLocaleDateString(),msg[1].toLocaleDateString())
+        console.log(msg)
       }
 
     }
@@ -246,20 +238,8 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss" scoped>
+<style lang="scss">
   @import '../../assets/css/page/public.scss';
   @import '../../assets/css/page/trend.scss';
-</style>
-
-<!--全局样式 修改popover弹出框样式-->
-<style lang="scss">
-  .el-popover__title {
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-    font-weight: bold;
-  }
-  .border-r {
-    border-radius: 3px;
-  }
 </style>
 

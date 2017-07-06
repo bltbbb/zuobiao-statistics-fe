@@ -1,6 +1,5 @@
 <template>
   <div class="Survey content-box">
-    <div class="header-wrapper"><h1>趋势分析</h1></div>
     <!--    {{msg}}-->
     <!--  第一部分-->
     <div class="part1">
@@ -8,11 +7,10 @@
         <el-col :span="8"  v-for="item in list" :key="item.id"><div class="grid-content bg-purple">
           <div class="top-title">{{item.title}}
             <el-popover
-              placement="right"
+              placement="bottom"
               v-bind:title="item.message"
               width="200"
               trigger="hover">
-              <div class="content">{{item.content}}</div>
               <i class="el-icon-information" slot="reference"></i>
             </el-popover>
           </div>
@@ -25,14 +23,14 @@
     <!--  第二部分-->
     <div class="all">
       <!-- 平台切换-->
-      <el-tabs type="border-card" v-model="activeId">
-        <el-tab-pane v-for="gameName in gameNames" :key="gameName.id" :name="gameName.id" >
+      <el-tabs type="border-card">
+        <el-tab-pane v-for="gameName in gameNames" :key="gameName.id">
           <span slot="label"><i class="el-icon-date"></i> {{gameName.plat}}</span>
           <div class="box">
-            <div class="box-list" v-for="dataList in dataLists">
-              <div class="">{{dataList.title}}</div>
-              <div class="">{{dataList.today}}</div>
-              <div class="">{{dataList.yday}}</div>
+            <div class="box-list" v-for="dataList in dataLists" @click="choice(dataList.$index, dataList.id)">
+              <div class="" name="first">{{dataList.title}}</div>
+              <div class=""  name="second">{{dataList.today}}</div>
+              <div class=""  name="third">{{dataList.yday}}</div>
             </div>
           </div>
         </el-tab-pane>
@@ -40,7 +38,7 @@
     </div>
     <!-- 平台对应数据-->
       <div class="select-box">
-        <el-select v-model="dateSelect" placeholder="请选择">
+        <el-select v-model="value" placeholder="请选择">
           <el-option
             v-for="select in options"
             :key="select.value"
@@ -64,27 +62,27 @@
   export default {
     data () {
       return {
-        activeId: '3',
         // 第一部分
         list: [
-          {id: "1", title: "累积用户", message: 'Foo', number: "8096798", content: "我是累积用户的说明"},
-          {id: "2", title: "过去7天活跃用户", message: 'Bar', number: "8096798", content: "我是过去7天活跃用户的说明"},
-          {id: "3", title: "过去30天活跃用户", message: 'Bar', number: "8096798", content: "我是过去30天活跃用户的说明"}
+          {id: "1", title: "累积用户", message: 'Foo', number: "8096798"},
+          {id: "2", title: "过去7天活跃用户", message: 'Bar', number: "8096798"},
+          {id: "3", title: "过去30天活跃用户", message: 'Bar', number: "8096798"}
+          /*     {title: "过去7天平均日使用时长", message: 'Bar', number: "8096798"}*/
         ],
         // 平台切换
-        gameNames: [{id: "1", plat: '全平台', name: "All"},
-          {id: "2", plat: '安卓端', name: "Android"},
-          {id: "3", plat: 'PC端', name: "PC"},
-          {id: "4", plat: 'WEB端', name: "WEB"}
+        gameNames: [{id: "1", plat: '全平台'},
+          {id: "1", plat: '安卓端'},
+          {id: "1", plat: 'PC端'},
+          {id: "1", plat: 'WEB端'}
         ],
         plat: '全平台',
         // 平台对应数据-->
         dataLists: [
           {title: "", today: "今日", yday: "昨日"},
-          {title: "注册用户", today: "333", yday: "333"},
-          {title: "登录用户", today: "1111", yday: "33"},
-          {title: "登录次数", today: "3", yday: "3"},
-          {title: "人均登录次数", today: "3", yday: "3"}
+          {id:"1",title: "注册用户", today: "333", yday: "333"},
+          {id:"2",title: "登录用户", today: "1111", yday: "33"},
+          {id:"3",title: "登录次数", today: "3", yday: "3"},
+          {id:"4",title: "人均登录次数", today: "3", yday: "3"}
         ],
         options: [{
           value: '1',
@@ -93,7 +91,8 @@
           value: '2',
           label: '明天'
         }],
-        dateSelect: '1'
+        value: '1',
+        activeName:"first"
       }
 
     }
@@ -102,17 +101,6 @@
     mounted()
     {
       this.drawLine();
-    }
-    ,
-    watch: {
-      activeId:function () {
-          //平台切换异步操作
-          console.log(this.activeId)
-        },
-        dateSelect:function () {
-          //date切换异步操作
-          console.log(this.dateSelect)
-        }
     }
     ,
     methods: {
@@ -148,6 +136,9 @@
 
         });
         window.onresize = myChart.resize;
+      },
+      choice:function(row,value){
+         console.log(value)
       }
     }
 
@@ -155,29 +146,7 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
+<style scoped lang="sass">
   @import '../../assets/css/page/public.scss';
   @import '../../assets/css/page/index.scss';
-
-  .Survey.content-box {
-    background: #fff;
-    overflow: hidden;
-    margin-top: 40px;
-    .part1 {
-      box-sizing: border-box;
-      padding: 20px;
-    }
-    .all {
-      box-sizing: border-box;
-      padding: 20px;
-    }
-    .select-box {
-      box-sizing: border-box;
-      padding: 20px;
-    }
-    .chart {
-      box-sizing: border-box;
-      padding: 20px;
-    }
-  }
 </style>
