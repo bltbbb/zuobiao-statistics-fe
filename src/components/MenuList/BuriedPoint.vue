@@ -49,7 +49,9 @@
     <!--页面名称列表-->
     <div class="table-wrapper">
       <el-table v-on:row-click="handleRowHandle($event)" :data="tableData" borderstyle="width: 100%">
-        <el-table-column class="mf-1" prop="incidentName" :label="label1" width="180" label-class-name="eventName"></el-table-column>
+        <el-table-column class="mf-1" prop="incidentName" label="事件名称" width="180" label-class-name="eventName">
+          <span slot="label">错误名称</span>
+        </el-table-column>
         <el-table-column prop="incidentId" label="事件Id" width="180" ></el-table-column>
         <el-table-column prop="incidentNumber" label="事件数量（日均）"></el-table-column>
         <el-table-column prop="userNumer" label="触发用户数（日均）"></el-table-column>
@@ -67,7 +69,6 @@
         platVal: '1',
         canalVal: '1',
         evalVal: '1',
-        label1: '<i class="el-icon-information" slot="reference"></i>',
         explain: '这是菜单的说明文字',
         //  页面列表
         tableData: [
