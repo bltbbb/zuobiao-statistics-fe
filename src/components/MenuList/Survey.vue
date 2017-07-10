@@ -36,8 +36,8 @@
     <!--  第二部分-->
     <div class="all">
       <!-- 平台切换-->
-      <el-tabs type="border-card">
-        <el-tab-pane v-for="gameName in gameNames" :key="gameName.id">
+      <el-tabs type="border-card" v-model="activeName">
+        <el-tab-pane v-for="gameName in gameNames" :key="gameName.id" :name="gameName.id">
           <span slot="label"><i class="el-icon-date"></i> {{gameName.plat}}</span>
           <div class="box">
             <div class="box-list" v-for="dataList in dataLists" @click="choice(dataList.$index, dataList.id)">
@@ -51,7 +51,7 @@
     </div>
     <!-- 平台对应数据-->
       <div class="select-box">
-        <el-select v-model="value" placeholder="请选择">
+        <el-select v-model="dateVal" placeholder="请选择">
           <el-option
             v-for="select in options"
             :key="select.value"
@@ -85,11 +85,10 @@
         ],
         // 平台切换
         gameNames: [{id: "1", plat: '全平台'},
-          {id: "1", plat: '安卓端'},
-          {id: "1", plat: 'PC端'},
-          {id: "1", plat: 'WEB端'}
+          {id: "2", plat: '安卓端'},
+          {id: "3", plat: 'PC端'},
+          {id: "4", plat: 'WEB端'}
         ],
-        plat: '全平台',
         // 平台对应数据-->
         dataLists: [
           {title: "", today: "今日", yday: "昨日"},
@@ -103,12 +102,20 @@
           label: '今天'
         }, {
           value: '2',
-          label: '明天'
+          label: '昨天'
+        },{
+          value: '3',
+          label: '最近7天'
+        },{
+          value: '4',
+          label: '最近30天'
+        },{
+          value: '5',
+          label: '最近60天'
         }],
-        value: '1',
-        activeName:"first"
+        dateVal: '1',
+        activeName:"3"
       }
-
     }
     ,
     // 平台图表格-->
@@ -118,10 +125,6 @@
     }
     ,
     methods: {
-      selected: function (gameName) {
-        this.activeName = gameName
-      }
-      ,
       // 图表格绘制
       drawLine()
       {
@@ -129,7 +132,14 @@
         let myChart = echarts.init(document.getElementById('myChart'));
         // 绘制图表
         myChart.setOption({
-          title: {text: '全平台注册用户'},
+          title: {
+              text: '全平台注册用户',
+              x: 'center',
+              top: '0'
+          },
+          grid: {
+            top: 80
+          },
           tooltip: {
             trigger: 'axis'
           },
@@ -171,7 +181,40 @@
          console.log(value)
       }
     }
-
+    ,
+    computed: {
+      dateSelect(){
+        let date = new Date();
+        let start = new Date();
+        if (this.dateVal == "1") {
+          return [new Date(), new Date()];
+        } else if (this.dateVal == "2") {
+          start.setTime(date.getTime() - 3600 * 1000 * 24);
+          return [start, start];
+        }
+        else if (this.dateVal == "3") {
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+          return [start, date];
+        }
+        else if (this.dateVal == "4") {
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+          return [start, date];
+        }
+        else if (this.dateVal == "5") {
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 60);
+          return [start, date];
+        }
+      }
+    },
+    watch:{
+      dateSelect:function () {
+        //异步请求数据
+        console.log(this.dateSelect[0].toLocaleDateString(),this.dateSelect[1].toLocaleDateString())
+      },
+      activeName: function (val) {
+        console.log(val)
+      }
+    }
   }
 </script>
 
@@ -196,7 +239,8 @@
     }
     .chart {
       box-sizing: border-box;
-      padding: 20px;
+      padding: 0 20px;
+      margin-top: 0;
     }
   }
 </style>

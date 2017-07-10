@@ -15,9 +15,9 @@
       </h1>
     </div>
     <div class="title-box">
-      <Calendar></Calendar>
+      <Calendar @timeValue="getTime"></Calendar>
       <div class="title-select-box">
-        <el-select v-model="value" placeholder="平台">
+        <el-select v-model="platVal" placeholder="平台">
           <el-option
             v-for="plat in plats"
             :key="plat.value"
@@ -25,7 +25,7 @@
             :value="plat.value">
           </el-option>
         </el-select>
-        <el-select v-model="val" placeholder="渠道">
+        <el-select v-model="evalVal" placeholder="渠道">
           <el-option
             v-for="canal in canals"
             :key="canal.val"
@@ -134,12 +134,12 @@
             label: 'web'
           }
         ],
-        value: '1',
         canals: [{
           val: '1',
           label: '全部渠道'
         }],
-        val: '1',
+        platVal: '1',
+        evalVal: '1',
       }
     },
     methods:{
@@ -166,10 +166,22 @@
           }else {
               return '90-100'
           }
+      },
+      //获取日历时间
+      getTime(msg){
+        console.log(msg)
       }
     },
     components:{
       Calendar
+    },
+    watch: {
+      platVal: function (val) {
+        console.log(val)
+      },
+      evalVal: function (val) {
+        console.log(val)
+      }
     }
   }
 </script>

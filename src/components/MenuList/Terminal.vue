@@ -15,9 +15,9 @@
       </h1>
     </div>
     <div class="title-box">
-      <Calendar></Calendar>
+      <Calendar @timeValue="getTime"></Calendar>
       <div class="title-select-box">
-        <el-select v-model="value" placeholder="平台">
+        <el-select v-model="platVal" placeholder="平台">
           <el-option
             v-for="plat in plats"
             :key="plat.value"
@@ -25,7 +25,7 @@
             :value="plat.value">
           </el-option>
         </el-select>
-        <el-select v-model="val" placeholder="渠道">
+        <el-select v-model="canalVal" placeholder="渠道">
           <el-option
             v-for="canal in canals"
             :key="canal.val"
@@ -33,15 +33,23 @@
             :value="canal.val">
           </el-option>
         </el-select>
+        <el-select v-model="evalVal" placeholder="版本">
+          <el-option
+            v-for="edition in editions"
+            :key="edition.Eval"
+            :label="edition.label"
+            :value="edition.Eval">
+          </el-option>
+        </el-select>
       </div>
     </div>
     <div class="radio-wrapper">
         <label class="raido-label">选择终端属性</label>
         <el-radio-group v-model="radioValue">
-          <el-radio label="0">设备型号</el-radio>
-          <el-radio label="1">操作系统</el-radio>
-          <el-radio label="2">运营商</el-radio>
-          <el-radio label="3">联网方式</el-radio>
+          <el-radio label="1">设备型号</el-radio>
+          <el-radio label="2">操作系统</el-radio>
+          <el-radio label="3">运营商</el-radio>
+          <el-radio label="4">联网方式</el-radio>
         </el-radio-group>
     </div>
     <div class="user-wrapper">
@@ -89,6 +97,10 @@
     data() {
       return {
         explain: '这是菜单的说明文字',
+        radioValue: '1',
+        platVal: '1',
+        canalVal: '1',
+        evalVal: '1',
         plats: [{
           value: '1',
           label: '全部平台'
@@ -109,13 +121,18 @@
             label: 'web'
           }
         ],
-        value: '1',
         canals: [{
           val: '1',
           label: '全部渠道'
         }],
-        val: '1',
-        radioValue: '0',
+        editions: [{
+          Eval: '1',
+          label: '全部版本'
+        },
+          {
+            Eval: '2',
+            label: '1.4'
+          }],
         radioValue2: '0',
         options:{
           color: ['#3398DB'],
@@ -172,10 +189,31 @@
           myChart.setOption(this.options)
 
           window.onresize = myChart.resize;
+      },
+      getTime(msg){
+        console.log(msg)
       }
     },
     mounted(){
       this.drawLine()
+    },
+    watch:{
+      // 异步请求待用
+      platVal: function (val) {
+        console.log(val)
+      },
+      canalVal: function (val) {
+        console.log(val)
+      },
+      evalVal: function (val) {
+        console.log(val)
+      },
+      radio2: function (val) {
+        console.log(val)
+      },
+      radioValue: function (val) {
+        console.log(val)
+      }
     }
   }
 </script>

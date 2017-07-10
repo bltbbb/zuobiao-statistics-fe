@@ -15,9 +15,9 @@
       </h1>
     </div>
     <div class="title-box">
-      <Calendar></Calendar>
+      <Calendar @timeValue="getTime"></Calendar>
       <div class="title-select-box">
-        <el-select v-model="value" placeholder="平台">
+        <el-select v-model="platVal" placeholder="平台">
           <el-option
             v-for="plat in plats"
             :key="plat.value"
@@ -25,12 +25,20 @@
             :value="plat.value">
           </el-option>
         </el-select>
-        <el-select v-model="val" placeholder="渠道">
+        <el-select v-model="canalVal" placeholder="渠道">
           <el-option
             v-for="canal in canals"
             :key="canal.val"
             :label="canal.label"
             :value="canal.val">
+          </el-option>
+        </el-select>
+        <el-select v-model="evalVal" placeholder="版本">
+          <el-option
+            v-for="edition in editions"
+            :key="edition.Eval"
+            :label="edition.label"
+            :value="edition.Eval">
           </el-option>
         </el-select>
       </div>
@@ -71,8 +79,8 @@
     </div>
     <div class="radio-wrapper">
       <el-radio-group v-model="radioValue" class="radio-box">
-        <el-radio label="regUser">注册用户</el-radio>
-        <el-radio label="loginUser">登录用户</el-radio>
+        <el-radio label="1">注册用户</el-radio>
+        <el-radio label="2">登录用户</el-radio>
       </el-radio-group>
     </div>
     <div class="table-wrapper">
@@ -108,13 +116,15 @@
     data() {
       return {
         explain: '这是菜单的说明文字',
-        radioValue: 'regUser',
+        radioValue: '1',
+        platVal: '1',
+        canalVal: '1',
+        evalVal: '1',
         list: [
           {id: "1", title: "注册用户", message: 'Foo', number: "8096798"},
           {id: "2", title: "登录用户", message: 'Bar', number: "8096798"}
         ],
         select: "",
-        Eval: "",
         plats: [{
           value: '1',
           label: '全部平台'
@@ -135,12 +145,18 @@
             label: 'web'
           }
         ],
-        value: '1',
         canals: [{
           val: '1',
           label: '全部渠道'
         }],
-        val: '1',
+        editions: [{
+          Eval: '1',
+          label: '全部版本'
+        },
+          {
+            Eval: '2',
+            label: '1.4'
+          }],
         options: {
           tooltip: {
             trigger: 'item',
@@ -263,10 +279,31 @@
         },
         randomData() {
           return Math.round(Math.random()*1000);
+        },
+        getTime(msg){
+          console.log(msg)
         }
     },
     mounted(){
         this.drawLine()
+    },
+    watch:{
+      // 异步请求待用
+      platVal: function (val) {
+        console.log(val)
+      },
+      canalVal: function (val) {
+        console.log(val)
+      },
+      evalVal: function (val) {
+        console.log(val)
+      },
+      radio2: function (val) {
+        console.log(val)
+      },
+      radioValue: function (val) {
+        console.log(val)
+      }
     }
   }
 </script>

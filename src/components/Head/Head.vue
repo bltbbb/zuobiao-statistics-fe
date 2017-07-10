@@ -6,9 +6,9 @@
       </div>
 
       <div class="nav-top">
-        <a href="#"><i class="el-icon-date"></i></span>应用概况</a>
-        <a href="#"><i class="el-icon-date"></i></span>账号</a>
-        <a href="#"><i class="el-icon-date"></i></span>退出</a>
+        <a href="#"><i class="el-icon-date"></i><span>应用概况</span></a>
+        <a href="#"><i class="el-icon-date"></i><span>{{userInfo.userName}}</span></a>
+        <a href="#"><i class="el-icon-date"></i><span>退出</span></a>
       </div>
 
     </el-breadcrumb>
@@ -43,7 +43,23 @@
 </template>
 
 <script>
-  export default {}
+  import axios from 'axios'
+  import lockr from 'lockr'
+  export default {
+      data(){
+        return {
+            userInfo: {}
+        }
+      },
+      created(){
+        let tokenParams = new URLSearchParams();
+        tokenParams.append('adoptToken', this.$cookie.get('adoptToken'));
+        //用户信息
+        axios.post('http://192.168.1.201:9999/getTokenUser',tokenParams).then((res)=>{
+          this.userInfo = res.data.result
+        })
+      }
+  }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

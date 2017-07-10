@@ -18,7 +18,7 @@
       <Calendar @timeValue="getTime"></Calendar>
       <el-input v-model="searchName" class="searchInput" label-width="50px" placeholder="搜索账号或昵称" icon="search"></el-input>
       <div class="title-select-box">
-        <el-select v-model="value" placeholder="平台">
+        <el-select v-model="platVal" placeholder="平台">
           <el-option
             v-for="plat in plats"
             :key="plat.value"
@@ -26,7 +26,15 @@
             :value="plat.value">
           </el-option>
         </el-select>
-        <el-select v-model="Eval" placeholder="版本">
+        <el-select v-model="canalVal" placeholder="渠道">
+          <el-option
+            v-for="canal in canals"
+            :key="canal.val"
+            :label="canal.label"
+            :value="canal.val">
+          </el-option>
+        </el-select>
+        <el-select v-model="evalVal" placeholder="版本">
           <el-option
             v-for="edition in editions"
             :key="edition.Eval"
@@ -131,6 +139,10 @@
       return {
         explain: '这是菜单的说明文字',
         chatType:"单聊",
+        radioValue: '1',
+        platVal: '1',
+        canalVal: '1',
+        evalVal: '1',
         plats: [{
           value: '1',
           label: '全平台'
@@ -151,7 +163,10 @@
             label: 'web'
           }
         ],
-        value: '1',
+        canals: [{
+          val: '1',
+          label: '全部渠道'
+        }],
         editions: [{
           Eval: '1',
           label: '全部版本'
@@ -160,13 +175,11 @@
             Eval: '2',
             label: '1.4'
           }],
-        Eval: "1",
         // 第一部分
         list: [
           {id: "1", title: "群聊上行消息数",name:"昨日", number: "8096798"},
           {id: "2", title: "群聊下行消息数",name:"昨日", number: "8096798"}
         ],
-        radio2: 1,
         checked: true,
         searchName: '',
         tableData:[
@@ -193,7 +206,6 @@
           {id: '12987122', email: 'mht@qq.com', user: '微信-张小龙', time: '2017-6-22  19:23:38', all:'130M', wifi: '60%', g: '40%',sys: 'Android'
             , text: '5M',sVioce: '3M', img: '20M', file: '9M', sVideo: '15M', vioce: '25M', video: '30M' }
         ],
-        radioValue: '2',
         currentPage4: 4
       }
     }
@@ -208,10 +220,6 @@
       Calendar
     },
     methods: {
-      selected: function (gameName) {
-        this.activeName = gameName
-      }
-      ,
       // 图表格绘制
       drawLine()
       {
@@ -279,6 +287,24 @@
         console.log(msg)
       }
 
+    },
+    watch:{
+      // 异步请求待用
+      platVal: function (val) {
+        console.log(val)
+      },
+      canalVal: function (val) {
+        console.log(val)
+      },
+      evalVal: function (val) {
+        console.log(val)
+      },
+      radio2: function (val) {
+        console.log(val)
+      },
+      radioValue: function (val) {
+        console.log(val)
+      }
     }
   }
 
@@ -300,7 +326,7 @@
         margin-right: 10px
       .searchInput
         float: left
-        width: 20%
+        width: 10%
         margin-left: 10px
     .flow-box
       box-sizing: border-box

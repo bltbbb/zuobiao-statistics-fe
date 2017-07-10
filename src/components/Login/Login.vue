@@ -98,6 +98,7 @@
                   lockr.set("menuInfo",res.data);      //将数据存入localStorage 以便免登陆应用
                   this.$router.push('/Content/Survey');    //跳转
                 })
+
               }else if(res.status === 1){
                 this.showError = true;
                 this.loginInfo = false;

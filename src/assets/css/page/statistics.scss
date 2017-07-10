@@ -16,6 +16,11 @@
 .trend-box {
   background: #fff;
   padding: 0 20px;
+  .part1 {
+    .grid-content {
+      cursor: pointer;
+    }
+  }
 }
 
 .chat {

@@ -17,21 +17,9 @@
     </div>
     <div class="title-box">
     <!--导航-->
-    <el-radio-group v-model="radio3">
-      <el-radio-button label="今天"></el-radio-button>
-      <el-radio-button label="昨天"></el-radio-button>
-      <el-radio-button label="最近60天"></el-radio-button>
-      <div class="block">
-        <el-date-picker
-          v-model="value1"
-          type="date"
-          placeholder="选择日期"
-          :picker-options="pickerOptions0">
-        </el-date-picker>
-      </div>
-    </el-radio-group>
+    <Calendar @timeValue="getTime"></Calendar>
     <div class="title-select-box">
-      <el-select v-model="value" placeholder="平台">
+      <el-select v-model="platVal" placeholder="平台">
         <el-option
           v-for="plat in plats"
           :key="plat.value"
@@ -39,7 +27,7 @@
           :value="plat.value">
         </el-option>
       </el-select>
-      <el-select v-model="val" placeholder="渠道">
+      <el-select v-model="canalVal" placeholder="渠道">
         <el-option
           v-for="canal in canals"
           :key="canal.val"
@@ -47,7 +35,7 @@
           :value="canal.val">
         </el-option>
       </el-select>
-      <el-select v-model="Eval" placeholder="版本">
+      <el-select v-model="evalVal" placeholder="版本">
         <el-option
           v-for="edition in editions"
           :key="edition.Eval"
@@ -59,19 +47,27 @@
     </div>
 
     <!--页面名称列表-->
-    <el-table v-on:row-click="handleRowHandle($event)" :data="tableData" borderstyle="width: 100%">
-      <el-table-column class="mf-1" prop="incidentName" label="事件名称" width="180"></el-table-column>
-      <el-table-column prop="incidentId" label="事件Id" width="180" ></el-table-column>
-      <el-table-column prop="incidentNumber" label="事件数量（日均）"></el-table-column>
-      <el-table-column prop="userNumer" label="触发用户数（日均）"></el-table-column>
-    </el-table>
+    <div class="table-wrapper">
+      <el-table v-on:row-click="handleRowHandle($event)" :data="tableData" borderstyle="width: 100%">
+        <el-table-column class="mf-1" prop="incidentName" :label="label1" width="180" label-class-name="eventName"></el-table-column>
+        <el-table-column prop="incidentId" label="事件Id" width="180" ></el-table-column>
+        <el-table-column prop="incidentNumber" label="事件数量（日均）"></el-table-column>
+        <el-table-column prop="userNumer" label="触发用户数（日均）"></el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 
 <script>
+  import Calendar from '@/components/calendar/Calendar'
+
   export default {
     data() {
       return {
+        platVal: '1',
+        canalVal: '1',
+        evalVal: '1',
+        label1: '<i class="el-icon-information" slot="reference"></i>',
         explain: '这是菜单的说明文字',
         //  页面列表
         tableData: [
@@ -120,9 +116,6 @@
             return time.getTime() > Date.now();
           }
         },
-        value1: '',
-
-
         radio3: '今天',
         plats: [{
           value: '1',
@@ -144,12 +137,10 @@
             label: 'web'
           }
         ],
-        value: '1',
         canals: [{
           val: '1',
           label: '全部渠道'
         }],
-        val: '1',
         editions: [{
           Eval: '1',
           label: '全部版本'
@@ -172,6 +163,25 @@
           this.$router.push({name: 'AnalysisRegister'});
         }
         console.log(event.incidentName)
+      },
+      //获取日历时间
+      getTime(msg){
+        console.log(msg)
+      }
+    },
+    components:{
+      Calendar
+    },
+    watch:{
+      // 异步请求待用
+      platVal: function (val) {
+        console.log(val)
+      },
+      canalVal: function (val) {
+        console.log(val)
+      },
+      evalVal: function (val) {
+        console.log(val)
       }
     }
   }
@@ -206,5 +216,9 @@
   }*/
   .title-select-box {
     float: right;
+  }
+  .table-wrapper {
+    padding: 20px;
+    background: #fff;
   }
 </style>

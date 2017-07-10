@@ -17,7 +17,15 @@
     <div class="title-box">
       <Calendar @timeValue="getTime"></Calendar>
       <div class="title-select-box">
-        <el-select v-model="val" placeholder="渠道">
+        <el-select v-model="platVal" placeholder="平台">
+          <el-option
+            v-for="plat in plats"
+            :key="plat.value"
+            :label="plat.label"
+            :value="plat.value">
+          </el-option>
+        </el-select>
+        <el-select v-model="canalVal" placeholder="渠道">
           <el-option
             v-for="canal in canals"
             :key="canal.val"
@@ -25,7 +33,7 @@
             :value="canal.val">
           </el-option>
         </el-select>
-        <el-select v-model="Eval" placeholder="版本">
+        <el-select v-model="evalVal" placeholder="版本">
           <el-option
             v-for="edition in editions"
             :key="edition.Eval"
@@ -109,12 +117,33 @@
     data() {
       return {
         explain: '这是菜单的说明文字',
-        value: '1',
+        platVal: '1',
+        canalVal: '1',
+        evalVal: '1',
         canals: [{
           val: '1',
           label: '全部渠道'
         }],
-        val: '1',
+        plats: [{
+          value: '1',
+          label: '全平台'
+        }, {
+          value: '2',
+          label: 'iOS'
+        },
+          {
+            value: '3',
+            label: 'Android'
+          },
+          {
+            value: '4',
+            label: 'PC'
+          },
+          {
+            value: '5',
+            label: 'web'
+          }
+        ],
         editions: [{
           Eval: '1',
           label: '全部版本'
@@ -123,7 +152,6 @@
             Eval: '2',
             label: '1.4'
           }],
-        Eval: "1",
         // 第一部分
         list: [
           {id: "1", title: "登录用户", message: 'Foo', number: "8096798"},
@@ -228,6 +256,18 @@
       handleLook(index, row) {
         console.log(index, row);
         this.$router.push({name: 'ErrorDetail'});
+      }
+    },
+    watch:{
+      // 异步请求待用
+      platVal: function (val) {
+        console.log(val)
+      },
+      canalVal: function (val) {
+        console.log(val)
+      },
+      evalVal: function (val) {
+        console.log(val)
       }
     }
   }

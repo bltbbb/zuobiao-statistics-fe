@@ -17,7 +17,7 @@
     <div class="title-box">
       <Calendar @timeValue="getTime"></Calendar>
       <div class="title-select-box">
-        <el-select v-model="value" placeholder="平台">
+        <el-select v-model="platVal" placeholder="平台">
           <el-option
             v-for="plat in plats"
             :key="plat.value"
@@ -25,7 +25,7 @@
             :value="plat.value">
           </el-option>
         </el-select>
-        <el-select v-model="val" placeholder="渠道">
+        <el-select v-model="canalVal" placeholder="渠道">
           <el-option
             v-for="canal in canals"
             :key="canal.val"
@@ -33,7 +33,7 @@
             :value="canal.val">
           </el-option>
         </el-select>
-        <el-select v-model="Eval" placeholder="版本">
+        <el-select v-model="evalVal" placeholder="版本">
           <el-option
             v-for="edition in editions"
             :key="edition.Eval"
@@ -105,7 +105,7 @@
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
                      class="radio-box"
                      :page-sizes="[20, 50, 100]" :page-size="20" layout="total, sizes, prev, pager, next, jumper"
-                     :total="100">
+                     :total="131">
       </el-pagination>
     </div>
 
@@ -145,12 +145,10 @@
             label: 'web'
           }
         ],
-        value: '1',
         canals: [{
           val: '1',
           label: '全部渠道'
         }],
-        val: '1',
         editions: [{
           Eval: '1',
           label: '全部版本'
@@ -159,7 +157,6 @@
             Eval: '2',
             label: '1.4'
           }],
-        Eval: "1",
         // 第一部分
         list: [
           {id: "1", title: "注册用户", message: '截止到现在登录过的独立用户', number: "8096798"},
@@ -167,7 +164,6 @@
           {id: "3", title: "登录用户", message: '截止到现在的注册用户占比', number: "8096798"},
           {id: "4", title: "登录次数", message: '截止到现在的登录次数', number: "8096798"}
         ],
-        radio2: 1,
         // 表格数据
         tableData: [{
           date: '2016-05-02',
@@ -186,6 +182,10 @@
           name: '王小虎',
           address: '上海市普陀区金沙江路 1516 弄'
         }],
+        radio2: 1,
+        platVal: '1',
+        canalVal: '1',
+        evalVal: "1",
         currentPage4: 4
       }
     }
@@ -259,7 +259,21 @@
       getTime(msg){
         console.log(msg[0].toLocaleDateString(),msg[1].toLocaleDateString())
       }
-
+    },
+    watch:{
+      // 异步请求待用
+      platVal: function (val) {
+        console.log(val)
+      },
+      canalVal: function (val) {
+        console.log(val)
+      },
+      evalVal: function (val) {
+        console.log(val)
+      },
+      radio2: function (val) {
+        console.log(val)
+      }
     }
   }
 

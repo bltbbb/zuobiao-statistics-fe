@@ -16,8 +16,8 @@
     </div>
     <div class="title-box">
       <el-radio-group v-model="chatType" class="chat">
-        <el-radio-button label="单聊"></el-radio-button>
-        <el-radio-button label="群聊"></el-radio-button>
+        <el-radio-button label="单聊" value="1"></el-radio-button>
+        <el-radio-button label="群聊" value="2"></el-radio-button>
       </el-radio-group>
       <Calendar @timeValue="getTime"></Calendar>
       <div class="title-select-box">
@@ -44,7 +44,7 @@
         <div class="part1">
           <el-row :gutter="20">
             <el-col :span="6" v-for="item in list" :key="item.id">
-              <div class="grid-content bg-purple">
+              <div class="grid-content bg-purple" @click="tabSwitch(item.id)">
                 <div class="top-title">{{item.title}}
                   <h2><span>{{item.name}}</span> {{item.number}}</h2>
                   <h2><span>{{item.names}}</span> {{item.numbers}}</h2>
@@ -83,7 +83,7 @@
     data() {
       return {
         explain: '这是菜单的说明文字',
-        chatType:"单聊",
+        chatType:"群聊",
         plats: [{
           value: '1',
           label: '全平台'
@@ -194,17 +194,32 @@
         console.log(`当前页: ${val}`);
       },
       //获取日历时间
-      getTime(msg){
-        console.log(msg)
+      getTime(date){
+        console.log(date[0].toLocaleDateString(),date[1].toLocaleDateString())
+      },
+      tabSwitch(id){
+          //异步请求待用
+          console.log(id)
+      },
+    },
+    watch:{
+      //异步请求待用
+      Eval : function (val,oldval) {
+        console.log(val)
+      },
+      value: function (val,oldval) {
+        console.log(val)
+      },
+      chatType: function (val,oldval) {
+        console.log(val)
       }
-
     }
   }
 
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="sass">
+<style scoped lang="scss">
   @import '../../assets/css/page/public.scss';
   @import '../../assets/css/page/statistics.scss';
 </style>
