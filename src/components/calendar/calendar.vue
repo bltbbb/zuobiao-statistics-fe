@@ -49,7 +49,12 @@
         }
       },
       change:function(val){
-        if(val[0] == null || val[1] == null) return;
+        if(!val){
+            return
+        }
+        if(val[0] == null || val[1] == null){
+            return
+        }
         this.$emit("timeValue", this.value6)
       },
       focusPiker() {
