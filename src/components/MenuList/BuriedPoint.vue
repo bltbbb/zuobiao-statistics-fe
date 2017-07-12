@@ -16,47 +16,73 @@
       </h1>
     </div>
     <div class="title-box">
-    <!--导航-->
-    <Calendar @timeValue="getTime"></Calendar>
-    <div class="title-select-box">
-      <el-select v-model="platVal" placeholder="平台">
-        <el-option
-          v-for="plat in plats"
-          :key="plat.value"
-          :label="plat.label"
-          :value="plat.value">
-        </el-option>
-      </el-select>
-      <el-select v-model="canalVal" placeholder="渠道">
-        <el-option
-          v-for="canal in canals"
-          :key="canal.val"
-          :label="canal.label"
-          :value="canal.val">
-        </el-option>
-      </el-select>
-      <el-select v-model="evalVal" placeholder="版本">
-        <el-option
-          v-for="edition in editions"
-          :key="edition.Eval"
-          :label="edition.label"
-          :value="edition.Eval">
-        </el-option>
-      </el-select>
-    </div>
+      <!--导航-->
+      <Calendar @timeValue="getTime"></Calendar>
+      <div class="title-select-box">
+        <el-select v-model="platVal" placeholder="平台">
+          <el-option
+            v-for="plat in plats"
+            :key="plat.value"
+            :label="plat.label"
+            :value="plat.value">
+          </el-option>
+        </el-select>
+        <el-select v-model="canalVal" placeholder="渠道">
+          <el-option
+            v-for="canal in canals"
+            :key="canal.val"
+            :label="canal.label"
+            :value="canal.val">
+          </el-option>
+        </el-select>
+        <el-select v-model="evalVal" placeholder="版本">
+          <el-option
+            v-for="edition in editions"
+            :key="edition.Eval"
+            :label="edition.label"
+            :value="edition.Eval">
+          </el-option>
+        </el-select>
+      </div>
     </div>
 
     <!--页面名称列表-->
-    <div class="table-wrapper">
-      <el-table v-on:row-click="handleRowHandle($event)" :data="tableData" borderstyle="width: 100%">
-        <el-table-column class="mf-1" prop="incidentName" label="事件名称" width="180" label-class-name="eventName">
-          <span slot="label">错误名称</span>
-        </el-table-column>
-        <el-table-column prop="incidentId" label="事件Id" width="180" ></el-table-column>
-        <el-table-column prop="incidentNumber" label="事件数量（日均）"></el-table-column>
-        <el-table-column prop="userNumer" label="触发用户数（日均）"></el-table-column>
-      </el-table>
+
+    <div>
+      <table class="table-title">
+        <thead>
+        <tr>
+          <th class="table-thead-th-1" :style="{width: '180px'}">事件名称</th>
+          <th :style="{width: '180px'}">事件Id</th>
+          <th :style="{width: '40%'}">事件数量（日均）
+            <el-tooltip class="item" effect="light" content="Right Center 提示文字" placement="right" popper-class="hint">
+              <i class="el-icon-information"></i>
+            </el-tooltip>
+          </th>
+
+          <th :style="{width: 'auto'}">触发用户数（日均）
+            <el-tooltip class="item" effect="light" content="Right Center 提示文字" placement="right" popper-class="hint">
+              <i class="el-icon-information"></i>
+            </el-tooltip>
+          </th>
+
+        </tr>
+
+        </thead>
+        <tbody>
+        <tr v-for="vaule in tableData">
+          <td class="table-thead-th-1" v-on:click="handleRowHandle($event)">{{ vaule.incidentName }}</td>
+          <td>{{ vaule.incidentId }}</td>
+          <td>{{ vaule.incidentNumber }}</td>
+          <td>{{ vaule.userNumer }}</td>
+
+        </tr>
+        </tbody>
+
+      </table>
     </div>
+
+
   </div>
 </template>
 
@@ -73,41 +99,41 @@
         //  页面列表
         tableData: [
           {
-          incidentName: '注册界面',
-          incidentId: '1',
-          incidentNumber: 6000,
-          userNumer: 6000
-        },
-        {
-          incidentName: '注册成功',
-          incidentId: '1',
-          incidentNumber: 6000,
-          userNumer: 6000
-        },
-        {
-          incidentName: '登录界面',
-          incidentId: '1',
-          incidentNumber: 6000,
-          userNumer: 6000
-        },
-        {
-          incidentName: '登录成功',
-          incidentId: '1',
-          incidentNumber: 6000,
-          userNumer: 6000
-        },
-        {
-          incidentName: '找回密码界面',
-          incidentId: '1',
-          incidentNumber: 6000,
-          userNumer: 6000
-        },
-        {
-          incidentName: '重置密码成功',
-          incidentId: '1',
-          incidentNumber: 6000,
-          userNumer: 6000
-        }],
+            incidentName: '注册界面',
+            incidentId: '1',
+            incidentNumber: 6000,
+            userNumer: 6000
+          },
+          {
+            incidentName: '注册成功',
+            incidentId: '1',
+            incidentNumber: 6000,
+            userNumer: 6000
+          },
+          {
+            incidentName: '登录界面',
+            incidentId: '1',
+            incidentNumber: 6000,
+            userNumer: 6000
+          },
+          {
+            incidentName: '登录成功',
+            incidentId: '1',
+            incidentNumber: 6000,
+            userNumer: 6000
+          },
+          {
+            incidentName: '找回密码界面',
+            incidentId: '1',
+            incidentNumber: 6000,
+            userNumer: 6000
+          },
+          {
+            incidentName: '重置密码成功',
+            incidentId: '1',
+            incidentNumber: 6000,
+            userNumer: 6000
+          }],
         activeIndex: '1',
         activeIndex2: '1',
 
@@ -146,20 +172,19 @@
           Eval: '1',
           label: '全部版本'
         },
-        {
-          Eval: '2',
-          label: '1.4'
-        }],
+          {
+            Eval: '2',
+            label: '1.4'
+          }],
         Eval: "1",
       }
     },
     methods: {
       handleSelect (key, keyPath) {
-        console.log(key, keyPath);
+//        console.log(key, keyPath);
       },
       handleRowHandle (event) {
-
-        let testName = event.incidentName;
+        let testName = event.toElement.outerText;
         if (testName == '注册界面') {
           this.$router.push({name: 'AnalysisRegister'});
         }
@@ -170,10 +195,10 @@
         console.log(msg)
       }
     },
-    components:{
+    components: {
       Calendar
     },
-    watch:{
+    watch: {
       // 异步请求待用
       platVal: function (val) {
         console.log(val)
@@ -191,35 +216,81 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
   @import '../../assets/css/page/public.scss';
-  .incident-title{
+
+  .incident-title {
     display: block;
     font-size: 20px;
     margin-bottom: 20px;
   }
 
-  .block{
+  .block {
     display: inline-block;
 
   }
-  .el-radio-button{
+
+  .el-radio-button {
     top: -5px;
   }
+
   .content-box {
     margin-top: 40px;
     background: #f0f0f0;
     padding: 0;
   }
-/*  .title-box {
-    background: #f0f0f0;
-    padding: 20px;
-    margin-bottom: 20px;
 
-  }*/
   .title-select-box {
     float: right;
   }
+
   .table-wrapper {
     padding: 20px;
     background: #fff;
+  }
+
+  .table-title {
+    width: 100%;
+    background-color: #ffffff;
+  }
+
+  .table-title thead tr {
+    padding: 0;
+    text-align: left;
+    height: 40px;
+    line-height: 40px;
+    background-color: #dfe6ec;
+    border: solid 1px #DFE6EC;
+  }
+
+  .table-thead-th-1 {
+    padding-left: 20px;
+  }
+
+  .table-title tbody {
+    /*width:100%;*/
+    background: #ffffff;
+  }
+
+  tr {
+    border-bottom: solid 1px #dfe6ec;
+    height: 40px;
+  }
+
+  .table-title tbody tr:hover {
+    background-color: #EEF1F6;
+  }
+
+  .el-icon-information {
+    vertical-align: middle;
+    color: #9d9d9d;
+  }
+
+</style>
+<style lang="scss">
+
+  div.hint {
+    border: none !important;
+      div {
+        border: #ffffff !important;
+      }
   }
 </style>
