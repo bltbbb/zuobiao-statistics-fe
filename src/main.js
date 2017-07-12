@@ -11,10 +11,13 @@ import VueCookie from 'vue-cookie'
 import lockr from 'lockr'
 import axios from 'axios'
 
+import './assets/js/function/DateFormat'
+
 Vue.use(Vuex);
 Vue.use(ElementUI);
 Vue.use(VueCookie)
 Vue.config.productionTip = false;
+Vue.prototype.$http = axios;
 
 /* eslint-disable no-new */
 new Vue({
