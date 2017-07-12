@@ -47,9 +47,9 @@
       <div class="part1">
       </div>
       <div id="activeChart" class="chart" :style="{width: '100%', height: '400px'}"></div>
-      <el-radio-group v-model="radio2" class="radio-box">
-        <el-radio :label="1">登录用户</el-radio>
-        <el-radio :label="2">日活/月活</el-radio>
+      <el-radio-group v-model="radioVal" class="radio-box">
+        <el-radio label="dayOrMonthActive">登录用户</el-radio>
+        <el-radio label="loginUser">日活/月活</el-radio>
       </el-radio-group>
  <!--     <Calendar @timeValue="getTableTime" class="calendar-box"></Calendar>-->
       <!--表格-->
@@ -62,31 +62,31 @@
           width="180">
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="loginUser"
           label="登录用户"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="dayOrMonthActive"
           label="日活/月活">
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="weekActive"
           label="周活跃用户">
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="monthActive"
           label="月活跃用户">
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="monthsilent"
           label="月沉默用户">
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
                      class="radio-box"
-                     :page-sizes="[20, 50, 100]" :page-size="20" layout="total, sizes, prev, pager, next, jumper"
-                     :total="100">
+                     :page-sizes="[20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper"
+                     :total="totalCount">
       </el-pagination>
     </div>
   </div>
@@ -144,28 +144,19 @@
           {id: "2", title: "日活/月活", message: 'Bar', number: "8096798"}
         ],
         // 表格数据
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
-        radio2: 1,
+        tableData: [],
+        myChart: null,
+        radioVal: 'dayOrMonthActive',
         platVal: '1',
         canalVal: '1',
         evalVal: "1",
-        currentPage4: 4
+        start: '',
+        end: '',
+        token: '',
+        chartData: {},
+        size: 20,
+        currentPage: 1,
+        totalCount: 100
       }
     }
     ,
@@ -173,6 +164,8 @@
     mounted()
     {
       this.drawLine();
+      this.initParams();
+      this.init();
     }
     ,
     components: {
@@ -187,9 +180,9 @@
       drawLine()
       {
         // 基于准备好的dom，初始化echarts实例
-        let myChart = echarts.init(document.getElementById('activeChart'));
+        this.myChart = echarts.init(document.getElementById('activeChart'));
         // 绘制图表
-        myChart.setOption({
+        this.myChart.setOption({
           title: {text: '全平台注册用户'},
           tooltip: {
             trigger: 'axis'
@@ -226,32 +219,117 @@
           }]
 
         });
-        window.onresize = myChart.resize;
+        window.onresize = this.myChart.resize;
       },
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+        this.siza = val;
+        this.getActiveUserPages();
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        this.currentPage = val;
+        this.getActiveUserPages();
       },
       //获取日历时间
       getTime(msg){
-        console.log(msg)
+        this.start = msg[0].Format("yyyy-M-d");
+        this.end = msg[1].Format("yyyy-M-d");
+        this.getActiveUser();
+        this.getActiveUserPages();
+      },
+      initParams: function () {
+        let date = new Date();
+        let start = new Date();
+        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        this.start = start.Format("yyyy-MM-dd");
+        this.end = date.Format("yyyy-MM-dd");
+        this.token = this.$cookie.get('adoptToken');
+        this.size = 20;
+      },
+      init:function () {
+        this.getActiveUser();
+        this.getActiveUserPages();
+      },
+      getActiveUser: function () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('pid', this.platVal);
+        Params.append('editionId', this.evalVal);
+
+        this.$http.post('http://192.168.1.201:9999/activeUser',Params).then((res)=>{
+          if(res.data.status == 0){
+            let data = res.data.result.result;
+            this.chartData = data;
+            this.myChart.setOption({
+              xAxis: {
+                data: this.chartData[this.radioVal].x
+              },
+              series: [{
+                // 根据名字对应到相应的系列
+                data: this.chartData[this.radioVal].y
+              }]
+            })
+          }
+          else{
+            //view(res.data.msg)
+            alert(res.data.msg)
+          }
+        },(err)=>{
+          //view('网络错误')
+          alert('网络错误')
+        })
+      },
+      getActiveUserPages:function () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('pid', this.platVal);
+        Params.append('editionId', this.evalVal);
+        Params.append('pageSize', this.size);
+        Params.append('currentPage', this.currentPage);
+
+        this.$http.post('http://192.168.1.201:9999/activeUserPages',Params).then((res)=>{
+          if(res.data.status == 0){
+            let data = res.data.result.result;
+            this.totalCount = res.data.result.totalCount;
+            this.tableData = data
+          }
+          else{
+            //view(res.data.msg)
+            alert(res.data.msg)
+          }
+        },(err)=>{
+          //view('网络错误')
+          alert('网络错误')
+        })
       }
     },
     watch:{
       // 异步请求待用
       platVal: function (val) {
-        console.log(val)
+        this.getActiveUser();
+        this.getActiveUserPages();
       },
       canalVal: function (val) {
-        console.log(val)
+        this.getActiveUser();
+        this.getActiveUserPages();
       },
       evalVal: function (val) {
-        console.log(val)
+        this.getActiveUser();
+        this.getActiveUserPages();
       },
-      radio2: function (val) {
-        console.log(val)
+      radioVal: function (val) {
+        this.myChart.setOption({
+          xAxis: {
+            data: this.chartData[val].x
+          },
+          series: [{
+            // 根据名字对应到相应的系列
+            data: this.chartData[val].y
+          }]
+        })
       }
     }
   }
