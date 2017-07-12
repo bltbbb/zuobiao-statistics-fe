@@ -16,7 +16,7 @@
             <input type="text" id="password" placeholder="请输入密码" v-model="password" :class="{danger:pwEmpty}" @focus="pwEmpty = false">
           </div>
         </div>
-        <div :class="loginInfo?'error':'success'" v-show="showError">{{errorText}}</div>
+        <div :class="loginInfo?'success':'error'" v-show="showMsg">{{errorText}}</div>
         <button @click="login">登录</button>
       </div>
     </transition>
@@ -49,7 +49,7 @@
             userEmpty: false,
             pwEmpty: false,
             showTable: false,
-            showError: false,
+            showMsg: false,
             loginInfo: false
         }
     },
@@ -59,14 +59,14 @@
           if (this.userName == '') {
             this.userEmpty = true;
             this.pwEmpty = true;
-            this.showError = true;
+            this.showMsg = true;
             this.errorText = '请输入用户名和密码'
             return;
           }
           //如果没有密码
           if (this.password == '') {
             this.pwEmpty = true;
-            this.showError = true;
+            this.showMsg = true;
             this.errorText = '请输入密码'
             return;
           }
@@ -81,10 +81,9 @@
           //测试接口 登录成功后将获取的token保存在cookie中
           axios.post('http://192.168.1.201:9999/authc/login', loginParams).then((res)=>{
               if(res.data.status === 0){
-                this.showError = true;
+                this.showMsg = true;
                 this.loginInfo = true;
                 this.errorText = '登录成功';
-
                 //设置cookie
                 this.$cookie.set('adoptToken', res.data.result.adoptToken, 1);
 
@@ -100,12 +99,12 @@
                 })
 
               }else if(res.status === 1){
-                this.showError = true;
+                this.showMsg = true;
                 this.loginInfo = false;
                 this.errorText = '用户名不存在'
               }else
               {
-                this.showError = true;
+                this.showMsg = true;
                 this.loginInfo = false;
                 this.errorText = '用户名或密码错误'
             }
@@ -192,7 +191,7 @@
       .success
         background: rgb(87, 194, 47)
         border-radius: 3px
-        color: rgba(0,0,0,0.5)
+        color: #fff
         padding: 5px 8px
         margin: 8px 0 15px 0
         height: 20px
