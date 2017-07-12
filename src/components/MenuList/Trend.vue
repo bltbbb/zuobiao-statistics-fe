@@ -46,34 +46,31 @@
     <div class="trend-box">
       <div class="part1">
         <el-row :gutter="20">
-          <el-col :span="6" v-for="item in list" :key="item.id">
+          <el-col :span="6" v-for="item in list" :key="item.type">
             <div class="grid-content bg-purple">
               <div class="top-title">{{item.title}}
                 <el-popover
                   placement="right"
                   width="200"
                   trigger="hover"
-                  popper-class="popover-class">
+                  popper-class="popover-class"
+                  v-if="item.type == 2">
                   <slot>{{item.message}}</slot>
                   <i class="el-icon-information" slot="reference"></i>
                 </el-popover>
               </div>
-              <h1>{{item.number}}</h1>
+              <h1>{{item.num}}</h1>
             </div>
           </el-col>
 
         </el-row>
       </div>
       <div id="TendChart" class="chart" :style="{width: '100%', height: '400px'}"></div>
-      <el-radio-group v-model="radio2" class="radio-box">
-        <el-radio :label="1">新用户</el-radio>
-        <el-radio :label="2">新用户占比</el-radio>
+      <el-radio-group v-model="radioVal" class="radio-box">
+        <el-radio :label="1">注册用户</el-radio>
+        <el-radio :label="2">注册用户占比</el-radio>
         <el-radio :label="3">老用户</el-radio>
         <el-radio :label="4">老用户占比</el-radio>
-        <el-radio :label="5">启动用户</el-radio>
-        <el-radio :label="6">启动次数</el-radio>
-        <el-radio :label="7">每次使用时长</el-radio>
-        <el-radio :label="8">每人使用时长</el-radio>
       </el-radio-group>
       <!--表格-->
       <el-table
@@ -85,30 +82,29 @@
           width="180">
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="registerUser"
           label="注册用户"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="registerUserRatio"
           label="注册用户占比">
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="loginUser"
           label="登录用户">
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="loginSecond"
           label="登录次数">
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
                      class="radio-box"
-                     :page-sizes="[20, 50, 100]" :page-size="20" layout="total, sizes, prev, pager, next, jumper"
-                     :total="131">
+                     :page-sizes="[20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper"
+                     :total="totalCount">
       </el-pagination>
     </div>
-
   </div>
 </template>
 <script>
@@ -158,35 +154,21 @@
             label: '1.4'
           }],
         // 第一部分
-        list: [
-          {id: "1", title: "注册用户", message: '截止到现在登录过的独立用户', number: "8096798"},
-          {id: "2", title: "注册用户占比", message: '截止到现在的注册用户占比', number: "8096798"},
-          {id: "3", title: "登录用户", message: '截止到现在的注册用户占比', number: "8096798"},
-          {id: "4", title: "登录次数", message: '截止到现在的登录次数', number: "8096798"}
-        ],
+        list: [],
+        myChart: null,
         // 表格数据
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
-        radio2: 1,
+        tableData: [],
+        radioVal: 1,
         platVal: '1',
         canalVal: '1',
         evalVal: "1",
-        currentPage4: 4
+        start: '',
+        end: '',
+        token: '',
+        chartData: {},
+        size: 20,
+        currentPage: 1,
+        totalCount: 100
       }
     }
     ,
@@ -194,6 +176,8 @@
     mounted()
     {
       this.drawLine();
+      this.initParams();
+      this.init();
     }
     ,
     components: {
@@ -208,15 +192,12 @@
       drawLine()
       {
         // 基于准备好的dom，初始化echarts实例
-        let myChart = echarts.init(document.getElementById('TendChart'));
+        this.myChart = echarts.init(document.getElementById('TendChart'));
         // 绘制图表
-        myChart.setOption({
+        this.myChart.setOption({
           title: {text: '全平台注册用户'},
           tooltip: {
             trigger: 'axis'
-          },
-          legend: {
-            data: ['今天', '昨天']
           },
           xAxis: {
             data: ["0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59"]
@@ -247,32 +228,125 @@
           }]
 
         });
-        window.onresize = myChart.resize;
+        window.onresize = this.myChart.resize;
       },
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+          console.log(val)
+        this.size = val;
+        this.getAnlysisDetails();
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        this.currentPage = val;
+        this.getAnlysisDetails();
       },
       //获取日历时间
       getTime(msg){
-        console.log(msg[0].toLocaleDateString(),msg[1].toLocaleDateString())
+        this.start = msg[0].Format("yyyy-M-d");
+        this.end = msg[1].Format("yyyy-M-d");
+        this.getAnlysis();
+        this.getAnlysisDetails();
+      },
+      initParams: function () {
+        let date = new Date();
+        let start = new Date();
+        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        this.start = start.Format("yyyy-MM-dd");
+        this.end = date.Format("yyyy-MM-dd");
+        this.token = this.$cookie.get('adoptToken');
+        this.size = 20;
+      },
+      init:function () {
+        this.getAnlysis();
+        this.getAnlysisDetails();
+      },
+      getAnlysis:function () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('pid', this.platVal);
+        Params.append('editionId', this.evalVal);
+
+        this.$http.post('http://192.168.1.201:9999/trendAnalysis',Params).then((res)=>{
+          if(res.data.status == 0){
+            let data = res.data.result.result;
+            this.list = data.dataLists;
+            this.chartData = data.NumList;
+            this.myChart.setOption({
+              xAxis: {
+                data: this.chartData[0].num.x
+              },
+              series: [{
+                // 根据名字对应到相应的系列
+                name: this.chartData[0].title,
+                data: this.chartData[0].num.y
+              }]
+            })
+          }
+          else{
+            //view(res.data.msg)
+            alert(res.data.msg)
+          }
+        },(err)=>{
+          //view('网络错误')
+          alert('网络错误')
+        })
+      },
+      getAnlysisDetails:function () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('pid', this.platVal);
+        Params.append('editionId', this.evalVal);
+        Params.append('pageSize', this.size);
+        Params.append('currentPage', this.currentPage);
+
+        this.$http.post('http://192.168.1.201:9999/trendAnalysisDetails',Params).then((res)=>{
+          if(res.data.status == 0){
+            let data = res.data.result.result;
+            this.totalCount = res.data.result.totalCount;
+            this.tableData = data
+          }
+          else{
+            //view(res.data.msg)
+            alert(res.data.msg)
+          }
+        },(err)=>{
+          //view('网络错误')
+          alert('网络错误')
+        })
       }
     },
     watch:{
       // 异步请求待用
       platVal: function (val) {
-        console.log(val)
+        this.pid = val;
+        this.getAnlysis();
+        this.getAnlysisDetails();
       },
       canalVal: function (val) {
-        console.log(val)
+//        this.editionId = val;  //渠道备用
+        this.getAnlysis();
+        this.getAnlysisDetails();
       },
       evalVal: function (val) {
-        console.log(val)
+        this.editionId = val;
+        this.getAnlysis();
+        this.getAnlysisDetails();
       },
-      radio2: function (val) {
-        console.log(val)
+      radioVal: function (val) {
+        --val;
+        this.myChart.setOption({
+          xAxis: {
+            data: this.chartData[val].num.x
+          },
+          series: [{
+            // 根据名字对应到相应的系列
+            name: this.chartData[val].title,
+            data: this.chartData[val].num.y
+          }]
+        })
       }
     }
   }

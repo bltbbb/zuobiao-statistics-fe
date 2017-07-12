@@ -166,10 +166,10 @@
 
         this.start = start.Format("yyyy-M-d");
         this.end = date.Format("yyyy-M-d");
+        this.token = this.$cookie.get('adoptToken');
       },
       init:function () {
         //参数
-        this.token = this.$cookie.get('adoptToken');
 
         this.$http.get('http://192.168.1.201:9999/getTotalSurvey',{
           params:{
@@ -209,14 +209,14 @@
         this.getData()
       },
       getData:function () {
-        let tokenParams = new URLSearchParams();
-        tokenParams.append('adoptToken', this.token);
-        tokenParams.append('startDate', this.start);
-        tokenParams.append('stopDate', this.end);
-        tokenParams.append('type', this.type);
-        tokenParams.append('PlatformId', this.activeName);
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('type', this.type);
+        Params.append('PlatformId', this.activeName);
 
-        this.$http.post('http://192.168.1.201:9999/getDateNumber',tokenParams).then((res)=>{
+        this.$http.post('http://192.168.1.201:9999/getDateNumber',Params).then((res)=>{
           if(res.data.status == 0){
             let myChart = echarts.init(document.getElementById('myChart'));
             myChart.setOption({
