@@ -68,7 +68,7 @@
     <div id="myChart" class="chart" :style="{width: '100%', height: '400px'}"></div>
   </div>
 </template>
-<script>
+<script type="text/ecmascript-6">
   // 引入基本模板
   let echarts = require('echarts/lib/echarts');
   // 引入柱状图组件
