@@ -65,24 +65,19 @@
               <i class="el-icon-information"></i>
             </el-tooltip>
           </th>
-
         </tr>
 
         </thead>
         <tbody>
-        <tr v-for="vaule in tableData">
-          <td class="table-thead-th-1" v-on:click="handleRowHandle($event)">{{ vaule.incidentName }}</td>
-          <td>{{ vaule.incidentId }}</td>
-          <td>{{ vaule.incidentNumber }}</td>
-          <td>{{ vaule.userNumer }}</td>
-
-        </tr>
+          <tr v-for="vaule in tableData">
+            <td class="table-thead-th-1" v-on:click="handleRowHandle($event)">{{ vaule.incidentName }}</td>
+            <td>{{ vaule.incidentId }}</td>
+            <td>{{ vaule.incidentNumber }}</td>
+            <td>{{ vaule.userNumer }}</td>
+          </tr>
         </tbody>
-
       </table>
     </div>
-
-
   </div>
 </template>
 
@@ -137,12 +132,6 @@
         activeIndex: '1',
         activeIndex2: '1',
 
-        //  时间选择
-        pickerOptions0: {
-          disabledDate(time) {
-            return time.getTime() > Date.now();
-          }
-        },
         radio3: '今天',
         plats: [{
           value: '1',
@@ -192,7 +181,7 @@
       },
       //获取日历时间
       getTime(msg){
-        console.log(msg)
+        console.log('msg', msg)
       }
     },
     components: {

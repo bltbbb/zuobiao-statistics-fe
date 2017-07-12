@@ -8,7 +8,8 @@
       <el-radio-button name="5" label="最近60天"></el-radio-button>
       <el-radio-button name="6" label="自定义" class="time-box" ref="custom">
         <el-date-picker v-model="value6" type="daterange" placeholder=""
-                        class="data-piker" @change="change" @focus="focusPiker">
+                        class="data-piker" @change="change" @focus="focusPiker"
+                        :picker-options="pickerOptions0">
         </el-date-picker>
       </el-radio-button>
     </el-radio-group>
@@ -20,7 +21,12 @@
     data () {
       return {
         radio3: '今天',
-        value6: [new Date(), new Date()]
+        value6: [new Date(), new Date()],
+        pickerOptions0: {
+          disabledDate(time) {
+            return time.getTime() > Date.now();
+          }
+        }
       }
     },
     // 平台图表格-->

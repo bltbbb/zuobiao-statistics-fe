@@ -60,7 +60,6 @@
       <el-radio-group v-model="radio2" class="radio-box">
         <el-radio :label="1">事件数量</el-radio>
         <el-radio :label="2">触发用户数</el-radio>
-
       </el-radio-group>
       <!--表格-->
       <el-table
@@ -80,9 +79,8 @@
           prop="address"
           label="触发用户数">
         </el-table-column>
-
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage1"
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
                      class="radio-box"
                      :page-sizes="[20, 50, 100]" :page-size="20" layout="total, sizes, prev, pager, next, jumper"
                      :total="100">
@@ -193,16 +191,14 @@
     mounted()
     {
       this.drawLine();
-    }
-    ,
+    },
     components: {
       Calendar
     },
     methods: {
       selected: function (gameName) {
         this.activeName = gameName
-      }
-      ,
+      },
       // 图表格绘制
       drawLine()
       {
