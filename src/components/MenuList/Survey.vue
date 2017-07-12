@@ -37,16 +37,21 @@
     <div class="all">
       <!-- 平台切换-->
       <el-tabs type="border-card" v-model="activeName">
-        <el-tab-pane v-for="gameName in gameNames" :key="gameName.id" :name="gameName.id">
-          <span slot="label"><i class="el-icon-date"></i> {{gameName.plat}}</span>
-          <div class="box">
-            <div class="box-list" v-for="dataList in dataLists" @click="choice(dataList.$index, dataList.id)">
-              <div class="" name="first">{{dataList.title}}</div>
-              <div class=""  name="second">{{dataList.today}}</div>
-              <div class=""  name="third">{{dataList.yday}}</div>
-            </div>
-          </div>
-        </el-tab-pane>
+          <el-tab-pane v-for="gameName in gameNames" :key="gameName.pid" :name="gameName.pid">
+            <span slot="label"><i class="el-icon-date"></i> {{gameName.plat}}</span>
+              <div class="box" :key="gameName.pid">
+                <div class="headText">
+                  <p class="slot"></p>
+                  <p>今日</p>
+                  <p>昨日</p>
+                </div>
+                <div class="box-list" v-for="data in gameName.dataNum" @click="choice(data.id)" :class="{active:type == data.id}">
+                  <div class="" name="first">{{data.title}}</div>
+                  <div class=""  name="second">{{data.today}}</div>
+                  <div class=""  name="third">{{data.yday}}</div>
+                </div>
+              </div>
+          </el-tab-pane>
       </el-tabs>
     </div>
     <!-- 平台对应数据-->
@@ -80,20 +85,13 @@
         list: {},
         // 平台切换
         gameNames: [],
-        // 平台对应数据-->
-        dataLists: [
-          {title: "", today: "今日", yday: "昨日"},
-          {id:"1",title: "注册用户", today: "333", yday: "333"},
-          {id:"2",title: "登录用户", today: "1111", yday: "33"},
-          {id:"3",title: "登录次数", today: "3", yday: "3"},
-          {id:"4",title: "人均登录次数", today: "3", yday: "3"}
-        ],
         options: {},
         dateVal: '1',
         activeName:"1",
         start: '',
         end: '',
-        token: ''
+        token: '',
+        type: 1
       }
     }
     ,
@@ -158,16 +156,16 @@
         });
         window.onresize = myChart.resize;
       },
-      choice:function(row,value){
-         console.log(value)
+      choice:function(value){
+         this.type = value;
       },
       initParams: function () {
         let date = new Date();
         let start = new Date();
         start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
 
-        this.start = start;
-        this.end = date;
+        this.start = start.Format("yyyy-M-d");
+        this.end = date.Format("yyyy-M-d");
       },
       init:function () {
         //参数
@@ -208,14 +206,15 @@
           alert('网络错误')
         })
 
-        this.getDate( this.start.Format("yyyy-M-d"),this.end.Format("yyyy-M-d") )
+        this.getData()
       },
-      getDate:function (start,end) {
+      getData:function () {
         let tokenParams = new URLSearchParams();
         tokenParams.append('adoptToken', this.token);
-        tokenParams.append('startDate', start);
-        tokenParams.append('stopDate', end);
-        tokenParams.append('type', 1);  //careful！
+        tokenParams.append('startDate', this.start);
+        tokenParams.append('stopDate', this.end);
+        tokenParams.append('type', this.type);
+        tokenParams.append('PlatformId', this.activeName);
 
         this.$http.post('http://192.168.1.201:9999/getDateNumber',tokenParams).then((res)=>{
           if(res.data.status == 0){
@@ -267,12 +266,20 @@
     },
     watch:{
       dateSelect:function () {
+        //格式化时间
+        this.start = this.dateSelect[0].Format("yyyy-M-d");
+        this.end = this.dateSelect[1].Format("yyyy-M-d");
+
         //异步请求数据
-        this.start = this.dateSelect[0].toLocaleDateString();
-        this.end = this.dateSelect[1].toLocaleDateString();
+        this.getData();
       },
-      activeName: function (val) {
-        console.log(val)
+      activeName: function () {
+        //异步请求数据
+        this.getData();
+      },
+      type: function () {
+        //异步请求数据
+        this.getData();
       }
     }
   }
@@ -292,6 +299,32 @@
     .all {
       box-sizing: border-box;
       padding: 20px;
+      .box {
+        box-sizing: border-box;
+        padding: 10px 10px 0 30px;
+        .headText {
+          float: left;
+          width: 10%;
+          p {
+            line-height:30px;
+            &.slot {
+              width:100%;
+              height:30px;
+            }
+          }
+        }
+        .box-list {
+          box-sizing: border-box;
+          cursor: pointer;
+          padding-bottom:10px;
+          text-align: center;
+          transition: color 0.3s;
+          &.active {
+            color: #4676f8;
+            border-bottom: 2px solid #4676f8;
+          }
+        }
+      }
     }
     .select-box {
       box-sizing: border-box;
@@ -303,4 +336,17 @@
       margin-top: 0;
     }
   }
+
+  /*动画*/
+  .fade-in-enter-active {
+    transition: all .8s ease;
+  }
+  .fade-in-leave-active {
+    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  }
+  .fade-in-enter, .slide-fade-leave-active {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+
 </style>
