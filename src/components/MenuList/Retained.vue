@@ -50,17 +50,25 @@
                 <td class="retain grey-bg">第五天</td>
                 <td class="retain grey-bg">第六天</td>
                 <td class="retain grey-bg">第七天</td>
-                <td class="retain grey-bg">第八天</td>
+                <td class="retain grey-bg">第十五天</td>
+                <td class="retain grey-bg">第三十天</td>
               </tr>
               <tr class="line" v-for="item in tableDataList">
                 <td class="grey-bg">{{item.date}}</td>
-                <td class="grey-bg">{{item.regUser}}</td>
-                <td v-for="list in item.Retention" :class="'td-retain-'+classMap(list)" class="boderNone">{{list}}%</td>
+                <td class="grey-bg">{{item.registeredUser}}</td>
+                <td v-for="list in item.day" :class="'td-retain-'+classMap(list)" class="boderNone">{{list}}%</td>
               </tr>
             </table>
           </div>
         </el-tab-pane>
       </el-tabs>
+    </div>
+    <div class="radio-box">
+      <el-radio-group v-model="radioVal">
+        <el-radio label="1">日留存</el-radio>
+        <el-radio label="2">周留存</el-radio>
+        <el-radio label="3">月留存</el-radio>
+      </el-radio-group>
     </div>
   </div>
 </template>
@@ -109,11 +117,10 @@
             {id: "1", plat: '活跃用户留存'}
           ],
         tableDataList: [
-          {date:"2017/05/19",regUser:"999",Retention:["30","20","17","14","9","6","1"]},
-          {date:"2017/05/19",regUser:"1009",Retention:["40","23","27","19","13","2","8.6"]},
-          {date:"2017/05/19",regUser:"658",Retention:["32.1","20.6","19.8","14.5","10.9","6.7","3.2"]}
+//          {date:"2017/05/19",regUser:"999",Retention:["30","20","17","14","9","6","0"]},
+//          {date:"2017/05/19",regUser:"1009",Retention:["40","23","27","19","13","0","0"]},
+//          {date:"2017/05/19",regUser:"658",Retention:["32.1","20.6","19.8","14.5","0","0","0"]}
         ],
-
         plats: [{
           value: '1',
           label: '全部平台'
@@ -134,19 +141,38 @@
             label: 'web'
           }
         ],
+        retains: [{
+          value: '1',
+          label: '日留存'
+        }, {
+          value: '2',
+          label: '周留存'
+        },
+          {
+            value: '3',
+            label: '月留存'
+          }
+        ],
         canals: [{
           val: '1',
           label: '全部渠道'
         }],
         platVal: '1',
         evalVal: '1',
+        radioVal: '1',
+        start: '',
+        end: '',
+        token: '',
+        tableData: []
       }
     },
     methods:{
       classMap(data){
           data = parseInt(data)
-          if(data<=10 && data>=0){
-              return '0-10'
+          if(data == 0){
+              return '0'
+          }else if(data<=10 && data>0){
+              return '1-10'
           }else if(data<=20 && data> 10){
               return '10-20'
           }else if(data<=30 && data> 20){
@@ -169,7 +195,43 @@
       },
       //获取日历时间
       getTime(msg){
-        console.log(msg)
+        this.start = msg[0].Format("yyyy-M-d");
+        this.end = msg[1].Format("yyyy-M-d");
+        this.getFirstRetained();
+      },
+      initParams: function () {
+        let date = new Date();
+        let start = new Date();
+        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        this.start = start.Format("yyyy-MM-dd");
+        this.end = date.Format("yyyy-MM-dd");
+        this.token = this.$cookie.get('adoptToken');
+      },
+      init:function () {
+        this.getFirstRetained();
+      },
+      getFirstRetained: function () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('PlatformId', this.platVal);
+        Params.append('channelId', this.evalVal);
+        Params.append('retainedType', this.radioVal);
+
+        this.$http.post('http://192.168.1.201:9999/firstRetained',Params).then((res)=>{
+          if(res.data.status == 0){
+            let data = res.data.result.result;
+            this.tableDataList = data
+          }
+          else{
+            //view(res.data.msg)
+            alert(res.data.msg)
+          }
+        },(err)=>{
+          //view('网络错误')
+          alert('网络错误')
+        })
       }
     },
     components:{
@@ -177,11 +239,15 @@
     },
     watch: {
       platVal: function (val) {
-        console.log(val)
+        this.getFirstRetained();
       },
       evalVal: function (val) {
-        console.log(val)
+        this.getFirstRetained();
       }
+    },
+    mounted(){
+      this.initParams();
+      this.init();
     }
   }
 </script>
@@ -199,6 +265,8 @@
       padding: 20px
       .title-select-box
         float: right
+    .radio-box
+      margin-top: 0
     .table-wrapper
       margin-top: 20px
       table
@@ -219,7 +287,9 @@
               border-right: 1px solid #e9e9e9
             &.boderNone
               border: 0
-            &.td-retain-0-10
+            &.td-retain-0
+              background: rgba(54,146,249,0)
+            &.td-retain-1-10
               background: rgba(54,146,249,0.1)
             &.td-retain-10-20
               background: rgba(54,146,249,0.2)

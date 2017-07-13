@@ -210,10 +210,11 @@
             label:{
               normal:{
                 show: true,
-                position: 'insideBottomRight',
+                position: ['100%', 0],
+                offset: [20,0],
                 formatter: '{c}%',
                 textStyle: {
-                  color: '#e1e1e1'
+                  color: '#131f0b'
                 }
               }
 
@@ -276,16 +277,25 @@
             label:{
               normal:{
                 show: true,
-                position: 'insideTopRight',
+                position: 'insideTopLeft',
+                offset: [0,-25],
                 formatter: '{c}%',
                 textStyle: {
-                  color: '#eeeeee'
+                  color: '#131f0b'
                 }
               }
             },
             data: [45, 60, 13, 25, 35, 15, 30, 35, 15, 30]
           }]
-        }
+        },
+        sexChart: null,
+        ageChart: null,
+        indChart: null,
+        platVal: '1',
+        evalVal: '1',
+        start: '',
+        end: '',
+        token: ''
       }
     },
     components:{
@@ -293,24 +303,96 @@
     },
     methods:{
       //获取日历时间
+      //获取日历时间
       getTime(msg){
-        console.log(msg)
+        this.start = msg[0].Format("yyyy-M-d");
+        this.end = msg[1].Format("yyyy-M-d");
+        this.getUserAttr();
+      },
+      initParams: function () {
+        let date = new Date();
+        let start = new Date();
+        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        this.start = start.Format("yyyy-MM-dd");
+        this.end = date.Format("yyyy-MM-dd");
+        this.token = this.$cookie.get('adoptToken');
+      },
+      init:function () {
+        this.getUserAttr();
+      },
+      getUserAttr: function () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('PlatformId', this.platVal);
+
+        this.$http.post('http://192.168.1.201:9999/userAttr',Params).then((res)=>{
+          if(res.data.status == 0){
+            let sexData = res.data.result.result.gender;
+            let ageData = res.data.result.result.age;
+            let indData = res.data.result.result.industry;
+            console.log(sexData)
+            this.sexChart.setOption({
+              series: [{
+                // 根据名字对应到相应的系列
+                data:[
+                  {value:sexData.y[0], name:sexData.x[0]},
+                  {value:sexData.y[1], name:sexData.x[1]}
+                ]
+              }]
+            })
+            this.ageChart.setOption({
+              yAxis: {
+                data: ageData.x
+              },
+              series: [{
+                data: [100, 100, 100, 100, 100, 100, 100]
+              },{
+                // 根据名字对应到相应的系列
+                data: ageData.y
+              }]
+            })
+            this.indChart.setOption({
+              yAxis: {
+                data: indData.x
+              },
+              series: [{
+                data: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+              },{
+                // 根据名字对应到相应的系列
+                data: indData.y
+              }]
+            })
+          }
+          else{
+            //view(res.data.msg)
+            alert(res.data.msg)
+          }
+        },(err)=>{
+          //view('网络错误')
+          alert('网络错误')
+        })
       },
       drawLine(){
-        let sexChart = echarts.init(document.getElementById('sexRatio'));
-        sexChart.setOption(this.sexOptions)
+        this.sexChart = echarts.init(document.getElementById('sexRatio'));
+        this.sexChart.setOption(this.sexOptions)
 
-        let ageChart = echarts.init(document.getElementById('ageChart'));
-        ageChart.setOption(this.ageOptions)
+        this.ageChart = echarts.init(document.getElementById('ageChart'));
+        this.ageChart.setOption(this.ageOptions)
 
-        let indChart = echarts.init(document.getElementById('industry'));
-        indChart.setOption(this.indOptions)
+        this.indChart = echarts.init(document.getElementById('industry'));
+        this.indChart.setOption(this.indOptions)
 
-        window.onresize = indChart.resize;
+        window.onresize = this.sexChart.resize;
+        window.onresize = this.ageChart.resize;
+        window.onresize = this.indChart.resize;
       }
     },
     mounted(){
-      this.drawLine()
+      this.drawLine();
+      this.initParams();
+      this.init();
     },
     watch: {
       platVal: function (val) {

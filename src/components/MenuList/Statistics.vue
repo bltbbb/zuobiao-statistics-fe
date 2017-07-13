@@ -21,7 +21,7 @@
       </el-radio-group>
       <Calendar @timeValue="getTime"></Calendar>
       <div class="title-select-box">
-        <el-select v-model="value" placeholder="平台">
+        <el-select v-model="platVal" placeholder="平台">
           <el-option
             v-for="plat in plats"
             :key="plat.value"
@@ -29,7 +29,7 @@
             :value="plat.value">
           </el-option>
         </el-select>
-        <el-select v-model="Eval" placeholder="版本">
+        <el-select v-model="evalVal" placeholder="版本">
           <el-option
             v-for="edition in editions"
             :key="edition.Eval"
@@ -44,27 +44,22 @@
         <div class="part1">
           <el-row :gutter="20">
             <el-col :span="6" v-for="item in list" :key="item.id">
-              <div class="grid-content bg-purple" @click="tabSwitch(item.id)">
-                <div class="top-title">{{item.title}}
-                  <h2><span>{{item.name}}</span> {{item.number}}</h2>
-                  <h2><span>{{item.names}}</span> {{item.numbers}}</h2>
-          <!--        <el-popover
-                    placement="bottom"
-                    v-bind:title="item.message"
-                    width="200"
-                    trigger="hover">
-                    <i class="el-icon-information" slot="reference"></i>
-                  </el-popover>-->
+              <div class="grid-content bg-purple" @click="tabSwitch(item.type)">
+                <div class="top-title">{{item.typeName}}
+                  <h2 v-for="data in item.details"><span>{{data.name}}</span> <span>{{data.num}}</span></h2>
                 </div>
-
               </div>
             </el-col>
-
           </el-row>
         </div>
       </div>
       <div id="TendChart" class="chart" :style="{width: '100%', height: '400px'}"></div>
-
+      <div class="radio-box">
+        <el-radio-group v-model="radioVal" v-if="showRadio">
+          <el-radio label="news">消息数</el-radio>
+          <el-radio label="time">时长</el-radio>
+        </el-radio-group>
+      </div>
     </div>
   </div>
 </template>
@@ -104,7 +99,6 @@
             label: 'web'
           }
         ],
-        value: '1',
         editions: [{
           Eval: '1',
           label: '全部版本'
@@ -113,7 +107,6 @@
             Eval: '2',
             label: '1.4'
           }],
-        Eval: "1",
         // 第一部分
         list: [
           {id: "1", title: "单聊",name:"消息数",names:"", message: 'Foo', number: "8096798", numbers: ""},
@@ -124,7 +117,18 @@
           {id: "6", title: "单聊-语音通话",name:"消息数",names:"时长", message: 'Foo', number: "8096798", numbers: "8096798"},
           {id: "7", title: "单聊-视频通话",name:"消息数",names:"时长", message: 'Foo', number: "8096798", numbers: "8096798"}
         ],
-        radio2: 1
+        myChart: null,
+        platVal: '1',
+        evalVal: '1',
+        start: '',
+        end: '',
+        token: '',
+        chartType: '1',
+        chartData: [],
+        seriesName: '',
+        radioVal: 'news',
+        showRadio: false,
+        radioData: []
       }
     }
     ,
@@ -132,6 +136,8 @@
     mounted()
     {
       this.drawLine();
+      this.initParams();
+      this.init();
     }
     ,
     components: {
@@ -146,9 +152,9 @@
       drawLine()
       {
         // 基于准备好的dom，初始化echarts实例
-        let myChart = echarts.init(document.getElementById('TendChart'));
+        this.myChart = echarts.init(document.getElementById('TendChart'));
         // 绘制图表
-        myChart.setOption({
+        this.myChart.setOption({
           title: {text: '全平台注册用户'},
           tooltip: {
             trigger: 'axis'
@@ -185,7 +191,7 @@
           }]
 
         });
-        window.onresize = myChart.resize;
+        window.onresize = this.myChart.resize;
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
@@ -195,23 +201,96 @@
       },
       //获取日历时间
       getTime(date){
-        console.log(date[0].toLocaleDateString(),date[1].toLocaleDateString())
+        this.start = msg[0].Format("yyyy-M-d");
+        this.end = msg[1].Format("yyyy-M-d");
+        this.getFirstRetained();
+      },
+      initParams: function () {
+        let date = new Date();
+        let start = new Date();
+        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        this.start = start.Format("yyyy-MM-dd");
+        this.end = date.Format("yyyy-MM-dd");
+        this.token = this.$cookie.get('adoptToken');
+      },
+      init:function () {
+        this.getFunctionCensus();
       },
       tabSwitch(id){
           //异步请求待用
-          console.log(id)
+          --id;
+          let length = this.list[id].details.length;
+          if(length==1){
+              this.showRadio = false;
+          }else {
+              this.showRadio = true;
+              this.radioData = this.chartData[id];
+          }
+          this.myChart.setOption({
+            xAxis: {
+              data: this.chartData[id].news.x
+            },
+            series: [{
+              // 根据名字对应到相应的系列
+              data: this.chartData[id].news.y
+            }]
+          })
       },
+      getFunctionCensus: function () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('PlatformId', this.platVal);
+        Params.append('channelId', this.evalVal);
+        Params.append('chatType', this.chartType);
+
+        this.$http.post('http://192.168.1.201:9999/functionCensus',Params).then((res)=>{
+          if(res.data.status == 0){
+            let data = res.data.result.result;
+            this.list = data.news;
+            this.chartData = data.list;
+            this.myChart.setOption({
+              xAxis: {
+                data: this.chartData[0].news.x
+              },
+              series: [{
+                // 根据名字对应到相应的系列
+                data: this.chartData[0].news.y
+              }]
+            })
+          }
+          else{
+            //view(res.data.msg)
+            alert(res.data.msg)
+          }
+        },(err)=>{
+          //view('网络错误')
+          alert('网络错误')
+        })
+      }
     },
     watch:{
       //异步请求待用
-      Eval : function (val,oldval) {
-        console.log(val)
+      Eval : function (val) {
+        this.getFunctionCensus();
       },
-      value: function (val,oldval) {
-        console.log(val)
+      value: function (val) {
+        this.getFunctionCensus();
       },
-      chatType: function (val,oldval) {
-        console.log(val)
+      chatType: function (val) {
+        this.getFunctionCensus();
+      },
+      radioVal: function (val) {
+        this.myChart.setOption({
+          xAxis: {
+            data: this.radioData[val].x
+          },
+          series: [{
+            // 根据名字对应到相应的系列
+            data: this.radioData[val].y
+          }]
+        })
       }
     }
   }
