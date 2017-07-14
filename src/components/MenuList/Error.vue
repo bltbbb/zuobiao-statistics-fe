@@ -55,36 +55,49 @@
       <el-table
         :data="tableData5"
         style="width: 100%">
+
         <el-table-column type="selection" width="55">
         </el-table-column>
+
         <el-table-column type="expand" class="expand-box">
           <template scope="props">
+
             <el-form label-position="left" inline class="table-expand">
+
               <el-table :data="tableData5" style="width: 100%">
-                <el-table-column label="错误设备" prop="id">
+                <el-table-column label="错误设备" prop="shop">
                 </el-table-column>
-                <el-table-column label="错误次数" prop="name">
+                <el-table-column label="错误次数" prop="shop">
                 </el-table-column>
-                <el-table-column label="占比" prop="desc">
+                <el-table-column label="占比" prop="shop">
                 </el-table-column>
               </el-table>
+
             </el-form>
+
           </template>
         </el-table-column>
+
         <el-table-column
           label="错误类型" prop="id">
+
           <template scope="scope" >
             <span @click="handleLook(scope.$index, scope.row)" class="text-color">{{ scope.row.id }} </span>
           </template>
+
         </el-table-column>
+
         <el-table-column
           label="优先级"
-          prop="name">
+          prop="priority"
+          >
         </el-table-column>
+
         <el-table-column
           label="错误次数"
-          prop="desc">
+          prop="errorNum">
         </el-table-column>
+
         <el-table-column label="操作">
           <template scope="scope">
             <el-button
@@ -93,7 +106,9 @@
             </el-button>
           </template>
         </el-table-column>
+
       </el-table>
+
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
                      class="radio-box"
                      :page-sizes="[20, 50, 100]" :page-size="20" layout="total, sizes, prev, pager, next, jumper"
@@ -103,7 +118,7 @@
   </div>
 </template>
 
-<script>
+<script type="text/ecmascript-6">
   // 引入基本模板
   let echarts = require('echarts/lib/echarts');
   // 引入柱状图组件
@@ -116,6 +131,7 @@
   export default {
     data() {
       return {
+        port: 'http://192.168.1.201:9999',
         explain: '这是菜单的说明文字',
         platVal: '1',
         canalVal: '1',
@@ -124,7 +140,8 @@
           val: '1',
           label: '全部渠道'
         }],
-        plats: [{
+        plats: [
+          {
           value: '1',
           label: '全平台'
         }, {
@@ -144,7 +161,8 @@
             label: 'web'
           }
         ],
-        editions: [{
+        editions: [
+          {
           Eval: '1',
           label: '全部版本'
         },
@@ -152,47 +170,33 @@
             Eval: '2',
             label: '1.4'
           }],
-        // 第一部分
-        list: [
-          {id: "1", title: "登录用户", message: 'Foo', number: "8096798"},
-          {id: "2", title: "日活/月活", message: 'Bar', number: "8096798"}
-        ],
         radio2: 1,
+        //  图表
+        myChart:null,
+        xAxisData: [],
+        seriesData: [],
         // 表格数据
-        tableData5: [{
-          id: '12987122',
-          name: '好滋好味鸡蛋仔',
-          category: '江浙小吃、小吃零食',
-          desc: '荷兰优质淡奶，奶香浓而不腻',
-          address: '上海市普陀区真北路',
-          shop: '王小虎夫妻店',
-          shopId: '10333'
-        }, {
-          id: '12987123',
-          name: '好滋好味鸡蛋仔',
-          category: '江浙小吃、小吃零食',
-          desc: '荷兰优质淡奶，奶香浓而不腻',
-          address: '上海市普陀区真北路',
-          shop: '王小虎夫妻店',
-          shopId: '10333'
-        }, {
-          id: '12987125',
-          name: '好滋好味鸡蛋仔',
-          category: '江浙小吃、小吃零食',
-          desc: '荷兰优质淡奶，奶香浓而不腻',
-          address: '上海市普陀区真北路',
-          shop: '王小虎夫妻店',
-          shopId: '10333'
-        }, {
-          id: '12987126',
-          name: '好滋好味鸡蛋仔',
-          category: '江浙小吃、小吃零食',
-          desc: '荷兰优质淡奶，奶香浓而不腻',
-          address: '上海市普陀区真北路',
-          shop: '王小虎夫妻店',
-          shopId: '10333'
-        }],
-        currentPage4: 4
+        tableData5: [
+          {
+            id: '12987122',  //  等级
+            name: '1',    //  优先级
+            category: '江浙小吃、小吃零食',
+            desc: '荷兰优质淡奶，奶香浓而不腻',  //  次数
+            address: '上海市普陀区真北路',
+            shop: '王小虎夫妻店',
+            shopId: '10333',
+            Equipment: [
+             { Propor:10.5,
+              equipment:"iPhone 5s",
+              errorNum:100
+             }
+            ]
+          }
+        ],
+        currentPage4: 1,
+        token: '',
+        start: '',
+        end: ''
       }
     }
     ,
@@ -200,6 +204,8 @@
     mounted()
     {
       this.drawLine();
+      this.initParams();
+      this.init();
     }
     ,
     components: {
@@ -210,13 +216,98 @@
         this.activeName = gameName
       }
       ,
+
+
+      initParams () {
+        let date = new Date();
+        let start = new Date();
+        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        this.start = start.Format("yyyy-MM-dd");
+        this.end = date.Format("yyyy-MM-dd");
+        this.token = this.$cookie.get('adoptToken');
+      },
+      init () {
+        this.getReporting();
+        this.getType();
+      },
+
+      //  图表函数
+      getReporting () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('EditionId', this.evalVal);
+        Params.append('channelId', this.canalVal);
+        this.$http.post(this.port + '/errorReporting',Params).then((res)=>{
+          if(res.status == 200){
+            this.xAxisData = res.data.result.result.x;
+            this.seriesData = res.data.result.result.y;
+            this.myChart.setOption({
+              xAxis: {
+                data: this.xAxisData
+              },
+              series: [{
+                name: '注册用户',
+                type: 'line',
+                data: this.seriesData
+              }]
+            })
+          }
+          else{
+            //view(res.data.msg)
+            console.log('获取数据失败');
+            console.log('err',err);
+          }
+        },(err)=>{
+          //view('网络错误')
+          console.log('err',err);
+//          alert('网络错误')
+        })
+      },
+
+      // 错误类型
+      getType () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('EditionId', this.evalVal);
+        Params.append('channelId', this.canalVal);
+        this.$http.post(this.port + '/errorType',Params)
+        .then( (res) => {
+          if (res.status == 200) {
+            let errorDataList = res.data.result.result;
+            for (let index in errorDataList) {
+              if (errorDataList[index].priority == 1) {
+                errorDataList[index].priority = '高'
+              }
+              else if (errorDataList[index].priority == 2) {
+                errorDataList[index].priority = '中'
+              }
+              else if (errorDataList[index].priority == 3) {
+                errorDataList[index].priority = '低'
+              }
+            }
+//            this.tableData5 = errorDataList;
+          }
+          else {
+            console.log('数据获取失败');
+          }
+        }, (err) => {
+          console.log('数据获取失败');
+          console.log('err',err);
+        })
+      },
+
+
       // 图表格绘制
       drawLine()
       {
         // 基于准备好的dom，初始化echarts实例
-        let myChart = echarts.init(document.getElementById('activeChart'));
+        this.myChart = echarts.init(document.getElementById('activeChart'));
         // 绘制图表
-        myChart.setOption({
+        this.myChart.setOption({
           title: {text: '全平台注册用户'},
           tooltip: {
             trigger: 'axis'
@@ -237,37 +328,42 @@
           }]
 
         });
-        window.onresize = myChart.resize;
+        window.onresize = this.myChart.resize;
       },
+
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+//        console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+//        console.log(`当前页: ${val}`);
       },
       //获取日历时间
       getTime(msg){
-        console.log(msg)
+        this.start = msg[0].Format("yyyy-M-d");
+        this.end = msg[1].Format("yyyy-M-d");
+//        console.log(msg)
       },
       getTableTime(msg){
-        console.log(msg)
+//        console.log(msg)
       },
       //查看明细
       handleLook(index, row) {
-        console.log(index, row);
-        this.$router.push({name: 'ErrorDetail'});
+//        console.log(index, row);
+        this.$router.push({name: 'ErrorDetail',params:{curerrid:row.id}});
       }
     },
+
+
     watch:{
       // 异步请求待用
       platVal: function (val) {
-        console.log(val)
+//        console.log(val)
       },
       canalVal: function (val) {
-        console.log(val)
+//        console.log(val)
       },
       evalVal: function (val) {
-        console.log(val)
+//        console.log(val)
       }
     }
   }
