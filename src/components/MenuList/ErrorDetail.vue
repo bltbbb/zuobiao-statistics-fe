@@ -66,14 +66,14 @@
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
                      class="radio-box"
-                     :page-sizes="[20, 50, 100]" :page-size="20" layout="total, sizes, prev, pager, next, jumper"
+                     :page-sizes="[20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper"
                      :total="100">
       </el-pagination>
     </div>
   </div>
 </template>
 
-<script>
+<script type="text/ecmascript-6">
   // 引入基本模板
   let echarts = require('echarts/lib/echarts');
   // 引入柱状图组件
@@ -86,6 +86,7 @@
   export default {
     data() {
       return {
+        port: 'http://192.168.1.201:9999',
         explain: '这是菜单的说明文字',
         value: '1',
         canals: [{
@@ -93,7 +94,8 @@
           label: '全部渠道'
         }],
         val: '1',
-        editions: [{
+        editions: [
+          {
           Eval: '1',
           label: '全部版本'
         },
@@ -109,7 +111,8 @@
         ],
         radio2: 1,
         // 表格数据
-        tableData: [{
+        tableData: [
+          {
           date: '2016-05-02',
           name: '王小虎',
           address: '上海市普陀区金沙江路 1518 弄',
@@ -140,14 +143,19 @@
         }],
         text: "展开",
         isActive: false,
-        currentPage4: 4
+        currentPage4: 1,
+        start: '',
+        end: '',
+        size: 20
+
       }
     }
     ,
     // 平台图表格-->
     mounted()
     {
-      this.drawLine();
+//      this.drawLine();
+      this.init();
     }
     ,
     components: {
@@ -158,6 +166,38 @@
         this.activeName = gameName
       }
       ,
+
+      initParams () {
+        let date = new Date();
+        let start = new Date();
+        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        this.start = start.Format("yyyy-MM-dd");
+        this.end = date.Format("yyyy-MM-dd");
+        this.token = this.$cookie.get('adoptToken');
+      },
+      init () {
+        this.initParams();
+        this.getDetailedPages();
+      },
+
+      getDetailedPages () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('errId', '12987122');
+        Params.append('pageSize', this.size);
+        Params.append('stopDate', this.currentPage4);
+        Params.append('EditionId', this.Eval);
+        Params.append('channelId', this.val);
+        this.$http.post(this.port + '/errorDetailedPages',Params)
+          .then( (res) => {
+            console.log('7777',res)
+        }, (err) => {
+          console.log('err',err)
+        });
+      },
+
       // 图表格绘制
       drawLine()
       {
@@ -188,6 +228,7 @@
         window.onresize = myChart.resize;
       },
       handleSizeChange(val) {
+
         console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {

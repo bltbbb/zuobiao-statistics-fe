@@ -107,7 +107,7 @@
     </div>
   </div>
 </template>
-<script>
+<script type="text/ecmascript-6">
   // 引入基本模板
   let echarts = require('echarts/lib/echarts');
   // 引入柱状图组件
@@ -121,10 +121,12 @@
     data() {
       return {
         explain: '这是菜单的说明文字',
-        plats: [{
+        plats: [
+          {
           value: '1',
           label: '全平台'
-        }, {
+        },
+          {
           value: '2',
           label: 'iOS'
         },
@@ -145,7 +147,8 @@
           val: '1',
           label: '全部渠道'
         }],
-        editions: [{
+        editions: [
+          {
           Eval: '1',
           label: '全部版本'
         },
@@ -231,7 +234,6 @@
         window.onresize = this.myChart.resize;
       },
       handleSizeChange(val) {
-          console.log(val)
         this.size = val;
         this.getAnlysisDetails();
       },
@@ -239,6 +241,9 @@
         this.currentPage = val;
         this.getAnlysisDetails();
       },
+
+
+
       //获取日历时间
       getTime(msg){
         this.start = msg[0].Format("yyyy-M-d");
@@ -306,7 +311,7 @@
           if(res.data.status == 0){
             let data = res.data.result.result;
             this.totalCount = res.data.result.totalCount;
-            this.tableData = data
+            this.tableData = data;
           }
           else{
             //view(res.data.msg)

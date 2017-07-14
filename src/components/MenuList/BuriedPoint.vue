@@ -70,10 +70,10 @@
         </thead>
         <tbody>
           <tr v-for="vaule in tableData">
-            <td class="table-thead-th-1" v-on:click="handleRowHandle($event)">{{ vaule.incidentName }}</td>
-            <td>{{ vaule.incidentId }}</td>
-            <td>{{ vaule.incidentNumber }}</td>
-            <td>{{ vaule.userNumer }}</td>
+            <td class="table-thead-th-1" v-on:click="handleRowHandle($event)">{{ vaule.name }}</td>
+            <td>{{ vaule.id }}</td>
+            <td>{{ vaule.eventNum }}</td>
+            <td>{{ vaule.triggerUserNum }}</td>
           </tr>
         </tbody>
       </table>
@@ -81,12 +81,13 @@
   </div>
 </template>
 
-<script>
+<script type="text/ecmascript-6">
   import Calendar from '@/components/calendar/Calendar'
 
   export default {
     data() {
       return {
+        port: 'http://192.168.1.201:9999',
         platVal: '1',
         canalVal: '1',
         evalVal: '1',
@@ -133,7 +134,8 @@
         activeIndex2: '1',
 
         radio3: '今天',
-        plats: [{
+        plats: [
+          {
           value: '1',
           label: '全平台'
         }, {
@@ -157,7 +159,8 @@
           val: '1',
           label: '全部渠道'
         }],
-        editions: [{
+        editions: [
+          {
           Eval: '1',
           label: '全部版本'
         },
@@ -168,13 +171,54 @@
         Eval: "1",
       }
     },
+    mounted () {
+      this.init();
+    },
     methods: {
       handleSelect (key, keyPath) {
 //        console.log(key, keyPath);
       },
+
+      initParams () {
+        let date = new Date();
+        let start = new Date();
+        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        this.start = start.Format("yyyy-MM-dd");
+        this.end = date.Format("yyyy-MM-dd");
+        this.token = this.$cookie.get('adoptToken');
+      },
+      init () {
+        this.initParams();
+        this.getAnalysis();
+      },
+
+      getAnalysis () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('PlatformId', this.platVal);
+        Params.append('EditionId', this.Eval);
+        Params.append('channelId', this.val);
+        this.$http.post(this.port + '/eventAnalysis',Params)
+            .then( (res) => {
+              if (res.status == 200) {
+                let data = res.data.result.result;
+                this.tableData = data
+              }
+              else {
+                console.log('获取数据失败')
+              }
+
+        }, (err) => {
+            console.log('err',err)
+        });
+      },
+
+
       handleRowHandle (event) {
         let testName = event.toElement.outerText;
-        if (testName == '注册界面') {
+        if (testName == '注册界面1') {
           this.$router.push({name: 'AnalysisRegister'});
         }
         console.log(event.incidentName)

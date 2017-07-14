@@ -71,25 +71,25 @@
           width="180">
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="eventNum"
           label="事件数量"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="triggerUserNum"
           label="触发用户数">
         </el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
                      class="radio-box"
-                     :page-sizes="[20, 50, 100]" :page-size="20" layout="total, sizes, prev, pager, next, jumper"
+                     :page-sizes="[20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper"
                      :total="100">
       </el-pagination>
     </div>
   </div>
 </template>
 
-<script>
+<script type="text/ecmascript-6">
   // 引入基本模板
   let echarts = require('echarts/lib/echarts');
   // 引入柱状图组件
@@ -102,8 +102,10 @@
   export default {
     data() {
       return {
+        port: 'http://192.168.1.201:9999',
         explain: '这是菜单的说明文字',
-        pages: [{
+        pages: [
+          {
           pageVal: '1',
           label: '注冊界面'
         },
@@ -128,7 +130,8 @@
           }
         ],
         pageVal: "注冊界面",
-        plats: [{
+        plats: [
+          {
           value: '1',
           label: '全平台'
         }, {
@@ -154,7 +157,8 @@
           label: '全部渠道'
         }],
         val: '1',
-        editions: [{
+        editions: [
+          {
           Eval: '1',
           label: '全部版本'
         },
@@ -166,24 +170,10 @@
         // 第一部分
         radio2: 1,
         // 表格数据
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
-        currentPage4: 4
+        tableData: [],
+        currentPage4: 1,
+        myChart: null,
+        size: 20
       }
     }
     ,
@@ -191,6 +181,7 @@
     mounted()
     {
       this.drawLine();
+      this.init();
     },
     components: {
       Calendar
@@ -199,13 +190,88 @@
       selected: function (gameName) {
         this.activeName = gameName
       },
+
+      initParams () {
+        let date = new Date();
+        let start = new Date();
+        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        this.start = start.Format("yyyy-MM-dd");
+        this.end = date.Format("yyyy-MM-dd");
+        this.token = this.$cookie.get('adoptToken');
+      },
+      init () {
+        this.initParams();
+        this.getAnalyzeChart();
+        this.getAnalyzePages();
+      },
+      //  图表数据
+      getAnalyzeChart () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('PlatformId', this.value);
+        Params.append('EditionId', this.Eval);
+        Params.append('channelId', this.val);
+        Params.append('eventId', this.radio2);
+        this.$http.post(this.port + '/EventAnalyzeChart',Params)
+          .then( (res) => {
+          if (res.status == 200) {
+          let data = res.data.result.result;
+            this.myChart.setOption({
+              xAxis: {
+                data: data.event.x
+              },
+              series: [{
+                data: data.event.y
+              }]
+            });
+        }
+      else {
+          console.log('获取数据失败')
+        }
+
+      }, (err) => {
+          console.log('err',err)
+        });
+      },
+      //  表格数据
+      getAnalyzePages () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('PlatformId', this.value);
+        Params.append('EditionId', this.Eval);
+        Params.append('channelId', this.val);
+        Params.append('eventId', this.radio2);
+        Params.append('pageSize', this.size);
+        Params.append('currentPage', this.currentPage4);
+        this.$http.post(this.port + '/EventAnalyzePages',Params)
+          .then( (res) => {
+            if (res.status == 200) {
+              let data = res.data.result.result;
+              this.tableData = data
+            }
+            else {
+              console.log('获取数据失败')
+            }
+
+          }, (err) => {
+            console.log('err',err)
+          });
+      },
+
+
+
+
       // 图表格绘制
       drawLine()
       {
         // 基于准备好的dom，初始化echarts实例
-        let myChart = echarts.init(document.getElementById('TendChart'));
+        this.myChart = echarts.init(document.getElementById('TendChart'));
         // 绘制图表
-        myChart.setOption({
+        this.myChart.setOption({
           title: {text: '趋势图'},
           tooltip: {
             trigger: 'axis'
@@ -226,7 +292,7 @@
           }]
 
         });
-        window.onresize = myChart.resize;
+        window.onresize = this.myChart.resize;
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
