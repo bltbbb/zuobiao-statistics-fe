@@ -47,14 +47,14 @@
     <div class="flow-box">
       <div class="tab1">
         <div class="tab1-wrapper">
-          <el-table :data="tableData" style="width: 100%">
-            <el-table-column prop="index" label="序号" width="180">
+          <el-table :data="tableData" style="width: 100%" @row-click="rowClick">
+            <el-table-column type="index" label="序号" width="50">
             </el-table-column>
-            <el-table-column prop="region" label="地区" width="180">
+            <el-table-column prop="totalFlow" label="总流量">
             </el-table-column>
-            <el-table-column prop="value" label="数量">
+            <el-table-column prop="WifiPropor" label="WiFi流量占比" :formatter="perFormat">
             </el-table-column>
-            <el-table-column prop="percentage" label="百分比">
+            <el-table-column prop="phonePropor" label="3G/4G流量占比" :formatter="perFormat">
             </el-table-column>
           </el-table>
         </div>
@@ -62,10 +62,10 @@
       <div class="flow-chart">
         <div id="myChart"></div>
         <div class="radio-wrapper">
-          <el-radio-group v-model="radioValue" class="radio-box">
-            <el-radio label="1">总流量</el-radio>
-            <el-radio label="2">WiFi流量</el-radio>
-            <el-radio label="3">3G/4G流量</el-radio>
+          <el-radio-group v-model="radioVal" class="radio-box">
+            <el-radio label="total">总流量</el-radio>
+            <el-radio label="wifi">WiFi流量</el-radio>
+            <el-radio label="flow">3G/4G流量</el-radio>
           </el-radio-group>
         </div>
       </div>
@@ -100,26 +100,26 @@
             </table>
           </template>
         </el-table-column>
-        <el-table-column label="账号" prop="email" label-class-name="table2-head">
+        <el-table-column label="账号" prop="account" label-class-name="table2-head">
         </el-table-column>
-        <el-table-column label="昵称" prop="user" label-class-name="table2-head">
+        <el-table-column label="昵称" prop="name" label-class-name="table2-head">
         </el-table-column>
-        <el-table-column label="首次登录时间" prop="time" label-class-name="table2-head">
+        <el-table-column label="首次登录时间" prop="firstLogin" label-class-name="table2-head">
         </el-table-column>
-        <el-table-column label="总流量" prop="all" label-class-name="table2-head">
+        <el-table-column label="总流量" prop="totalFlow" label-class-name="table2-head">
         </el-table-column>
-        <el-table-column label="WiFi流量占比" prop="wifi" label-class-name="table2-head">
+        <el-table-column label="WiFi流量占比" prop="WifiPropor" label-class-name="table2-head" :formatter="perFormat">
         </el-table-column>
-        <el-table-column label="3G/4G流量占比" prop="g" label-class-name="table2-head">
+        <el-table-column label="3G/4G流量占比" prop="phonePropor" label-class-name="table2-head" :formatter="perFormat">
         </el-table-column>
-        <el-table-column label="操作系统" prop="sys" label-class-name="table2-head">
+        <el-table-column label="操作系统" prop="system" label-class-name="table2-head">
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
                    class="radio-box"
-                   :page-sizes="[20, 50, 100]" :page-size="20" layout="total, sizes, prev, pager, next, jumper"
-                   :total="100">
+                   :page-sizes="[20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper"
+                   :total="totalCount">
     </el-pagination>
   </div>
 </template>
@@ -139,10 +139,25 @@
       return {
         explain: '这是菜单的说明文字',
         chatType:"单聊",
-        radioValue: '1',
+        myChart: null,
+        charData: [],
+        radioVal: 'total',
         platVal: '1',
         canalVal: '1',
-        evalVal: '1',
+        evalVal: "1",
+        userId: 1,
+        start: '',
+        end: '',
+        token: '',
+        textMaps: {
+          'total': '总流量',
+          'wifi': 'WIFI',
+          'flow': '3G/4G流量'
+        },
+        chartData: {},
+        size: 20,
+        currentPage: 1,
+        totalCount: 100,
         plats: [{
           value: '1',
           label: '全平台'
@@ -205,8 +220,7 @@
             , text: '5M',sVioce: '3M', img: '20M', file: '9M', sVideo: '15M', vioce: '25M', video: '30M' },
           {id: '12987122', email: 'mht@qq.com', user: '微信-张小龙', time: '2017-6-22  19:23:38', all:'130M', wifi: '60%', g: '40%',sys: 'Android'
             , text: '5M',sVioce: '3M', img: '20M', file: '9M', sVideo: '15M', vioce: '25M', video: '30M' }
-        ],
-        currentPage4: 4
+        ]
       }
     }
     ,
@@ -214,6 +228,8 @@
     mounted()
     {
       this.drawLine();
+      this.initParams();
+      this.init();
     }
     ,
     components: {
@@ -224,9 +240,9 @@
       drawLine()
       {
         // 基于准备好的dom，初始化echarts实例
-        let myChart = echarts.init(document.getElementById('myChart'));
+        this.myChart = echarts.init(document.getElementById('myChart'));
         // 绘制图表
-        myChart.setOption({
+        this.myChart.setOption({
           title: {
               text: '用户1',
               textStyle: {
@@ -274,19 +290,135 @@
           }]
 
         });
-        window.onresize = myChart.resize;
+        window.onresize = this.myChart.resize;
       },
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+      perFormat(row, column){
+        return row.WifiPropor + '%'
       },
       //获取日历时间
       getTime(msg){
         console.log(msg)
-      }
+      },
+      handleSizeChange(val) {
+        this.size = val;
+        this.getFlowAnalyzePages();
+      },
+      handleCurrentChange(val) {
+        this.currentPage = val;
+        this.getFlowAnalyzePages();
+      },
+      rowClick(obj){
+        this.userId = obj.id;
+        this.getUserFlow();
+      },
+      getTime(msg){
+        this.start = msg[0].Format("yyyy-M-d");
+        this.end = msg[1].Format("yyyy-M-d");
+        this.getFlowAnalyzeTopten();
+        this.getUserFlow();
+        this.getFlowAnalyzePages();
+      },
+      initParams: function () {
+        let date = new Date();
+        let start = new Date();
+        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        this.start = start.Format("yyyy-MM-dd");
+        this.end = date.Format("yyyy-MM-dd");
+        this.token = this.$cookie.get('adoptToken');
+        this.size = 20;
+      },
+      init:function () {
+        this.getFlowAnalyzeTopten();
+        this.getUserFlow();
+        this.getFlowAnalyzePages();
+      },
+      getFlowAnalyzeTopten: function () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('PlatformId', this.platVal);
+        Params.append('editionId', this.evalVal);
+        Params.append('channelId', this.canalVal);
 
+        this.$http.post('http://192.168.1.201:9999/flowAnalyzeTopten',Params).then((res)=>{
+          if(res.data.status == 0){
+            let data = res.data.result.result;
+            this.tableData = data
+            this.userId = data[0].id
+            console.log( this.userId)
+          }
+          else{
+            //view(res.data.msg)
+            alert(res.data.msg)
+          }
+        },(err)=>{
+          //view('网络错误')
+          alert('网络错误')
+        })
+      },
+      getUserFlow: function () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('PlatformId', this.platVal);
+        Params.append('editionId', this.evalVal);
+        Params.append('channelId', this.canalVal);
+        Params.append('userId', this.userId);
+
+        this.$http.post('http://192.168.1.201:9999/userFlow',Params).then((res)=>{
+          if(res.data.status == 0){
+            let data = res.data.result.result;
+            this.chartData.total = data.total;
+            this.chartData.wifi = data.wifi;
+            this.chartData.flow = data.flow;
+            this.myChart.setOption({
+              xAxis: {
+                data: this.chartData.flow.x
+              },
+              series: [{
+                // 根据名字对应到相应的系列
+                name: this.textMaps['total'],
+                data: this.chartData.flow.y
+              }]
+            })
+          }
+          else{
+            //view(res.data.msg)
+            alert(res.data.msg)
+          }
+        },(err)=>{
+          //view('网络错误')
+          alert('网络错误')
+        })
+      },
+      getFlowAnalyzePages: function () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('PlatformId', this.platVal);
+        Params.append('editionId', this.evalVal);
+        Params.append('channelId', this.canalVal);
+        Params.append('userId', this.userId);
+        Params.append('pageSize', this.size);
+        Params.append('currentPage', this.currentPage);
+
+        this.$http.post('http://192.168.1.201:9999/flowAnalyzePages',Params).then((res)=>{
+          if(res.data.status == 0){
+            let data = res.data.result.result;
+            this.tableData5 = data;
+          }
+          else{
+            //view(res.data.msg)
+            alert(res.data.msg)
+          }
+        },(err)=>{
+          //view('网络错误')
+          alert('网络错误')
+        })
+      }
     },
     watch:{
       // 异步请求待用
@@ -302,8 +434,17 @@
       radio2: function (val) {
         console.log(val)
       },
-      radioValue: function (val) {
-        console.log(val)
+      radioVal: function (val) {
+        this.myChart.setOption({
+          xAxis: {
+            data: this.chartData[val].x
+          },
+          series: [{
+            // 根据名字对应到相应的系列
+            name: this.textMaps[val],
+            data: this.chartData[val].y
+          }]
+        })
       }
     }
   }
@@ -339,6 +480,8 @@
         width: 40%
         .tab1-wrapper
           width: 100%
+          .cell
+            word-break: normal
       .flow-chart
         float: left
         width: 60%
@@ -375,4 +518,7 @@
       text-align: center
       margin-right: 50px
       margin-bottom: 0
+  .tab1-wrapper
+    .cell
+      word-break: normal
 </style>

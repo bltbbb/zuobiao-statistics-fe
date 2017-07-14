@@ -177,7 +177,7 @@
             show: false
           },
           yAxis: {
-            data: ['18岁以下', '18-24岁', '25-34岁', '35-44岁', '45-54岁', '55-64岁', '65岁以上'],
+            data: [],
             splitLine: {show: false},
             axisLabel: {
               formatter:'{value}',
@@ -219,7 +219,7 @@
               }
 
             },
-            data: [45, 60, 13, 25, 35, 15, 30]
+            data: []
           }]
         },
         indOptions:{
@@ -233,7 +233,7 @@
             formatter: "<div style='padding: 3px 6px'><span style='display: inline-block;width: 10px;height: 10px;border-radius:50%;background: #009999;margin-right: 5px';></span>{b}:<br/> <span style='padding-left:15px;padding-top: 10px'>{c}%</span></div>"
           },
           xAxis: {
-            data: ['医药卫生', '金融保险', 'IT通信电子', '教育', '社会公共管理', '能源采矿化工', '建筑房地产', '机械制造', '住宿旅游', '广告营销'],
+            data: [],
             axisTick: {show: false},
             axisLabel: {
               formatter:'{value}',
@@ -285,7 +285,7 @@
                 }
               }
             },
-            data: [45, 60, 13, 25, 35, 15, 30, 35, 15, 30]
+            data: []
           }]
         },
         sexChart: null,
@@ -396,13 +396,13 @@
     },
     watch: {
       platVal: function (val) {
-        console.log(val)
+        this.getUserAttr();
       },
       evalVal: function (val) {
-        console.log(val)
+        this.getUserAttr();
       },
       canalVal: function (val) {
-        console.log(val)
+        this.getUserAttr();
       }
     }
   }

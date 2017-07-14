@@ -47,15 +47,7 @@
       <el-row :gutter="20">
         <el-col :span="12" v-for="(item,index) in list" :key="index">
           <div class="grid-content bg-purple">
-            <div class="top-title">{{item.title}}
-              <el-popover
-                placement="bottom"
-                v-bind:title="item.message"
-                width="200"
-                trigger="hover">
-                <i class="el-icon-information" slot="reference"></i>
-              </el-popover>
-            </div>
+            <div class="top-title">{{item.title}}</div>
             <h1>{{item.number}}</h1>
           </div>
         </el-col>
@@ -78,9 +70,9 @@
       </div>
     </div>
     <div class="radio-wrapper">
-      <el-radio-group v-model="radioValue" class="radio-box">
-        <el-radio label="1">注册用户</el-radio>
-        <el-radio label="2">登录用户</el-radio>
+      <el-radio-group v-model="radioVal" class="radio-box">
+        <el-radio label="0">注册用户</el-radio>
+        <el-radio label="1">登录用户</el-radio>
       </el-radio-group>
     </div>
     <div class="table-wrapper">
@@ -89,21 +81,26 @@
           <template scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
               <el-form-item label="地市名称" class="city-name">
-                <p v-for="item in props.row.city">{{ item }}</p><br>
+                <p v-for="item in props.row.city">{{ item.name }}</p><br>
               </el-form-item>
               <el-form-item label="累计登录用户占比" class="login-percentage">
-                <p v-for="item in props.row.percentage">{{ item }}</p>
+                <p v-for="item in props.row.city">{{ item.Propor }}%</p>
               </el-form-item>
             </el-form>
           </template>
         </el-table-column>
         <el-table-column label="地域分布" prop="region">
         </el-table-column>
-        <el-table-column label="注册用户" prop="regUser">
+        <el-table-column label="注册用户" prop="registeredUser">
         </el-table-column>
         <el-table-column label="登录用户" prop="loginUser">
         </el-table-column>
       </el-table>
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
+                     class="radio-box"
+                     :page-sizes="[20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper"
+                     :total="totalCount">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -116,13 +113,9 @@
     data() {
       return {
         explain: '这是菜单的说明文字',
-        radioValue: '1',
-        platVal: '1',
-        canalVal: '1',
-        evalVal: '1',
         list: [
-          {id: "1", title: "注册用户", message: 'Foo', number: "8096798"},
-          {id: "2", title: "登录用户", message: 'Bar', number: "8096798"}
+          {id: "1", title: "注册用户", number: "8096798"},
+          {id: "2", title: "登录用户", number: "8096798"}
         ],
         select: "",
         plats: [{
@@ -169,7 +162,14 @@
             textStyle: {
               color: 'rgba(0,0,0,0.9)'
             },
-            formatter: '<div style="padding-bottom:10px;">{b}</div><div><span style="color: #5cc3ff;">累计启动次数: &nbsp;&nbsp;&nbsp;</span>{c}</div>'
+            //formatter: '<div style="padding-bottom:10px;">{b}</div><div><span style="color: #5cc3ff;">累计启动次数: &nbsp;&nbsp;&nbsp;</span>{c}</div>',
+            formatter: function (params, ticket, callback) {
+                if(!params.value){
+                    return `<div style="padding-bottom:10px;">${params.name}</div><div><span style="color: #5cc3ff;">累计启动次数: &nbsp;&nbsp;&nbsp;</span>0</div>`
+                }else {
+                    return `<div style="padding-bottom:10px;">${params.name}</div><div><span style="color: #5cc3ff;">累计启动次数: &nbsp;&nbsp;&nbsp;</span>${params.value}</div>`
+                }
+            }
           },
           visualMap: {
             min: 0,
@@ -207,102 +207,187 @@
                   }
                 }
               },
-              data:[
-                {name: '北京',value: this.randomData() },
-                {name: '天津',value: this.randomData() },
-                {name: '上海',value: this.randomData() },
-                {name: '重庆',value: this.randomData() },
-                {name: '河北',value: this.randomData() },
-                {name: '河南',value: this.randomData() },
-                {name: '云南',value: this.randomData() },
-                {name: '辽宁',value: this.randomData() },
-                {name: '黑龙江',value: this.randomData() },
-                {name: '湖南',value: this.randomData() },
-                {name: '安徽',value: this.randomData() },
-                {name: '山东',value: this.randomData() },
-                {name: '新疆',value: this.randomData() },
-                {name: '江苏',value: this.randomData() },
-                {name: '浙江',value: this.randomData() },
-                {name: '江西',value: this.randomData() },
-                {name: '湖北',value: this.randomData() },
-                {name: '广西',value: this.randomData() },
-                {name: '甘肃',value: this.randomData() },
-                {name: '山西',value: this.randomData() },
-                {name: '内蒙古',value: this.randomData() },
-                {name: '陕西',value: this.randomData() },
-                {name: '吉林',value: this.randomData() },
-                {name: '福建',value: this.randomData() },
-                {name: '贵州',value: this.randomData() },
-                {name: '广东',value: this.randomData() },
-                {name: '青海',value: this.randomData() },
-                {name: '西藏',value: this.randomData() },
-                {name: '四川',value: this.randomData() },
-                {name: '宁夏',value: this.randomData() },
-                {name: '海南',value: this.randomData() },
-                {name: '台湾',value: this.randomData() },
-                {name: '香港',value: this.randomData() },
-                {name: '澳门',value: this.randomData() },
-                {name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} }
-              ]
+              data:[]
             }
           ]
         },
-        tableData:[
-          {index:1,region:'北京',value:'13551',percentage:'13.05%'},
-          {index:2,region:'北京',value:'13551',percentage:'13.05%'},
-          {index:3,region:'北京',value:'13551',percentage:'13.05%'},
-          {index:4,region:'北京',value:'13551',percentage:'13.05%'},
-          {index:5,region:'北京',value:'13551',percentage:'13.05%'},
-          {index:6,region:'北京',value:'13551',percentage:'13.05%'},
-          {index:7,region:'北京',value:'13551',percentage:'13.05%'},
-          {index:8,region:'北京',value:'13551',percentage:'13.05%'},
-          {index:9,region:'北京',value:'13551',percentage:'13.05%'}
-        ],
-        tableData5: [
-            {id: '12987122', region: '广东', regUser: '1268', loginUser: '1351', city: ['深圳','深圳','深圳','深圳'], percentage: ['13.26%','13.26%','13.26%','13.26%']},
-            {id: '12987122', region: '广东', regUser: '1268', loginUser: '1351', city: ['深圳','深圳','深圳','深圳'], percentage: ['13.26%','13.26%','13.26%','13.26%']},
-            {id: '12987122', region: '广东', regUser: '1268', loginUser: '1351', city: ['深圳','深圳','深圳','深圳'], percentage: ['13.26%','13.26%','13.26%','13.26%']},
-            {id: '12987122', region: '广东', regUser: '1268', loginUser: '1351', city: ['深圳','深圳','深圳','深圳'], percentage: ['13.26%','13.26%','13.26%','13.26%']}
-          ]
+        tableDataArr: [],
+        tableData:[],
+        tableData5: [],
+        topTen: [],
+        myChart: null,
+        radioVal: '0',
+        platVal: '1',
+        canalVal: '1',
+        evalVal: "1",
+        start: '',
+        end: '',
+        token: '',
+        chartData: [],
+        size: 20,
+        currentPage: 1,
+        totalCount: 100,
+        loginChartData: [],
+        regChartData: [],
+        loginTableData: [],
+        regTableData: []
       }
     },
     components:{
       Calendar
     },
     methods: {
-        drawLine(){
-            axios.post('/api/getMapData').then((res)=>{
-              echarts.registerMap('china', res.data.data);
-              let myChart = echarts.init(document.getElementById('map-chart'))
-              myChart.setOption(this.options)
+      drawLine(){
+          axios.post('/api/getMapData').then((res)=>{
+            echarts.registerMap('china', res.data.data);
+            this.myChart = echarts.init(document.getElementById('map-chart'))
+            this.myChart.setOption(this.options)
+          })
+      },
+      randomData() {
+        return Math.round(Math.random()*1000);
+      },
+      handleSizeChange(val) {
+        this.siza = val;
+        this.getRegionPages();
+      },
+      handleCurrentChange(val) {
+        this.currentPage = val;
+        this.getRegionPages();
+      },
+      getTime(msg){
+        this.start = msg[0].Format("yyyy-M-d");
+        this.end = msg[1].Format("yyyy-M-d");
+        this.getRegion();
+        this.getRegionPages();
+      },
+      initParams: function () {
+        let date = new Date();
+        let start = new Date();
+        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        this.start = start.Format("yyyy-MM-dd");
+        this.end = date.Format("yyyy-MM-dd");
+        this.token = this.$cookie.get('adoptToken');
+        this.size = 20;
+      },
+      init:function () {
+        this.getRegion();
+        this.getRegionPages();
+      },
+      getRegion: function () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('pid', this.platVal);
+        Params.append('editionId', this.evalVal);
+        Params.append('channelId', this.canalVal);
+
+        //重置
+        this.loginChartData = [];
+        this.regChartData = [];
+        this.chartData = [];
+        this.tableDataArr = [];
+        this.loginTableData = [];
+        this.regTableData = [];
+
+
+        this.$http.post('http://192.168.1.201:9999/region',Params).then((res)=>{
+          if(res.data.status == 0){
+            let reginData = res.data.result.result.region;
+            let userData = res.data.result.result.UserCount;
+            let tableData = res.data.result.result.topTen;
+            for (let i=0;i<reginData.length;i++){
+                this.loginChartData.push({'name':reginData[i].region,'value':reginData[i].loginUser});
+                this.regChartData.push({'name':reginData[i].region,'value':reginData[i].registeredUser})
+            }
+            for (let i=0;i<tableData.length;i++){
+              this.loginTableData.push({'index':i+1,'region':tableData[i].region,'value':tableData[i].loginUser,'percentage':tableData[i].loginUserPropor});
+              this.regTableData.push({'index':i+1,'region':tableData[i].region,'value':tableData[i].registeredUser,'percentage':tableData[i].registeredUserPropor})
+            }
+            this.regChartData.push({name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} });
+            this.loginChartData.push({name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} });
+            this.chartData.push(this.regChartData);
+            this.chartData.push(this.loginChartData);
+            this.tableDataArr.push(this.regTableData);
+            this.tableDataArr.push(this.loginTableData);
+            this.tableData = this.tableDataArr[0];
+            this.list[0].number = userData.registeredUser;  //注册用户number
+            this.list[1].number = userData.loginUser;   //登录用户number
+            this.myChart.setOption({
+              series: [{
+                // 根据名字对应到相应的系列
+                data: this.chartData[0]
+              }]
             })
-        },
-        randomData() {
-          return Math.round(Math.random()*1000);
-        },
-        getTime(msg){
-          console.log(msg)
-        }
+          }
+          else{
+            //view(res.data.msg)
+            alert(res.data.msg)
+          }
+        },(err)=>{
+          //view('网络错误')
+          alert('网络错误')
+        })
+      },
+      getRegionPages:function () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('startDate', this.start);
+        Params.append('stopDate', this.end);
+        Params.append('pid', this.platVal);
+        Params.append('editionId', this.evalVal);
+        Params.append('channelId', this.canalVal);
+        Params.append('pageSize', this.size);
+        Params.append('currentPage', this.currentPage);
+
+        this.$http.post('http://192.168.1.201:9999/regionPages',Params).then((res)=>{
+          if(res.data.status == 0){
+            let data = res.data.result.result;
+            this.totalCount = res.data.result.totalCount;
+            this.tableData5 = data
+          }
+          else{
+            //view(res.data.msg)
+            alert(res.data.msg)
+          }
+        },(err)=>{
+          //view('网络错误')
+          alert('网络错误')
+        })
+      }
     },
     mounted(){
-        this.drawLine()
+        this.drawLine();
+        this.initParams();
+        this.init();
     },
     watch:{
       // 异步请求待用
       platVal: function (val) {
-        console.log(val)
+        this.getRegion();
+        this.getRegionPages();
       },
       canalVal: function (val) {
-        console.log(val)
+        this.getRegion();
+        this.getRegionPages();
       },
       evalVal: function (val) {
-        console.log(val)
+        this.getRegion();
+        this.getRegionPages();
       },
       radio2: function (val) {
-        console.log(val)
+        this.getRegion();
+        this.getRegionPages();
       },
-      radioValue: function (val) {
-        console.log(val)
+      radioVal: function (val) {
+        this.tableData = this.tableDataArr[val];
+        this.myChart.setOption({
+          series: [{
+            // 根据名字对应到相应的系列
+            data: this.chartData[val]
+          }]
+        })
       }
     }
   }
