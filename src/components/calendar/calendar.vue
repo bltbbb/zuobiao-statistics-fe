@@ -26,7 +26,7 @@
       <el-radio-button name="5" label="自定义" class="time-box" ref="custom">
         <el-date-picker v-model="value2" type="date" placeholder=""
                         class="data-piker" @change="change" @focus="focusPiker"
-                        :picker-options="pickerOptions0">
+                        :picker-options="pickerOptions1">
         </el-date-picker>
       </el-radio-button>
     </el-radio-group>
@@ -50,6 +50,11 @@
         pickerOptions0: {
           disabledDate(time) {
             return time.getTime() > Date.now();
+          }
+        },
+        pickerOptions1: {
+          disabledDate(time) {
+            return time.getTime() > Date.now() - 3600 * 1000 * 24;
           }
         }
       }
