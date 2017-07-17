@@ -56,7 +56,7 @@
       </div>
       <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
         <el-tab-pane label="错误日志" name="first">
-          test test test test
+          {{ login }}
         </el-tab-pane>
         <el-tab-pane label="按机型分布" name="second">
           <el-table
@@ -89,7 +89,7 @@
         </el-tab-pane>
         <el-tab-pane label="按系统分布" name="third">
           <el-table
-            :data="tableData"
+            :data="tableData1"
             style="width: 100%">
             <el-table-column
               prop="id"
@@ -173,12 +173,16 @@
         </el-tab-pane>
       </el-tabs>
       <!--表格-->
-
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
+                     class="radio-box"
+                     :page-sizes="[20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper"
+                     :total="100">
+      </el-pagination>
     </div>
   </div>
 </template>
 
-<script>
+<script type="text/ecmascript-6">
   // 引入基本模板
   let echarts = require('echarts/lib/echarts');
   // 引入柱状图组件
@@ -190,6 +194,9 @@
   export default {
     data() {
       return {
+        port: 'http://192.168.1.201:9999',
+        token: '',
+        errId: '',
         explain: '这是菜单的说明文字',
         value: '1',
         canals: [{
@@ -214,12 +221,16 @@
           {id: "4", title: "累计影响用户数", message: 'Bar', number: "8096798"},
           {id: "5", title: "修复状态", message: 'Foo', number: "8096798"}
         ],
+        //  table部分
+        login: "111111111111111111111",
         radio2: 1,
         text: "展开",
         isActive: false,
-        currentPage4: 4,
+        currentPage4: 1,
         activeName2: 'first',
-        tableData: [{
+        size: 20,
+        tableData: [
+          {
           id: '1',
           name: '2',
           address: '上海市普陀区金沙江路 1518 弄'
@@ -235,15 +246,55 @@
           id: '5',
           name: '王小虎',
           address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        }],
+        tableData1: [
+          {
+            id: '1d',
+            name: '2asdf',
+            address: '上海市普陀区金沙江路 1518 弄'
+          }, {
+            id: '3',
+            name: '王小虎asdf',
+            address: '上海市普陀区金沙江路 1517 弄'
+          }, {
+            id: '4',
+            name: '王小虎asdf',
+            address: '上海市普陀区金沙江路 1519 弄'
+          }, {
+            id: '5',
+            name: '王小虎fsda',
+            address: '上海市普陀区金沙江路 1516 弄'
+          }]
       }
     }
     ,
+    mounted () {
+      this.initParams();
+      this.init();
+    },
     methods: {
       selected: function (gameName) {
         this.activeName = gameName
-      }
-      ,
+      },
+      initParams () {
+        this.errId =  this.$route.query.errId;
+        this.token = this.$cookie.get('adoptToken');
+      },
+      init () {
+        this.getDetailed();
+      },
+      getDetailed () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken',this.token);
+        Params.append('id',this.errId);
+        this.$http.post(this.port + '/errorDetailed',Params)
+          .then( (res) => {
+          console.log(res)
+        }, (err) => {
+          console.log('err',err)
+        })
+      },
+
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
       },

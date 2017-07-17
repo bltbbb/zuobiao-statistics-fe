@@ -111,7 +111,7 @@
 
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
                      class="radio-box"
-                     :page-sizes="[20, 50, 100]" :page-size="20" layout="total, sizes, prev, pager, next, jumper"
+                     :page-sizes="[20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper"
                      :total="100">
       </el-pagination>
     </div>
@@ -144,10 +144,11 @@
           {
           value: '1',
           label: '全平台'
-        }, {
+          },
+          {
           value: '2',
           label: 'iOS'
-        },
+          },
           {
             value: '3',
             label: 'Android'
@@ -193,6 +194,7 @@
             ]
           }
         ],
+        size: 20,
         currentPage4: 1,
         token: '',
         start: '',
@@ -277,6 +279,7 @@
         this.$http.post(this.port + '/errorType',Params)
         .then( (res) => {
           if (res.status == 200) {
+            console.log(res)
             let errorDataList = res.data.result.result;
             for (let index in errorDataList) {
               if (errorDataList[index].priority == 1) {
@@ -332,38 +335,40 @@
       },
 
       handleSizeChange(val) {
-//        console.log(`每页 ${val} 条`);
+        this.size = val;
+        this.getType();
       },
       handleCurrentChange(val) {
-//        console.log(`当前页: ${val}`);
+        this.currentPage4 = val;
+        this.getType();
       },
       //获取日历时间
       getTime(msg){
         this.start = msg[0].Format("yyyy-M-d");
         this.end = msg[1].Format("yyyy-M-d");
-//        console.log(msg)
-      },
-      getTableTime(msg){
-//        console.log(msg)
+        this.init();
       },
       //查看明细
       handleLook(index, row) {
 //        console.log(index, row);
-        this.$router.push({name: 'ErrorDetail',params:{curerrid:row.id}});
+        this.$router.push({name: 'ErrorDetail',query:{curerrid: row.id}});
       }
     },
 
 
     watch:{
       // 异步请求待用
-      platVal: function (val) {
-//        console.log(val)
+      platVal (val) {
+        this.platVal = val;
+        this.init();
       },
       canalVal: function (val) {
-//        console.log(val)
+        this.canalVal = val;
+        this.init();
       },
       evalVal: function (val) {
-//        console.log(val)
+        this.evalVal = val;
+        this.init();
       }
     }
   }
