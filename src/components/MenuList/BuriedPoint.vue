@@ -93,43 +93,7 @@
         evalVal: '1',
         explain: '这是菜单的说明文字',
         //  页面列表
-        tableData: [
-          {
-            incidentName: '注册界面',
-            incidentId: '1',
-            incidentNumber: 6000,
-            userNumer: 6000
-          },
-          {
-            incidentName: '注册成功',
-            incidentId: '1',
-            incidentNumber: 6000,
-            userNumer: 6000
-          },
-          {
-            incidentName: '登录界面',
-            incidentId: '1',
-            incidentNumber: 6000,
-            userNumer: 6000
-          },
-          {
-            incidentName: '登录成功',
-            incidentId: '1',
-            incidentNumber: 6000,
-            userNumer: 6000
-          },
-          {
-            incidentName: '找回密码界面',
-            incidentId: '1',
-            incidentNumber: 6000,
-            userNumer: 6000
-          },
-          {
-            incidentName: '重置密码成功',
-            incidentId: '1',
-            incidentNumber: 6000,
-            userNumer: 6000
-          }],
+        tableData: [],
         activeIndex: '1',
         activeIndex2: '1',
 
@@ -138,10 +102,11 @@
           {
           value: '1',
           label: '全平台'
-        }, {
+         },
+          {
           value: '2',
           label: 'iOS'
-        },
+         },
           {
             value: '3',
             label: 'Android'
@@ -225,7 +190,9 @@
       },
       //获取日历时间
       getTime(msg){
-        console.log('msg', msg)
+        this.start = msg[0].Format("yyyy-MM-dd");
+        this.end = msg[1].Format("yyyy-MM-dd");
+        this.init();
       }
     },
     components: {
@@ -233,14 +200,17 @@
     },
     watch: {
       // 异步请求待用
-      platVal: function (val) {
-        console.log(val)
+      platVal (val) {
+        this.platVal = val;
+        this.getAnalysis();
       },
-      canalVal: function (val) {
-        console.log(val)
+      canalVal (val) {
+        this.canalVal = val;
+        this.getAnalysis();
       },
-      evalVal: function (val) {
-        console.log(val)
+      evalVal (val) {
+        this.evalVal = val;
+        this.getAnalysis();
       }
     }
   }
