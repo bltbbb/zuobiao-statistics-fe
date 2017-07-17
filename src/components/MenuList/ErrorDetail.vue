@@ -43,14 +43,14 @@
         <el-table-column label="日期" width="180">np
           <template scope="scope">
             <el-icon name="time"></el-icon>
-            <span style="margin-left: 10px">{{ scope.row.date }}</span>
+            <span style="margin-left: 10px">{{ scope.row.errNum }}</span>
           </template>
         </el-table-column>
         <el-table-column label="姓名" >
           <template scope="scope">
             <div class="detail">
-              <div class="detail-title">{{ scope.row.title }}</div>
-              <div class="detail-box" v-bind:class="{ active: isActive }">{{ scope.row.content }}</div>
+              <div class="detail-title">{{ scope.row.name }}</div>
+              <div class="detail-box" v-bind:class="{ active: isActive }">{{ scope.row.log }}</div>
               <div class="detail-text">
                 <div @click="more">{{text}}</div>
                 <div @click="moreLook" class="look">查看详情</div>
@@ -119,42 +119,21 @@
           title: "text",
           content: "上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市" +
           "普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄"
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄',
-          title: "text",
-          content: "上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市" +
-          "普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄"
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄',
-          title: "text",
-          content: "上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市" +
-          "普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄"
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄',
-          title: "text",
-          content: "上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市" +
-          "普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄"
         }],
         text: "展开",
         isActive: false,
         currentPage4: 1,
         start: '',
         end: '',
-        size: 20
-
+        size: 20,
+        errId: ''
       }
     }
     ,
     // 平台图表格-->
-    mounted()
-    {
+    mounted() {
 //      this.drawLine();
+      this.initParams();
       this.init();
     }
     ,
@@ -168,6 +147,7 @@
       ,
 
       initParams () {
+        this.errId =  this.$route.query.curerrid;
         let date = new Date();
         let start = new Date();
         start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
@@ -176,7 +156,6 @@
         this.token = this.$cookie.get('adoptToken');
       },
       init () {
-        this.initParams();
         this.getDetailedPages();
       },
 
@@ -185,14 +164,21 @@
         Params.append('adoptToken', this.token);
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
-        Params.append('errId', '12987122');
+        Params.append('errId', this.errId);
         Params.append('pageSize', this.size);
-        Params.append('stopDate', this.currentPage4);
+        Params.append('currentPage', this.currentPage4);
         Params.append('EditionId', this.Eval);
         Params.append('channelId', this.val);
         this.$http.post(this.port + '/errorDetailedPages',Params)
           .then( (res) => {
-            console.log('7777',res)
+            if (res.status == 200){
+              let data = res.data.result.result;
+              this.tableData = data;
+            }
+            else {
+              console.log('数据获取失败');
+            }
+
         }, (err) => {
           console.log('err',err)
         });
@@ -228,41 +214,46 @@
         window.onresize = myChart.resize;
       },
       handleSizeChange(val) {
-
-        console.log(`每页 ${val} 条`);
+        this.size = val;
+        this.init();
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        this.currentPage4 = val;
+        this.init();
       },
       //获取日历时间
       getTime(msg){
-        console.log(msg)
-      },
-      getTableTime(msg){
-        console.log(msg)
+        this.start = msg[0].Format("yyyy-M-d");
+        this.end = msg[1].Format("yyyy-M-d");
+        this.init();
       },
       //查看明细
       handleEdit(index, row) {
-        console.log(index, row);
-        this.$router.push({name: 'DetailMore'});
+        this.$router.push({name: 'DetailMore',query:{errId: this.errId}});
       },
-
       more(){
-        console.log(this.isActive);
         if (this.isActive) {
           this.isActive = false;
-          console.log(1);
           this.text = "展开"
         }
         else {
           this.isActive = true;
           this.text = "收起";
-          console.log(2)
         }
-
       },
       moreLook(){
-        this.$router.push({name: 'DetailMore'});
+        this.$router.push({name: 'DetailMore',query:{errId: this.errId}});
+      }
+    },
+    watch: {
+      val (channel) {
+        this.val = channel;
+        this.init();
+      },
+
+      Eval (versions) {
+        this.Eval = versions
+        this.init();
       }
     }
   }

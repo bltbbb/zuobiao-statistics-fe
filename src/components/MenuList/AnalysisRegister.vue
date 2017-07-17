@@ -15,7 +15,7 @@
       </h1>
     </div>
     <div class="select-wrapper">
-      <el-select v-model="pageVal" placeholder="平台" class="page-select">
+      <el-select v-model="pageVal" placeholder="页面" class="page-select">
         <el-option
           v-for="page in pages"
           :key="page.pageVal"
@@ -80,6 +80,7 @@
           label="触发用户数">
         </el-table-column>
       </el-table>
+      <!-- 分页 -->
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
                      class="radio-box"
                      :page-sizes="[20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper"
@@ -104,6 +105,7 @@
       return {
         port: 'http://192.168.1.201:9999',
         explain: '这是菜单的说明文字',
+        //  页面
         pages: [
           {
           pageVal: '1',
@@ -130,6 +132,7 @@
           }
         ],
         pageVal: "注冊界面",
+        //  平台
         plats: [
           {
           value: '1',
@@ -152,35 +155,39 @@
           }
         ],
         value: '1',
+        //  渠道
         canals: [{
           val: '1',
           label: '全部渠道'
         }],
         val: '1',
+        //  版本
         editions: [
           {
           Eval: '1',
           label: '全部版本'
-        },
+          },
           {
             Eval: '2',
             label: '1.4'
           }],
         Eval: "1",
         // 第一部分
-        radio2: 1,
+        radio2: 1,  //  事件触发数量
+        //  图表
+        myChart: null,
         // 表格数据
         tableData: [],
         currentPage4: 1,
-        myChart: null,
         size: 20
+
       }
     }
     ,
     // 平台图表格-->
-    mounted()
-    {
+    mounted () {
       this.drawLine();
+      this.initParams();
       this.init();
     },
     components: {
@@ -200,7 +207,6 @@
         this.token = this.$cookie.get('adoptToken');
       },
       init () {
-        this.initParams();
         this.getAnalyzeChart();
         this.getAnalyzePages();
       },
@@ -266,8 +272,7 @@
 
 
       // 图表格绘制
-      drawLine()
-      {
+      drawLine() {
         // 基于准备好的dom，初始化echarts实例
         this.myChart = echarts.init(document.getElementById('TendChart'));
         // 绘制图表
@@ -295,16 +300,46 @@
         window.onresize = this.myChart.resize;
       },
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+        this.size = val;
+        this.getAnalyzePages();
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        this.currentPage4 = val;
+        this.getAnalyzePages();
       },
       //获取日历时间
       getTime(msg){
-        console.log(msg)
+        this.start = msg[0].Format("yyyy-MM-dd");
+        this.end = msg[1].Format("yyyy-MM-dd");
+        this.init();
       }
 
+    },
+    watch: {
+      //  观察者，监听数据是否发生变化
+      pageVal (vaule) {  //  监听页面栏
+        console.log('页面',vaule)
+      },
+
+      value (system) {
+        this.value = system;
+        this.init();
+      },
+
+      val (channel) {
+        this.val = channel;
+        this.init();
+      },
+
+      Eval (versions) {
+        this.Eval = versions;
+        this.init();
+      },
+
+      radio2 (trigger) {
+        this.radio2 = trigger;
+        this.init();
+      }
     }
   }
 
