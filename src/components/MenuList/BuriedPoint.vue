@@ -17,7 +17,7 @@
     </div>
     <div class="title-box">
       <!--导航-->
-      <Calendar @timeValue="getTime"></Calendar>
+      <Calendar @timeValue="getTime" :showToday="false"></Calendar>
       <div class="title-select-box">
         <el-select v-model="platVal" placeholder="平台">
           <el-option
@@ -87,7 +87,7 @@
   export default {
     data() {
       return {
-        port: 'http://192.168.1.201:9999',
+        port: 'http://192.168.1.32:80',
         platVal: '1',
         canalVal: '1',
         evalVal: '1',
@@ -134,6 +134,9 @@
             label: '1.4'
           }],
         Eval: "1",
+        currentDate:'',
+        dateType: 1,
+        curtext: ''
       }
     },
     mounted () {
@@ -145,11 +148,6 @@
       },
 
       initParams () {
-        let date = new Date();
-        let start = new Date();
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-        this.start = start.Format("yyyy-MM-dd");
-        this.end = date.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
       },
       init () {
@@ -158,13 +156,12 @@
       },
 
       getAnalysis () {
-        let Params = new URLSearchParams();
-        Params.append('adoptToken', this.token);
-        Params.append('startDate', this.start);
-        Params.append('stopDate', this.end);
-        Params.append('PlatformId', this.platVal);
-        Params.append('EditionId', this.Eval);
-        Params.append('channelId', this.val);
+          let Params = new URLSearchParams();
+          Params.append('adoptToken', this.token);
+         ((this.curtext == '自定义') ? Params.append('date', this.currentDate) : Params.append('dateType', this.dateType));
+          Params.append('PlatformId', this.platVal);
+          Params.append('EditionId', this.Eval);
+          Params.append('channelId', this.canalVal);
         this.$http.post(this.port + '/eventAnalysis',Params)
             .then( (res) => {
               if (res.status == 200) {
@@ -189,9 +186,10 @@
         console.log(event.incidentName)
       },
       //获取日历时间
-      getTime(msg){
-        this.start = msg[0].Format("yyyy-MM-dd");
-        this.end = msg[1].Format("yyyy-MM-dd");
+      getTime(msg,dateType,curtext){
+        this.currentDate = msg.Format("yyyy-MM-dd");
+        this.dateType = dateType;
+        this.curtext = curtext;
         this.init();
       }
     },

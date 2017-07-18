@@ -56,7 +56,9 @@
           disabledDate(time) {
             return time.getTime() > Date.now() - 3600 * 1000 * 24;
           }
-        }
+        },
+        dateType: '',
+        curtext: ''
       }
     },
     // 平台图表格-->
@@ -87,21 +89,26 @@
       dataChange(val){
         let date = new Date();
         if (val == "昨天") {
-          start.setTime(date.getTime() - 3600 * 1000 * 24);
-          this.value2 = [date];
+          date.setTime(date.getTime() - 3600 * 1000 * 24);
+          this.value2 = date;
+          this.dateType = 1;
         }
         else if (val == "最近7天") {
           date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-          this.value2 = [date];
+          this.value2 = date;
+          this.dateType = 2;
         }
         else if (val == "最近30天") {
           date.setTime(date.getTime() - 3600 * 1000 * 24 * 30);
-          this.value2 = [date];
+          this.value2 = date;
+          this.dateType = 3;
         }
         else if (val == "最近60天") {
           date.setTime(date.getTime() - 3600 * 1000 * 24 * 60);
-          this.value2 = [date];
+          this.value2 = date;
+          this.dateType = 4;
         }
+        this.curtext = val
       },
       rangeChange:function(val){
         if(!val){
@@ -119,7 +126,7 @@
         if(val[0] == null || val[1] == null){
           return
         }
-        this.$emit("timeValue", this.value2)
+        this.$emit("timeValue", this.value2, this.dateType, this.curtext)
       },
       focusPiker() {
         // 模拟点击自定义 使其获得is-active类名
