@@ -15,9 +15,9 @@
       </h1>
     </div>
     <div class="title-box">
-      <Calendar @timeValue="getTime"></Calendar>
-      <div class="title-select-box">
-        <el-select v-model="platVal" placeholder="平台">
+      <Calendar @timeValue="getTime" :showToday="false"></Calendar>
+      <div class="title-select-box" :row="4">
+        <el-select v-model="platVal" placeholder="平台" size="small">
           <el-option
             v-for="plat in plats"
             :key="plat.value"
@@ -70,6 +70,7 @@
     data() {
       return {
         explain: '这是菜单的说明文字',
+        dateType: 'date',
         select: "",
         platVal: '1',
         canalVal: '1',
@@ -291,8 +292,6 @@
         sexChart: null,
         ageChart: null,
         indChart: null,
-        platVal: '1',
-        evalVal: '1',
         start: '',
         end: '',
         token: ''
@@ -305,16 +304,14 @@
       //获取日历时间
       //获取日历时间
       getTime(msg){
-        this.start = msg[0].Format("yyyy-M-d");
-        this.end = msg[1].Format("yyyy-M-d");
-        this.getUserAttr();
+      this.start = msg.Format("yyyy-M-d");
+      this.getUserAttr();
       },
       initParams: function () {
         let date = new Date();
         let start = new Date();
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        start.setTime(start.getTime() - 3600 * 1000 * 24);
         this.start = start.Format("yyyy-MM-dd");
-        this.end = date.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
       },
       init:function () {
@@ -332,7 +329,6 @@
             let sexData = res.data.result.result.gender;
             let ageData = res.data.result.result.age;
             let indData = res.data.result.result.industry;
-            console.log(sexData)
             this.sexChart.setOption({
               series: [{
                 // 根据名字对应到相应的系列
@@ -371,18 +367,23 @@
           }
         },(err)=>{
           //view('网络错误')
-          alert('网络错误')
+          this.$message({
+            showClose: true,
+            message: '网络错误',
+            type: 'error',
+            duration: 2500
+          })
         })
       },
       drawLine(){
         this.sexChart = echarts.init(document.getElementById('sexRatio'));
-        this.sexChart.setOption(this.sexOptions)
+        this.sexChart.setOption(this.sexOptions);
 
         this.ageChart = echarts.init(document.getElementById('ageChart'));
-        this.ageChart.setOption(this.ageOptions)
+        this.ageChart.setOption(this.ageOptions);
 
         this.indChart = echarts.init(document.getElementById('industry'));
-        this.indChart.setOption(this.indOptions)
+        this.indChart.setOption(this.indOptions);
 
         window.onresize = this.sexChart.resize;
         window.onresize = this.ageChart.resize;

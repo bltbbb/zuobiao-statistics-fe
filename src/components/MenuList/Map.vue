@@ -15,7 +15,7 @@
       </h1>
     </div>
     <div class="title-box">
-      <Calendar @timeValue="getTime"></Calendar>
+      <Calendar @timeValue="getTime" :showToday="false"></Calendar>
       <div class="title-select-box">
         <el-select v-model="platVal" placeholder="平台">
           <el-option
@@ -256,17 +256,15 @@
         this.getRegionPages();
       },
       getTime(msg){
-        this.start = msg[0].Format("yyyy-M-d");
-        this.end = msg[1].Format("yyyy-M-d");
+        this.start = msg.Format("yyyy-M-d");
         this.getRegion();
         this.getRegionPages();
       },
       initParams: function () {
         let date = new Date();
         let start = new Date();
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        start.setTime(start.getTime() - 3600 * 1000 * 24);
         this.start = start.Format("yyyy-MM-dd");
-        this.end = date.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
         this.size = 20;
       },
