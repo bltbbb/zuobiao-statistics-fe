@@ -16,8 +16,16 @@
             <input type="text" id="password" placeholder="请输入密码" v-model="password" :class="{danger:pwEmpty}" @focus="pwEmpty = false">
           </div>
         </div>
-        <div :class="loginInfo?'success':'error'" v-show="showMsg">{{errorText}}</div>
+        <!--<div :class="loginInfo?'success':'error'" v-show="showMsg">{{errorText}}</div>-->
         <button @click="login">登录</button>
+        <transition name="fade-in">
+          <div id="screen" v-show="showScreen">
+            <div class="spinner">
+              <div class="double-bounce1"></div>
+              <div class="double-bounce2"></div>
+            </div>
+          </div>
+        </transition>
       </div>
     </transition>
 
@@ -50,7 +58,8 @@
             pwEmpty: false,
             showTable: false,
             showMsg: false,
-            loginInfo: false
+            loginInfo: false,
+            showScreen: false
         }
     },
     methods: {
@@ -60,16 +69,18 @@
             this.userEmpty = true;
             this.pwEmpty = true;
             this.showMsg = true;
-            this.errorText = '请输入用户名和密码'
+            this.$message.warning('请输入用户名和密码');
             return;
           }
           //如果没有密码
           if (this.password == '') {
             this.pwEmpty = true;
             this.showMsg = true;
-            this.errorText = '请输入密码'
+            this.$message.warning('请输入密码');
             return;
           }
+
+          this.showScreen = true;
 
           //登录参数
           let loginParams = new URLSearchParams();
@@ -81,9 +92,6 @@
           //测试接口 登录成功后将获取的token保存在cookie中
           axios.post('http://192.168.1.201:9999/authc/login', loginParams).then((res)=>{
               if(res.data.status === 0){
-                this.showMsg = true;
-                this.loginInfo = true;
-                this.errorText = '登录成功';
                 //设置cookie
                 this.$cookie.set('adoptToken', res.data.result.adoptToken, 1);
 
@@ -96,23 +104,34 @@
                   this.$store.state.menuInfo = res.data;
                   lockr.set("menuInfo",res.data);      //将数据存入localStorage 以便免登陆应用
                   this.$router.push('/Content/Survey');    //跳转
+                },(err)=>{
+                  this.$message.error('网络错误');
                 })
 
               }else if(res.status === 1){
-                this.showMsg = true;
-                this.loginInfo = false;
-                this.errorText = '用户名不存在'
+                this.showScreen = false;
+                this.$message.error('用户名不存在');
               }else
               {
-                this.showMsg = true;
-                this.loginInfo = false;
-                this.errorText = '用户名或密码错误'
+                this.showScreen = false;
+                this.$message.error('用户名或密码错误');
             }
+          },(err)=>{
+            this.$message.error('网络错误');
           });
         }
     },
+    created(){
+      let _this = this;
+      document.onkeydown = function(e){
+        let key = e.keyCode;
+        if (key === 13){
+            _this.login();
+        }
+      }
+    },
     mounted(){
-        this.showTable = true
+        this.showTable = true;
     }
   }
 </script>
@@ -208,59 +227,67 @@
     transform: translateY(50px)
     opacity: 0
 
+  /*fadeIn动画 */
+  .fade-in-enter-active
+    transition: all .8s ease
+
+  .fade-in-leave-active
+    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0)
+
+  .fade-in-enter, .slide-fade-leave-active
+    opacity: 0
+
 
   /*loading*/
-  .spinner
-    position: relative
-    left: 50%
-    top: 50%
-    margin-left: -25px
-    margin-top: -20px
-    width: 50px
-    height: 40px
-    text-align: center
-    font-size: 10px
-    z-index: 99
-    > div
-      background-color: #fff
+  #screen
+    position: absolute
+    width: 100%
+    height: 100%
+    left: 0
+    top: 0
+    background: rgba(255,255,255,0.9)
+    .spinner
+      width: 60px
+      height: 60px
+      position: relative
+      margin: 100px auto
+
+    .double-bounce1
+      width: 100%
       height: 100%
-      width: 6px
-      display: inline-block
-      animation: sk-stretchdelay 1.2s infinite ease-in-out
-    .rect2
-      animation-delay: -1.1s
-    .rect3
+      border-radius: 50%
+      background-color: rgba(122, 143, 224,0.5)
+      position: absolute
+      top: 0
+      left: 0
+      -webkit-animation: bounce 2.0s infinite ease-in-out
+      animation: bounce 2.0s infinite ease-in-out
+
+    .double-bounce2
+      width: 100%
+      height: 100%
+      border-radius: 50%
+      background-color: rgba(122, 143, 224,0.5)
+      position: absolute
+      top: 0
+      left: 0
+      -webkit-animation: bounce 2.0s infinite ease-in-out
+      animation: bounce 2.0s infinite ease-in-out
+      -webkit-animation-delay: -1.0s
       animation-delay: -1.0s
-    .rect4
-      animation-delay: -0.9s
-    .rect5
-      animation-delay: -0.8s
 
-  @-webkit-keyframes sk-stretchdelay
-    0%, 40%, 100%
-      -webkit-transform: scaleY(0.4)
+    @-webkit-keyframes bounce
+      0%, 100%
+        -webkit-transform: scale(0)
 
-    20%
-      -webkit-transform: scaleY(1)
+      50%
+        -webkit-transform: scale(1)
 
-
-  @keyframes sk-stretchdelay
-    0%, 40%, 100%
-      transform: scaleY(0.4)
-      -webkit-transform: scaleY(0.4)
-
-    20%
-      transform: scaleY(1)
-      -webkit-transform: scaleY(1)
-
-  .screen
-    position: fixed
-    left: 50%
-    top: 50%
-    margin-left: -50px
-    margin-top: -40px
-    width: 100px
-    height: 80px
-    background: rgba(0,0,0,0.5)
-    border-radius: 5px
+    @keyframes bounce
+      0%, 100%
+        transform: scale(0)
+        -webkit-transform: scale(0)
+      50%
+        transform: scale(1)
+        -webkit-transform: scale(1)
 </style>
