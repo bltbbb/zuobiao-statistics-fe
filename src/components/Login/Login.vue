@@ -104,7 +104,11 @@
                   this.$store.state.menuInfo = res.data;
                   lockr.set("menuInfo",res.data);      //将数据存入localStorage 以便免登陆应用
                   this.$router.push('/Content/Survey');    //跳转
+                  this.showScreen = false;
+                  this.userName = '';
+                  this.password = '';
                 },(err)=>{
+                  this.showScreen = false;
                   this.$message.error('网络错误');
                 })
 
@@ -232,9 +236,9 @@
     transition: all .8s ease
 
   .fade-in-leave-active
-    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0)
+    transition: all .8s ease
 
-  .fade-in-enter, .slide-fade-leave-active
+  .fade-in-enter, .fade-in-leave-active
     opacity: 0
 
 

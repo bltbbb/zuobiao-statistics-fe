@@ -6,9 +6,9 @@
       </div>
 
       <div class="nav-top">
-        <a href="#"><i class="el-icon-date"></i><span>应用概况</span></a>
-        <a href="#"><i class="el-icon-date"></i><span>{{userInfo.userName}}</span></a>
-        <a href="#"><i class="el-icon-date"></i><span>退出</span></a>
+        <a href="javascript:;"><i class="el-icon-date"></i><span>应用概况</span></a>
+        <a href="javascript:;"><i class="el-icon-date"></i><span>{{userInfo.userName}}</span></a>
+        <a href="javascript:;" @click="loginOut"><i class="el-icon-date"></i><span>退出</span></a>
       </div>
 
     </el-breadcrumb>
@@ -58,6 +58,13 @@
         axios.post('http://192.168.1.201:9999/getTokenUser',tokenParams).then((res)=>{
           this.userInfo = res.data.result
         })
+      },
+      methods:{
+        loginOut(){
+          lockr.rm("menuInfo");
+          this.$cookie.delete('adoptToken');
+          this.$router.push('/login');
+        }
       }
   }
 </script>
