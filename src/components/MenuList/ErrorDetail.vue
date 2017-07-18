@@ -265,3 +265,18 @@
   @import '../../assets/css/page/public.scss';
   @import '../../assets/css/page/error.scss';
 </style>
+
+<style scoped lang="scss">
+  @media screen and (max-width: 1440px) {
+    .title-select-box{
+      float: right!important;
+      margin-top: 0;
+    }
+  }
+  @media screen and (max-width: 1244px) {
+    .title-select-box{
+      float: left!important;
+      margin-top: 20px;
+    }
+  }
+</style>
