@@ -52,3 +52,11 @@
 .page-select{
   float:right;
 }
+
+@media screen and (max-width: 1440px) {
+  .page-select {
+    position: absolute;
+    margin-top: 110px;
+    margin-left: 20px;
+  }
+}

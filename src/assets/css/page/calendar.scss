@@ -47,3 +47,12 @@
   color: #1f2d3d;
 }
 
+/* 兼容 */
+
+@media screen and (max-width: 1440px) {
+  .title-select-box {
+    float: left!important;
+    margin-top: 20px;
+  }
+}
+
