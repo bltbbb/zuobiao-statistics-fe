@@ -37,15 +37,15 @@
     <div class="all">
       <!-- 平台切换-->
       <el-tabs type="border-card" v-model="activeName">
-          <el-tab-pane v-for="gameName in gameNames" :key="gameName.pid" :name="gameName.pid">
-            <span slot="label"><i class="el-icon-date"></i> {{gameName.plat}}</span>
-              <div class="box" :key="gameName.pid">
+          <el-tab-pane v-for="gameName in gameNames" :key="gameName.id+''" :name="gameName.id+''">
+            <span slot="label"><i class="el-icon-date"></i> {{gameName.name}}</span>
+              <div class="box" :key="gameName.id+''">
                 <div class="headText">
                   <p class="slot"></p>
                   <p>今日</p>
                   <p>昨日</p>
                 </div>
-                <div class="box-list" v-for="data in gameName.dataNum" @click="choice(data.id)" :class="{active:type == data.id}">
+                <div class="box-list" v-for="data in platData" @click="choice(data.id)" :class="{active:type == data.id}">
                   <div class="" name="first">{{data.title}}</div>
                   <div class=""  name="second">{{data.today}}</div>
                   <div class=""  name="third">{{data.yday}}</div>
@@ -58,10 +58,10 @@
       <div class="select-box">
         <el-select v-model="dateVal" placeholder="请选择">
           <el-option
-            v-for="(select,key) in options"
-            :key="key"
-            :label="select"
-            :value="key">
+            v-for="item in options"
+            :key="item.key"
+            :label="item.select"
+            :value="item.key">
           </el-option>
         </el-select>
       </div>
@@ -82,15 +82,34 @@
       return {
         explain: '这是菜单的说明文字',
         // 第一部分
-        list: {},
+        list: [
+            {number:"123123",id:"1",title:"积累用户",message:"Bar"},
+            {number:"123123123",id:"2",title:"过去7天获取用户",message:"BAR"},
+            {number:"498564645",id:"3",title:"过去30天获取用户",message:"BAR"}
+            ],
         // 平台切换
         gameNames: [],
-        options: {},
+        options: [
+          {key:'1',select:'今天'},
+          {key:'2',select:'昨天'},
+          {key:'3',select:'最近7天'},
+          {key:'4',select:'最近30天'},
+          {key:'5',select:'最近60天'}
+        ],
+        platData: [
+          {id:1,title:"注册用户",today:"",yday:""},
+          {id:2,title:"登录用户",today:"",yday:""},
+          {id:3,title:"登录次数",today:"",yday:""},
+          {id:4,title:"人均登录次数",today:"",yday:""},
+        ],
         dateVal: '1',
-        activeName:"1",
+        activeName:"-1",
+        myChart: null,
         start: '',
         end: '',
         token: '',
+        chartData: [],
+        chartName: ['注册用户','登录用户','登录次数','人均登录次数'],
         type: 1
       }
     }
@@ -108,9 +127,9 @@
       drawLine()
       {
         // 基于准备好的dom，初始化echarts实例
-        let myChart = echarts.init(document.getElementById('myChart'));
+        this.myChart = echarts.init(document.getElementById('myChart'));
         // 绘制图表
-        myChart.setOption({
+        this.myChart.setOption({
           title: {
               text: '全平台注册用户',
               x: 'center',
@@ -121,9 +140,6 @@
           },
           tooltip: {
             trigger: 'axis'
-          },
-          legend: {
-            data: ['今天', '昨天']
           },
           xAxis: {
             data: ["11","12","13","15","5"]
@@ -154,15 +170,29 @@
           }]
 
         });
-        window.onresize = myChart.resize;
+        window.onresize = this.myChart.resize;
       },
+      //平台内数据
       choice:function(value){
-         this.type = value;
+          this.type = value;
+          this.myChart.setOption({
+            xAxis: {
+              data: this.chartData[value-1].x
+            },
+            series: [{
+              // 根据名字对应到相应的系列
+              name: this.chartName[value-1],
+              data: this.chartData[value-1].y
+            }]
+          })
       },
       initParams: function () {
         let date = new Date();
         let start = new Date();
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        //初始化事件段
+        start.setTime(start.getTime() - 3600 * 1000 * 24 *2);
+        date.setTime(date.getTime() - 3600 * 1000 * 24);
+
 
         this.start = start.Format("yyyy-M-d");
         this.end = date.Format("yyyy-M-d");
@@ -171,13 +201,15 @@
       init:function () {
         //参数
 
-        this.$http.get('http://192.168.1.201:9999/getTotalSurvey',{
+        this.$http.get('http://192.168.1.32/getTotalSurvey',{
           params:{
             adoptToken:this.token
           }
         }).then((res)=>{
             if(res.data.status == 0){
-              this.list = res.data.result.result
+              this.list[0].number = res.data.result.result[0].userCount;
+              this.list[1].number = res.data.result.result[0].weekUserCount;
+              this.list[2].number = res.data.result.result[0].monthUserCount;
             }
             else{
               //view(res.data.msg)
@@ -186,16 +218,32 @@
         },(err)=>{
             //view('网络错误')
             alert('网络错误')
+        });
+
+        this.$http.get('http://192.168.1.32/getPlatform',{
+            params:{
+              adoptToken:this.token
+            }
+        }).then((res)=>{
+            this.gameNames = res.data.result.result;
         })
 
-        this.$http.get('http://192.168.1.201:9999/getFullPlatform',{
+        this.$http.get('http://192.168.1.32/getFullPlatform',{
           params:{
-            adoptToken:this.token
+            adoptToken:this.token,
+            platformId:this.platformId
           }
         }).then((res)=>{
           if(res.data.status == 0){
-            this.gameNames = res.data.result.result.gameNames
-            this.options = res.data.result.result.day
+            let data = res.data.result.result
+            this.platData[0].today = data[0].registerUserCount;
+            this.platData[0].yday = data[1].registerUserCount;
+            this.platData[1].today = data[0].signinUserCount;
+            this.platData[1].yday = data[1].signinUserCount;
+            this.platData[2].today = data[0].signinUserCount;
+            this.platData[2].yday = data[1].signinUserCount;
+            this.platData[3].today = data[0].avgSigninTimes;
+            this.platData[3].yday = data[1].avgSigninTimes;
           }
           else{
             //view(res.data.msg)
@@ -213,21 +261,27 @@
         Params.append('adoptToken', this.token);
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
-        Params.append('type', this.type);
         Params.append('PlatformId', this.activeName);
 
-        this.$http.post('http://192.168.1.201:9999/getDateNumber',Params).then((res)=>{
+        this.$http.post('http://192.168.1.32/getDateNumber',Params).then((res)=>{
           if(res.data.status == 0){
-            let myChart = echarts.init(document.getElementById('myChart'));
-            myChart.setOption({
+            let data = res.data.result.result;
+            this.chartData.push(data.registerUserCount);
+            this.chartData.push(data.signinUserCount);
+            this.chartData.push(data.signinTimesCount);
+            this.chartData.push(data.avgSigninTimes);
+            this.myChart = echarts.init(document.getElementById('myChart'));
+            this.myChart.setOption({
               xAxis: {
-                data: res.data.result.result.x
+                data: this.chartData[0].x
               },
               series: [{
                 // 根据名字对应到相应的系列
-                data: res.data.result.result.y
+                name: this.chartName[0],
+                data: this.chartData[0].y
               }]
             })
+            this.type = 1;
           }
           else{
             //view(res.data.msg)
@@ -273,11 +327,7 @@
         //异步请求数据
         this.getData();
       },
-      activeName: function () {
-        //异步请求数据
-        this.getData();
-      },
-      type: function () {
+      activeName: function (val) {
         //异步请求数据
         this.getData();
       }
