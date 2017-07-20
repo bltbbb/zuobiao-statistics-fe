@@ -22,9 +22,9 @@
         <el-select v-model="platVal" placeholder="平台">
           <el-option
             v-for="plat in plats"
-            :key="plat.value"
-            :label="plat.label"
-            :value="plat.value">
+            :key="plat.name"
+            :label="plat.name"
+            :value="plat.id">
           </el-option>
         </el-select>
         <el-select v-model="canalVal" placeholder="渠道">
@@ -38,9 +38,9 @@
         <el-select v-model="evalVal" placeholder="版本">
           <el-option
             v-for="edition in editions"
-            :key="edition.Eval"
-            :label="edition.label"
-            :value="edition.Eval">
+            :key="edition.name"
+            :label="edition.name"
+            :value="edition.id">
           </el-option>
         </el-select>
       </div>
@@ -88,40 +88,28 @@
     data() {
       return {
         port: 'http://192.168.1.32:80',
-        platVal: '1',
-        canalVal: '1',
-        evalVal: '1',
+        platVal: -1,
+        canalVal: '-1',
+        evalVal: -1,
         explain: '这是菜单的说明文字',
         //  页面列表
-        tableData: [],
+        tableData: [
+          {
+            name: "注册界面1",
+            id: 1,
+            eventNum: 45465465465,
+            triggerUserNum: 465465465465
+          }
+        ],
         activeIndex: '1',
         activeIndex2: '1',
 
         radio3: '今天',
         plats: [
-          {
-          value: '1',
-          label: '全平台'
-         },
-          {
-          value: '2',
-          label: 'iOS'
-         },
-          {
-            value: '3',
-            label: 'Android'
-          },
-          {
-            value: '4',
-            label: 'PC'
-          },
-          {
-            value: '5',
-            label: 'web'
-          }
+
         ],
         canals: [{
-          val: '1',
+          val: '-1',
           label: '全部渠道'
         }],
         editions: [
@@ -136,7 +124,8 @@
         Eval: "1",
         currentDate:'',
         dateType: 1,
-        curtext: ''
+        curtext: '',
+        getEditionId: ''
       }
     },
     mounted () {
@@ -152,29 +141,91 @@
       },
       init () {
         this.initParams();
+        this.getPlatform();
+        this.getEdition();
         this.getAnalysis();
       },
+      //  获取平台信息
+      getPlatform () {
+        this.$http.get(this.port + '/getPlatform', {
+          params:{
+            adoptToken: this.token
+          }
+        }).then( (res) => {
+            if (res.status == 200) {
+              if (res.data.status == 0) {
+                let data = res.data.result.result;
+                this.plats = data;
+              }
+              else if (res.data.status == 1) {
+                console.log('平台信息请求数据为空');
+              }
+            }
+            else{
+              console.log('请求失败');
+            }
 
+          }, (err) => {
+            console.log('获取失败');
+            console.log('err',err);
+        });
+      },
+
+      //  获取版本信息
+      getEdition () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('appPlatId', this.platVal)
+        this.$http.post(this.port + '/getEdition',Params).then( (res) => {
+          if (res.status == 200) {
+            if (res.data.status == 0) {
+              let data = res.data.result.result;
+              this.editions = data;
+              this.getEditionId = data[0].id;
+            }
+            else if (res.data.status == 1) {
+              console.log('版本信息请求数据为空');
+            }
+          }
+          else{
+            console.log('请求失败');
+          }
+
+        }, (err) => {
+          console.log('获取失败');
+          console.log('err',err);
+        });
+      },
+
+      //  获取事件
       getAnalysis () {
           let Params = new URLSearchParams();
           Params.append('adoptToken', this.token);
          ((this.curtext == '自定义') ? Params.append('date', this.currentDate) : Params.append('dateType', this.dateType));
-          Params.append('PlatformId', this.platVal);
-          Params.append('EditionId', this.Eval);
+          Params.append('platformId', this.platVal);
+          Params.append('versionId', 0);
           Params.append('channelId', this.canalVal);
-        this.$http.post(this.port + '/eventAnalysis',Params)
-            .then( (res) => {
-              if (res.status == 200) {
-                let data = res.data.result.result;
-                this.tableData = data
-              }
-              else {
-                console.log('获取数据失败')
-              }
+          this.$http.post(this.port + '/eventAnalysis',Params)
+              .then( (res) => {
 
-        }, (err) => {
-            console.log('err',err)
-        });
+                if (res.status == 200) {
+                  if (res.data.status == 0) {
+                    console.log('res',res)
+                    let data = res.data.result.result;
+  //                this.tableData = data
+                  }
+                  else if (res.data.status == 1) {
+                    console.log('事件信息请求数据为空');
+                  }
+                }
+                else {
+                  console.log('请求失败')
+                }
+
+          }, (err) => {
+              console.log('获取失败')
+              console.log('err',err)
+          });
       },
 
 
@@ -198,15 +249,17 @@
     },
     watch: {
       // 异步请求待用
-      platVal (val) {
+      platVal (val) {  //  平台变化
         this.platVal = val;
+        this.getEdition();
+        this.evalVal = this.getEditionId;
         this.getAnalysis();
       },
       canalVal (val) {
         this.canalVal = val;
         this.getAnalysis();
       },
-      evalVal (val) {
+      evalVal (val) {  //  版本变化
         this.evalVal = val;
         this.getAnalysis();
       }
