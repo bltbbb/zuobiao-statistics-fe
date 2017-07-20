@@ -191,7 +191,6 @@
           else{
             console.log('请求失败');
           }
-
         }, (err) => {
           console.log('获取失败');
           console.log('err',err);
@@ -217,7 +216,6 @@
           else{
             console.log('请求失败');
           }
-
         }, (err) => {
           console.log('获取失败');
           console.log('err',err);
@@ -280,10 +278,11 @@
 
         }
       else {
-          console.log('获取数据失败')
+          console.log('请求失败')
         }
 
       }, (err) => {
+            console.log('获取失败')
           console.log('err',err)
         });
       },
@@ -312,10 +311,10 @@
               }
             }
             else {
-              console.log('获取数据失败')
+              console.log('请求失败')
             }
-
           }, (err) => {
+            console.log('获取失败')
             console.log('err',err)
           });
       },
