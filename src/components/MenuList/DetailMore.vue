@@ -15,24 +15,16 @@
       </h1>
     </div>
     <div class="title-box">
-      <div class="title-select-box">
-        <el-select v-model="val" placeholder="渠道">
-          <el-option
-            v-for="canal in canals"
-            :key="canal.val"
-            :label="canal.label"
-            :value="canal.val">
-          </el-option>
-        </el-select>
-        <el-select v-model="Eval" placeholder="版本">
-          <el-option
-            v-for="edition in editions"
-            :key="edition.Eval"
-            :label="edition.label"
-            :value="edition.Eval">
-          </el-option>
-        </el-select>
-      </div>
+
+      <versiongetdata
+        @Platform="childgetPlatform"
+        @getEdition1="childgetEdition1"
+        @changeVal="childplatVal1"
+        @changeEvalVal="childchangeEvalVal"
+        @canalVal1="childcanalVal1"
+      >
+      </versiongetdata>
+
     </div>
     <div class="trend-box">
       <div class="part1">
@@ -191,28 +183,22 @@
   require('echarts/lib/component/tooltip');
   require('echarts/lib/component/title');
   require('echarts/lib/component/legend');
+  import versiongetdata from '../versionInformation/VersionGetData'
   export default {
     data() {
       return {
-        port: 'http://192.168.1.201:9999',
+//        port: 'http://192.168.1.201:9999',
+        port: 'http://192.168.1.32:80',
         token: '',
         errId: '',
         explain: '这是菜单的说明文字',
+
+        platVal: '',
+        evalVal: '',
+        canalVal: '',
+
+        getEditionId: '',
         value: '1',
-        canals: [{
-          val: '1',
-          label: '全部渠道'
-        }],
-        val: '1',
-        editions: [{
-          Eval: '1',
-          label: '全部版本'
-        },
-          {
-            Eval: '2',
-            label: '1.4'
-          }],
-        Eval: "1",
         // 第一部分
         list: [
           {id: "1", title: "出错最多机型", message: 'Foo', number: "8096798"},
@@ -266,8 +252,10 @@
             address: '上海市普陀区金沙江路 1516 弄'
           }]
       }
-    }
-    ,
+    },
+    components: {
+      versiongetdata
+    },
     mounted () {
       this.initParams();
       this.init();
@@ -283,6 +271,86 @@
       init () {
         this.getDetailed();
       },
+
+      //  平台信息
+      childgetPlatform (plats) {
+        this.platVal = plats;
+      },
+
+      childplatVal1 (childplatVal1) {
+        this.platVal = childplatVal1;
+//        this.getReporting();
+//        this.getType();
+      },
+
+      //  版本信息
+      childgetEdition1 (childgetEdition1) {
+        this.evalVal = childgetEdition1;
+      },
+
+      childchangeEvalVal (childchangeEvalVal) {
+        this.evalVal = childchangeEvalVal;
+//        this.getReporting();
+//        this.getType();
+      },
+
+      //  渠道信息
+      childcanalVal1 (canalVal) {
+        this.canalVal = canalVal * 1;
+      },
+
+      //  获取平台信息
+      getPlatform () {
+        this.$http.get(this.port + '/getPlatform', {
+          params:{
+            adoptToken: this.token
+          }
+        }).then( (res) => {
+          if (res.status == 200) {
+            if (res.data.status == 0) {
+              let data = res.data.result.result;
+              this.plats = data;
+            }
+            else if (res.data.status == 1) {
+              console.log('平台信息请求数据为空');
+            }
+          }
+          else{
+            console.log('请求失败');
+          }
+        }, (err) => {
+          console.log('获取失败');
+          console.log('err',err);
+        });
+      },
+
+      //  获取版本信息
+      getEdition () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('appPlatId', this.platVal)
+        this.$http.post(this.port + '/getLogOrEventEdition',Params)
+          .then( (res) => {
+            if (res.status == 200) {
+              if (res.data.status == 0) {
+                let data = res.data.result.result;
+                this.editions = data;
+                this.getEditionId = data[0].appVersionId;
+              }
+              else if (res.data.status == 1) {
+                console.log('版本信息请求数据为空');
+              }
+            }
+            else{
+              console.log('请求失败');
+            }
+          }, (err) => {
+            console.log('获取失败');
+            console.log('err',err);
+          });
+      },
+
+
       getDetailed () {
         let Params = new URLSearchParams();
         Params.append('adoptToken',this.token);
@@ -302,6 +370,7 @@
         console.log(`当前页: ${val}`);
       },
       handleClick(tab, event) {
+        alert(1)
         console.log(tab, event);
       }
     }

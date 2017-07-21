@@ -16,32 +16,16 @@
     </div>
     <div class="title-box">
       <Calendar @timeValue="getTime"></Calendar>
-      <div class="title-select-box">
-        <el-select v-model="platVal" placeholder="平台">
-          <el-option
-            v-for="plat in plats"
-            :key="plat.id"
-            :label="plat.name"
-            :value="plat.id">
-          </el-option>
-        </el-select>
-        <el-select v-model="val" placeholder="渠道">
-          <el-option
-            v-for="canal in canals"
-            :key="canal.val"
-            :label="canal.label"
-            :value="canal.val">
-          </el-option>
-        </el-select>
-        <el-select v-model="Eval" placeholder="版本">
-          <el-option
-            v-for="edition in editions"
-            :key="edition.id"
-            :label="edition.name"
-            :value="edition.id">
-          </el-option>
-        </el-select>
-      </div>
+
+      <versiongetdata
+        @Platform="childgetPlatform"
+        @getEdition1="childgetEdition1"
+        @changeVal="childplatVal1"
+        @changeEvalVal="childchangeEvalVal"
+        @canalVal1="childcanalVal1"
+      >
+      </versiongetdata>
+
     </div>
     <div class="trend-box">
       <div class="part1">
@@ -91,24 +75,20 @@
   require('echarts/lib/component/title');
   require('echarts/lib/component/legend');
   import Calendar from '@/components/calendar/Calendar'
+  import versiongetdata from '../versionInformation/VersionGetData'
   export default {
     data() {
       return {
 //        port: 'http://192.168.1.201:9999',
         port: 'http://192.168.1.32:80',
         explain: '这是菜单的说明文字',
-        platVal: -1,
-        plats: [],
+
+        platVal: '',
+        evalVal: '',
+        canalVal: '',
+
         getEditionId: '',
         value: '1',
-        canals: [{
-          val: '1',
-          label: '全部渠道'
-        }],
-        val: '1',
-        Eval: -1,
-        editions: [],
-
         // 第一部分
         list: [
           {id: "1", title: "登录用户", message: 'Foo', number: "8096798"},
@@ -144,7 +124,8 @@
     }
     ,
     components: {
-      Calendar
+      Calendar,
+      versiongetdata
     },
     methods: {
       selected: function (gameName) {
@@ -163,60 +144,32 @@
       },
 
       init () {
-        this.getPlatform();
-        this.getEdition();
         this.getDetailedPages();
       },
 
-      //  获取平台信息
-      getPlatform () {
-        this.$http.get(this.port + '/getPlatform', {
-          params:{
-            adoptToken: this.token
-          }
-        }).then( (res) => {
-          if (res.status == 200) {
-            if (res.data.status == 0) {
-              let data = res.data.result.result;
-              this.plats = data;
-            }
-            else if (res.data.status == 1) {
-              console.log('平台信息请求数据为空');
-            }
-          }
-          else{
-            console.log('请求失败');
-          }
-        }, (err) => {
-          console.log('获取失败');
-          console.log('err',err);
-        });
+      //  平台信息
+      childgetPlatform (plats) {
+        this.platVal = plats;
       },
 
-      //  获取版本信息
-      getEdition () {
-        let Params = new URLSearchParams();
-        Params.append('adoptToken', this.token);
-        Params.append('appPlatId', this.platVal)
-        this.$http.post(this.port + '/getEdition',Params)
-          .then( (res) => {
-          if (res.status == 200) {
-            if (res.data.status == 0) {
-              let data = res.data.result.result;
-              this.editions = data;
-              this.getEditionId = data[0].id;
-            }
-            else if (res.data.status == 1) {
-              console.log('版本信息请求数据为空');
-            }
-          }
-          else{
-            console.log('请求失败');
-          }
-        }, (err) => {
-          console.log('获取失败');
-          console.log('err',err);
-        });
+      childplatVal1 (childplatVal1) {
+        this.platVal = childplatVal1;
+        this.getDetailedPages();
+      },
+
+      //  版本信息
+      childgetEdition1 (childgetEdition1) {
+        this.evalVal = childgetEdition1;
+      },
+
+      childchangeEvalVal (childchangeEvalVal) {
+        this.evalVal = childchangeEvalVal;
+        this.getDetailedPages();
+      },
+
+      //  渠道信息
+      childcanalVal1 (canalVal) {
+        this.canalVal = canalVal * 1;
       },
 
       //  表格信息
@@ -228,9 +181,9 @@
         Params.append('errId', this.errId);
         Params.append('pageSize', this.size);
         Params.append('currentPage', this.currentPage4);
-        Params.append('versionId', this.Eval);
-        Params.append('channelId', this.val);
-        Params.append('appPlatId', this.platVal);
+        Params.append('versionId', this.evalVal);
+        Params.append('appPlatId', this.platVal)
+        Params.append('channelId', this.canalVal);
         this.$http.post(this.port + '/errorDetailedPages',Params)
           .then( (res) => {
             if (res.status == 200){
@@ -312,28 +265,6 @@
       },
       moreLook(){
         this.$router.push({name: 'DetailMore',query:{errId: this.errId}});
-      }
-    },
-    watch: {
-
-      //  平台信息
-      platVal (platVal) {
-        this.platVal = platVal;
-        this.Eval = this.getEditionId;
-        this.getEdition();
-        this.getDetailedPages();
-      },
-
-      //  渠道信息
-      val (channel) {
-        this.val = channel;
-        this.getDetailedPages();
-      },
-
-      //  版本信息
-      Eval (versions) {
-        this.Eval = versions
-        this.getDetailedPages();
       }
     }
   }

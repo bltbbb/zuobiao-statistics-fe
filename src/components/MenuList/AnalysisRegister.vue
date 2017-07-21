@@ -3,7 +3,7 @@
   <div class="content-box">
     <div class="header-wrapper">
       <h1>
-        埋点页面
+        <span>{{ eventName }}</span>
         <el-popover
           placement="right"
           width="200"
@@ -26,32 +26,41 @@
     </div>
     <div class="title-box">
       <Calendar @timeValue="getTime" :showToday="false"></Calendar>
-      <div class="title-select-box">
-        <el-select v-model="value" placeholder="平台">
-          <el-option
-            v-for="plat in plats"
-            :key="plat.name"
-            :label="plat.name"
-            :value="plat.id">
-          </el-option>
-        </el-select>
-        <el-select v-model="val" placeholder="渠道">
-          <el-option
-            v-for="canal in canals"
-            :key="canal.val"
-            :label="canal.label"
-            :value="canal.val">
-          </el-option>
-        </el-select>
-        <el-select v-model="Eval" placeholder="版本">
-          <el-option
-            v-for="edition in editions"
-            :key="edition.name"
-            :label="edition.name"
-            :value="edition.id">
-          </el-option>
-        </el-select>
-      </div>
+      <versiongetdata
+        @Platform="childgetPlatform"
+        @getEdition1="childgetEdition1"
+        @changeVal="childplatVal1"
+        @changeEvalVal="childchangeEvalVal"
+        @canalVal1="childcanalVal1"
+      >
+      </versiongetdata>
+      <!--<div class="title-select-box">-->
+        <!--<el-select v-model="value" placeholder="平台">-->
+          <!--<el-option-->
+            <!--v-for="plat in plats"-->
+            <!--:key="plat.name"-->
+            <!--:label="plat.name"-->
+            <!--:value="plat.id">-->
+          <!--</el-option>-->
+        <!--</el-select>-->
+        <!--<el-select v-model="val" placeholder="渠道">-->
+          <!--<el-option-->
+            <!--v-for="canal in canals"-->
+            <!--:key="canal.val"-->
+            <!--:label="canal.label"-->
+            <!--:value="canal.val">-->
+          <!--</el-option>-->
+        <!--</el-select>-->
+        <!--<el-select v-model="Eval" placeholder="版本">-->
+          <!--<el-option-->
+            <!--v-for="edition in editions"-->
+            <!--:key="edition.appVersionId"-->
+            <!--:label="edition.appVersion"-->
+            <!--:value="edition.appVersionId">-->
+          <!--</el-option>-->
+        <!--</el-select>-->
+      <!--</div>-->
+      <!---->
     </div>
     <div class="trend-box">
       <div class="part1">
@@ -100,6 +109,7 @@
   require('echarts/lib/component/title');
   require('echarts/lib/component/legend');
   import Calendar from '@/components/calendar/Calendar'
+  import versiongetdata from '../versionInformation/VersionGetData'
   export default {
     data() {
       return {
@@ -107,21 +117,35 @@
         port: 'http://192.168.1.32:80',
         explain: '这是菜单的说明文字',
         getEditionId: '',
+        eventName: '',
+        eventId: '',
         //  页面
         pages: [],
         pageVal: 4,
         //  平台
-        plats: [],
-        value: -1,
-        //  渠道
-        canals: [{
-          val: '-1',
-          label: '全部渠道'
-        }],
-        val: '-1',
-        //  版本
-        editions: [],
-        Eval: -1,
+
+        platVal: '',
+        evalVal: '',
+        canalVal: '',
+
+
+//        value: -1,
+//        plats: [],
+//        //  渠道
+//        canals: [{
+//          val: '-1',
+//          label: '全部渠道'
+//        }],
+//        val: '-1',
+//        //  版本
+//        editions: [],
+//        Eval: -1,
+
+
+
+
+
+
         // 第一部分
         radio2: 1,  //  事件触发数量
         //  图表
@@ -148,7 +172,8 @@
 
     },
     components: {
-      Calendar
+      Calendar,
+      versiongetdata
     },
     methods: {
       selected: function (gameName) {
@@ -156,6 +181,9 @@
       },
 
       initParams () {
+        this.eventName =  this.$route.query.eventName;
+        this.eventId =  this.$route.query.eventId;
+        this.metricId = this.eventId;
         let date = new Date();
         let start = new Date();
         start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
@@ -163,63 +191,39 @@
         this.end = date.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
       },
+
       init () {
-        this.getPlatform();
-        this.getEdition();
         this.getInteractionView();
         this.getAnalyzeChart();
         this.getAnalyzePages();
 
       },
 
-      //  获取平台信息
-      getPlatform () {
-        this.$http.get(this.port + '/getPlatform', {
-          params:{
-            adoptToken: this.token
-          }
-        }).then( (res) => {
-          if (res.status == 200) {
-            if (res.data.status == 0) {
-              let data = res.data.result.result;
-              this.plats = data;
-            }
-            else if (res.data.status == 1) {
-              console.log('平台信息请求数据为空');
-            }
-          }
-          else{
-            console.log('请求失败');
-          }
-        }, (err) => {
-          console.log('获取失败');
-          console.log('err',err);
-        });
+      //  平台信息
+      childgetPlatform (plats) {
+        this.platVal = plats;
       },
 
-      //  获取版本信息
-      getEdition () {
-        let Params = new URLSearchParams();
-        Params.append('adoptToken', this.token);
-        Params.append('appPlatId', this.value)
-        this.$http.post(this.port + '/getEdition',Params).then( (res) => {
-          if (res.status == 200) {
-            if (res.data.status == 0) {
-              let data = res.data.result.result;
-              this.editions = data;
-              this.getEditionId = data[0].id;
-            }
-            else if (res.data.status == 1) {
-              console.log('版本信息请求数据为空');
-            }
-          }
-          else{
-            console.log('请求失败');
-          }
-        }, (err) => {
-          console.log('获取失败');
-          console.log('err',err);
-        });
+      childplatVal1 (childplatVal1) {
+        this.platVal = childplatVal1;
+        this.getAnalyzeChart();
+        this.getAnalyzePages();
+      },
+
+      //  版本信息
+      childgetEdition1 (childgetEdition1) {
+        this.evalVal = childgetEdition1;
+      },
+
+      childchangeEvalVal (childchangeEvalVal) {
+        this.evalVal = childchangeEvalVal;
+        this.getAnalyzeChart();
+        this.getAnalyzePages();
+      },
+
+      //  渠道信息
+      childcanalVal1 (canalVal) {
+        this.canalVal = canalVal * 1;
       },
 
       //  查询页面
@@ -240,10 +244,10 @@
               }
             }
             else {
-              consol.log('请求失败')
+              console.log('请求失败')
             }
           }, (err) => {
-            consol.log('获取失败')
+            console.log('获取失败')
             console.log('err',err)
           })
       },
@@ -253,9 +257,9 @@
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
         ((this.curtext == '自定义') ? Params.append('date', this.currentDate) : Params.append('dateType', this.dateType));
-        Params.append('platformId', this.value);
-        Params.append('versionId', 0);
-        Params.append('channelId', this.val);
+        Params.append('platformId', this.platVal);
+        Params.append('versionId', this.evalVal);
+        Params.append('channelId', this.canalVal);
         Params.append('eventId', this.pageVal);
         this.$http.post(this.port + '/EventAnalyzeChart',Params)
           .then( (res) => {
@@ -292,9 +296,9 @@
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
         ((this.curtext == '自定义') ? Params.append('date', this.currentDate) : Params.append('dateType', this.dateType));
-        Params.append('platformId', this.value);
-        Params.append('versionId', 0);
-        Params.append('channelId', this.val);
+        Params.append('platformId', this.platVal);
+        Params.append('versionId', this.evalVal);
+        Params.append('channelId', this.canalVal);
         Params.append('eventId', this.pageVal);
         Params.append('pageSize', this.size);
         Params.append('currentPage', this.currentPage4);
@@ -379,28 +383,6 @@
         this.getAnalyzeChart();
         this.getAnalyzePages();
         console.log('页面',vaule)
-      },
-
-      //  平台数据
-      value (system) {
-        this.value = system;
-        this.getEdition();
-        this.Eval = this.getEditionId
-        this.getAnalyzeChart();
-        this.getAnalyzePages();
-      },
-
-      //  渠道数据
-      val (channel) {
-        this.val = channel;
-        this.init();
-      },
-
-      //  版本数据
-      Eval (versions) {
-        this.Eval = versions;
-        this.getAnalyzeChart();
-        this.getAnalyzePages();
       },
 
       //  事件切换

@@ -1,5 +1,5 @@
 <!--埋点分析-->
-<template>
+<template xmlns:>
   <!--tabe-->
   <div class="ActiveUsers content-box">
     <div class="header-wrapper">
@@ -18,32 +18,14 @@
     <div class="title-box">
       <!--导航-->
       <Calendar @timeValue="getTime" :showToday="false"></Calendar>
-      <div class="title-select-box">
-        <el-select v-model="platVal" placeholder="平台">
-          <el-option
-            v-for="plat in plats"
-            :key="plat.name"
-            :label="plat.name"
-            :value="plat.id">
-          </el-option>
-        </el-select>
-        <el-select v-model="canalVal" placeholder="渠道">
-          <el-option
-            v-for="canal in canals"
-            :key="canal.val"
-            :label="canal.label"
-            :value="canal.val">
-          </el-option>
-        </el-select>
-        <el-select v-model="evalVal" placeholder="版本">
-          <el-option
-            v-for="edition in editions"
-            :key="edition.name"
-            :label="edition.name"
-            :value="edition.id">
-          </el-option>
-        </el-select>
-      </div>
+      <versiongetdata
+        @Platform="childgetPlatform"
+        @getEdition1="childgetEdition1"
+        @changeVal="childplatVal1"
+        @changeEvalVal="childchangeEvalVal"
+        @canalVal1="childcanalVal1"
+      >
+      </versiongetdata>
     </div>
 
     <!--页面名称列表-->
@@ -68,12 +50,12 @@
         </tr>
 
         </thead>
-        <tbody>
-          <tr v-for="vaule in tableData">
-            <td class="table-thead-th-1" v-on:click="handleRowHandle($event)">{{ vaule.name }}</td>
-            <td>{{ vaule.id }}</td>
-            <td>{{ vaule.eventNum }}</td>
-            <td>{{ vaule.triggerUserNum }}</td>
+        <tbody >
+          <tr v-for="(vaule,index) in tableData" >
+            <td class="table-thead-th-1" @click="handleRowHandle(index,$event)">{{ vaule.name }}</td>
+            <td>{{ vaule.interactionViewId }}</td>
+            <td>{{ vaule.visitCount }}</td>
+            <td>{{ vaule.deviceCount }}</td>
           </tr>
         </tbody>
       </table>
@@ -83,49 +65,28 @@
 
 <script type="text/ecmascript-6">
   import Calendar from '@/components/calendar/Calendar'
+  import versiongetdata from '../versionInformation/VersionGetData'
 
   export default {
     data() {
       return {
         port: 'http://192.168.1.32:80',
-        platVal: -1,
-        canalVal: '-1',
-        evalVal: -1,
         explain: '这是菜单的说明文字',
+
+        platVal: '',
+        evalVal: '',
+        canalVal: '',
+
         //  页面列表
-        tableData: [
-          {
-            name: "注册界面1",
-            id: 1,
-            eventNum: 45465465465,
-            triggerUserNum: 465465465465
-          }
-        ],
+        tableData: [],
         activeIndex: '1',
         activeIndex2: '1',
-
         radio3: '今天',
-        plats: [
-
-        ],
-        canals: [{
-          val: '-1',
-          label: '全部渠道'
-        }],
-        editions: [
-          {
-          Eval: '1',
-          label: '全部版本'
-        },
-          {
-            Eval: '2',
-            label: '1.4'
-          }],
         Eval: "1",
         currentDate:'',
         dateType: 1,
-        curtext: '',
-        getEditionId: ''
+        curtext: ''
+
       }
     },
     mounted () {
@@ -141,61 +102,34 @@
       },
       init () {
         this.initParams();
-        this.getPlatform();
-        this.getEdition();
         this.getAnalysis();
       },
-      //  获取平台信息
-      getPlatform () {
-        this.$http.get(this.port + '/getPlatform', {
-          params:{
-            adoptToken: this.token
-          }
-        }).then( (res) => {
-            if (res.status == 200) {
-              if (res.data.status == 0) {
-                let data = res.data.result.result;
-                this.plats = data;
-              }
-              else if (res.data.status == 1) {
-                console.log('平台信息请求数据为空');
-              }
-            }
-            else{
-              console.log('请求失败');
-            }
 
-          }, (err) => {
-            console.log('获取失败');
-            console.log('err',err);
-        });
+      //  平台信息
+      childgetPlatform (plats) {
+        this.platVal = plats;
       },
 
-      //  获取版本信息
-      getEdition () {
-        let Params = new URLSearchParams();
-        Params.append('adoptToken', this.token);
-        Params.append('appPlatId', this.platVal)
-        this.$http.post(this.port + '/getEdition',Params).then( (res) => {
-          if (res.status == 200) {
-            if (res.data.status == 0) {
-              let data = res.data.result.result;
-              this.editions = data;
-              this.getEditionId = data[0].id;
-            }
-            else if (res.data.status == 1) {
-              console.log('版本信息请求数据为空');
-            }
-          }
-          else{
-            console.log('请求失败');
-          }
-
-        }, (err) => {
-          console.log('获取失败');
-          console.log('err',err);
-        });
+      childplatVal1 (childplatVal1) {
+        this.platVal = childplatVal1;
+        this.getAnalysis()
       },
+
+      //  版本信息
+      childgetEdition1 (childgetEdition1) {
+        this.evalVal = childgetEdition1;
+      },
+
+      childchangeEvalVal (childchangeEvalVal) {
+        this.evalVal = childchangeEvalVal;
+        this.getAnalysis();
+      },
+
+      //  渠道信息
+      childcanalVal1 (canalVal) {
+        this.canalVal = canalVal * 1;
+      },
+
 
       //  获取事件
       getAnalysis () {
@@ -203,16 +137,14 @@
           Params.append('adoptToken', this.token);
          ((this.curtext == '自定义') ? Params.append('date', this.currentDate) : Params.append('dateType', this.dateType));
           Params.append('platformId', this.platVal);
-          Params.append('versionId', 0);
+          Params.append('versionId', this.evalVal);
           Params.append('channelId', this.canalVal);
           this.$http.post(this.port + '/eventAnalysis',Params)
               .then( (res) => {
-
                 if (res.status == 200) {
                   if (res.data.status == 0) {
-                    console.log('res',res)
                     let data = res.data.result.result;
-  //                this.tableData = data
+                    this.tableData = data
                   }
                   else if (res.data.status == 1) {
                     console.log('事件信息请求数据为空');
@@ -229,12 +161,12 @@
       },
 
 
-      handleRowHandle (event) {
+      handleRowHandle (index,event) {
         let testName = event.toElement.outerText;
-        if (testName == '注册界面1') {
-          this.$router.push({name: 'AnalysisRegister'});
-        }
-        console.log(event.incidentName)
+//        if (testName == '注册界面1') {
+          this.$router.push({name: 'AnalysisRegister', query:{eventName: this.tableData[index].name, eventId: this.tableData[index].interactionViewId}});
+//        }
+        console.log('event.incidentName',this.tableData[index].interactionViewId)
       },
       //获取日历时间
       getTime(msg,dateType,curtext){
@@ -245,24 +177,8 @@
       }
     },
     components: {
-      Calendar
-    },
-    watch: {
-      // 异步请求待用
-      platVal (val) {  //  平台变化
-        this.platVal = val;
-        this.getEdition();
-        this.evalVal = this.getEditionId;
-        this.getAnalysis();
-      },
-      canalVal (val) {
-        this.canalVal = val;
-        this.getAnalysis();
-      },
-      evalVal (val) {  //  版本变化
-        this.evalVal = val;
-        this.getAnalysis();
-      }
+      Calendar,
+      versiongetdata
     }
   }
 </script>
