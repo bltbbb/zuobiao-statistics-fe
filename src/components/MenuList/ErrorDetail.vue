@@ -17,6 +17,14 @@
     <div class="title-box">
       <Calendar @timeValue="getTime"></Calendar>
       <div class="title-select-box">
+        <el-select v-model="platVal" placeholder="平台">
+          <el-option
+            v-for="plat in plats"
+            :key="plat.id"
+            :label="plat.name"
+            :value="plat.id">
+          </el-option>
+        </el-select>
         <el-select v-model="val" placeholder="渠道">
           <el-option
             v-for="canal in canals"
@@ -28,9 +36,9 @@
         <el-select v-model="Eval" placeholder="版本">
           <el-option
             v-for="edition in editions"
-            :key="edition.Eval"
-            :label="edition.label"
-            :value="edition.Eval">
+            :key="edition.id"
+            :label="edition.name"
+            :value="edition.id">
           </el-option>
         </el-select>
       </div>
@@ -67,7 +75,7 @@
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
                      class="radio-box"
                      :page-sizes="[20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper"
-                     :total="100">
+                     :total="totalCount">
       </el-pagination>
     </div>
   </div>
@@ -86,24 +94,21 @@
   export default {
     data() {
       return {
-        port: 'http://192.168.1.201:9999',
+//        port: 'http://192.168.1.201:9999',
+        port: 'http://192.168.1.32:80',
         explain: '这是菜单的说明文字',
+        platVal: -1,
+        plats: [],
+        getEditionId: '',
         value: '1',
         canals: [{
           val: '1',
           label: '全部渠道'
         }],
         val: '1',
-        editions: [
-          {
-          Eval: '1',
-          label: '全部版本'
-        },
-          {
-            Eval: '2',
-            label: '1.4'
-          }],
-        Eval: "1",
+        Eval: -1,
+        editions: [],
+
         // 第一部分
         list: [
           {id: "1", title: "登录用户", message: 'Foo', number: "8096798"},
@@ -123,6 +128,7 @@
         text: "展开",
         isActive: false,
         currentPage4: 1,
+        totalCount: null,
         start: '',
         end: '',
         size: 20,
@@ -155,10 +161,65 @@
         this.end = date.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
       },
+
       init () {
+        this.getPlatform();
+        this.getEdition();
         this.getDetailedPages();
       },
 
+      //  获取平台信息
+      getPlatform () {
+        this.$http.get(this.port + '/getPlatform', {
+          params:{
+            adoptToken: this.token
+          }
+        }).then( (res) => {
+          if (res.status == 200) {
+            if (res.data.status == 0) {
+              let data = res.data.result.result;
+              this.plats = data;
+            }
+            else if (res.data.status == 1) {
+              console.log('平台信息请求数据为空');
+            }
+          }
+          else{
+            console.log('请求失败');
+          }
+        }, (err) => {
+          console.log('获取失败');
+          console.log('err',err);
+        });
+      },
+
+      //  获取版本信息
+      getEdition () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('appPlatId', this.platVal)
+        this.$http.post(this.port + '/getEdition',Params)
+          .then( (res) => {
+          if (res.status == 200) {
+            if (res.data.status == 0) {
+              let data = res.data.result.result;
+              this.editions = data;
+              this.getEditionId = data[0].id;
+            }
+            else if (res.data.status == 1) {
+              console.log('版本信息请求数据为空');
+            }
+          }
+          else{
+            console.log('请求失败');
+          }
+        }, (err) => {
+          console.log('获取失败');
+          console.log('err',err);
+        });
+      },
+
+      //  表格信息
       getDetailedPages () {
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
@@ -167,20 +228,28 @@
         Params.append('errId', this.errId);
         Params.append('pageSize', this.size);
         Params.append('currentPage', this.currentPage4);
-        Params.append('EditionId', this.Eval);
+        Params.append('versionId', this.Eval);
         Params.append('channelId', this.val);
+        Params.append('appPlatId', this.platVal);
         this.$http.post(this.port + '/errorDetailedPages',Params)
           .then( (res) => {
             if (res.status == 200){
-              let data = res.data.result.result;
-              this.tableData = data;
+              if (res.data.status == 0) {
+                let data = res.data.result.result;
+                this.tableData = data;
+                this.totalCount = res.data.result.totalCount;
+              }
+              else if (res.data.status == 1) {
+                console.log('表格信息请求数据为空');
+              }
             }
             else {
-              console.log('数据获取失败');
+              console.log('请求失败');
             }
 
         }, (err) => {
-          console.log('err',err)
+            console.log('获取失败');
+            console.log('err',err)
         });
       },
 
@@ -225,7 +294,7 @@
       getTime(msg){
         this.start = msg[0].Format("yyyy-M-d");
         this.end = msg[1].Format("yyyy-M-d");
-        this.init();
+        this.getDetailedPages();
       },
       //查看明细
       handleEdit(index, row) {
@@ -246,14 +315,25 @@
       }
     },
     watch: {
-      val (channel) {
-        this.val = channel;
-        this.init();
+
+      //  平台信息
+      platVal (platVal) {
+        this.platVal = platVal;
+        this.Eval = this.getEditionId;
+        this.getEdition();
+        this.getDetailedPages();
       },
 
+      //  渠道信息
+      val (channel) {
+        this.val = channel;
+        this.getDetailedPages();
+      },
+
+      //  版本信息
       Eval (versions) {
         this.Eval = versions
-        this.init();
+        this.getDetailedPages();
       }
     }
   }
