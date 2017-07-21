@@ -20,9 +20,9 @@
         <el-select v-model="platVal" placeholder="平台">
           <el-option
             v-for="plat in plats"
-            :key="plat.value"
-            :label="plat.label"
-            :value="plat.value">
+            :key="plat.id+''"
+            :label="plat.name"
+            :value="plat.id+''">
           </el-option>
         </el-select>
         <el-select v-model="canalVal" placeholder="渠道">
@@ -36,41 +36,41 @@
         <el-select v-model="evalVal" placeholder="版本">
           <el-option
             v-for="edition in editions"
-            :key="edition.Eval"
-            :label="edition.label"
-            :value="edition.Eval">
+            :key="edition.id+''"
+            :label="edition.name"
+            :value="edition.id+''">
           </el-option>
         </el-select>
       </div>
     </div>
     <div class="trend-box">
-      <div class="part1">
-        <el-row :gutter="20">
-          <el-col :span="6" v-for="item in list" :key="item.type">
-            <div class="grid-content bg-purple">
-              <div class="top-title">{{item.title}}
-                <el-popover
-                  placement="right"
-                  width="200"
-                  trigger="hover"
-                  popper-class="popover-class"
-                  v-if="item.type == 2">
-                  <slot>{{item.message}}</slot>
-                  <i class="el-icon-information" slot="reference"></i>
-                </el-popover>
-              </div>
-              <h1>{{item.num}}</h1>
-            </div>
-          </el-col>
-
-        </el-row>
-      </div>
+      <!--暂不做 趋势汇总-->
+      <!--<div class="part1">-->
+        <!--<el-row :gutter="20">-->
+          <!--<el-col :span="6" v-for="item in list" :key="item.type">-->
+            <!--<div class="grid-content bg-purple">-->
+              <!--<div class="top-title">{{item.title}}-->
+                <!--<el-popover-->
+                  <!--placement="right"-->
+                  <!--width="200"-->
+                  <!--trigger="hover"-->
+                  <!--popper-class="popover-class"-->
+                  <!--v-if="item.type == 2">-->
+                  <!--<slot>{{item.message}}</slot>-->
+                  <!--<i class="el-icon-information" slot="reference"></i>-->
+                <!--</el-popover>-->
+              <!--</div>-->
+              <!--<h1>{{item.num}}</h1>-->
+            <!--</div>-->
+          <!--</el-col>-->
+        <!--</el-row>-->
+      <!--</div>-->
       <div id="TendChart" class="chart" :style="{width: '100%', height: '400px'}"></div>
       <el-radio-group v-model="radioVal" class="radio-box">
         <el-radio :label="1">注册用户</el-radio>
         <el-radio :label="2">注册用户占比</el-radio>
-        <el-radio :label="3">老用户</el-radio>
-        <el-radio :label="4">老用户占比</el-radio>
+        <el-radio :label="3">登录用户</el-radio>
+        <el-radio :label="4">登录次数</el-radio>
       </el-radio-group>
       <!--表格-->
       <el-table
@@ -82,20 +82,20 @@
           width="180">
         </el-table-column>
         <el-table-column
-          prop="registerUser"
+          prop="newUserCount"
           label="注册用户"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="registerUserRatio"
+          prop="newUserShare"
           label="注册用户占比">
         </el-table-column>
         <el-table-column
-          prop="loginUser"
+          prop="signinUserCount"
           label="登录用户">
         </el-table-column>
         <el-table-column
-          prop="loginSecond"
+          prop="signinTimesCount"
           label="登录次数">
         </el-table-column>
       </el-table>
@@ -121,54 +121,26 @@
     data() {
       return {
         explain: '这是菜单的说明文字',
-        plats: [
-          {
-          value: '1',
-          label: '全平台'
-        },
-          {
-          value: '2',
-          label: 'iOS'
-        },
-          {
-            value: '3',
-            label: 'Android'
-          },
-          {
-            value: '4',
-            label: 'PC'
-          },
-          {
-            value: '5',
-            label: 'web'
-          }
-        ],
+        plats: [],
         canals: [{
           val: '1',
           label: '全部渠道'
         }],
-        editions: [
-          {
-          Eval: '1',
-          label: '全部版本'
-        },
-          {
-            Eval: '2',
-            label: '1.4'
-          }],
+        editions: [],
         // 第一部分
         list: [],
+        title:['注册用户','注册用户占比','登录用户','登录次数'],
         myChart: null,
         // 表格数据
         tableData: [],
         radioVal: 1,
-        platVal: '1',
+        platVal: '-1',
         canalVal: '1',
-        evalVal: "1",
+        evalVal: "-1",
         start: '',
         end: '',
         token: '',
-        chartData: {},
+        chartData: [],
         size: 20,
         currentPage: 1,
         totalCount: 100
@@ -254,7 +226,8 @@
       initParams: function () {
         let date = new Date();
         let start = new Date();
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        date.setTime(date.getTime() - 3600 * 1000 * 24);
+        start.setTime(start.getTime() - 3600 * 1000 * 24 *2);
         this.start = start.Format("yyyy-MM-dd");
         this.end = date.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
@@ -263,6 +236,34 @@
       init:function () {
         this.getAnlysis();
         this.getAnlysisDetails();
+
+        //获取平台
+        this.$http.get('http://192.168.1.32/getPlatform',{
+          params:{
+            adoptToken:this.token
+          }
+        }).then((res)=>{
+          this.plats = res.data.result.result;
+        });
+
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('appPlatId', this.platVal);
+
+        //获取渠道
+        this.$http.post('http://192.168.1.32/getEdition',Params).then((res)=>{
+          if(res.data.status == 0){
+            let data = res.data.result.result;
+            this.editions = data;
+          }
+          else{
+            //view(res.data.msg)
+            alert(res.data.msg)
+          }
+        },(err)=>{
+          //view('网络错误')
+          alert('网络错误')
+        })
       },
       getAnlysis:function () {
         let Params = new URLSearchParams();
@@ -272,19 +273,21 @@
         Params.append('pid', this.platVal);
         Params.append('editionId', this.evalVal);
 
-        this.$http.post('http://192.168.1.201:9999/trendAnalysis',Params).then((res)=>{
+        this.$http.post('http://192.168.1.32/trendAnalysis',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
-            this.list = data.dataLists;
-            this.chartData = data.NumList;
+            this.chartData.push(data.newUserCount);
+            this.chartData.push(data.newUserShare);
+            this.chartData.push(data.signinUserCount);
+            this.chartData.push(data.signinTimesCount);
             this.myChart.setOption({
               xAxis: {
-                data: this.chartData[0].num.x
+                data: this.chartData[0].x
               },
               series: [{
                 // 根据名字对应到相应的系列
-                name: this.chartData[0].title,
-                data: this.chartData[0].num.y
+                name: this.title[0],
+                data: this.chartData[0].y
               }]
             })
           }
@@ -307,7 +310,7 @@
         Params.append('pageSize', this.size);
         Params.append('currentPage', this.currentPage);
 
-        this.$http.post('http://192.168.1.201:9999/trendAnalysisDetails',Params).then((res)=>{
+        this.$http.post('http://192.168.1.32/trendAnalysisDetails',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
             this.totalCount = res.data.result.totalCount;
@@ -344,12 +347,12 @@
         --val;
         this.myChart.setOption({
           xAxis: {
-            data: this.chartData[val].num.x
+            data: this.chartData[val].x
           },
           series: [{
             // 根据名字对应到相应的系列
-            name: this.chartData[val].title,
-            data: this.chartData[val].num.y
+            name: this.title[val],
+            data: this.chartData[val].y
           }]
         })
       }

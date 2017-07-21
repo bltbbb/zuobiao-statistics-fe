@@ -20,9 +20,9 @@
         <el-select v-model="platVal" placeholder="平台">
           <el-option
             v-for="plat in plats"
-            :key="plat.value"
-            :label="plat.label"
-            :value="plat.value">
+            :key="plat.id+''"
+            :label="plat.name"
+            :value="plat.id+''">
           </el-option>
         </el-select>
         <el-select v-model="canalVal" placeholder="渠道">
@@ -36,9 +36,9 @@
         <el-select v-model="evalVal" placeholder="版本">
           <el-option
             v-for="edition in editions"
-            :key="edition.Eval"
-            :label="edition.label"
-            :value="edition.Eval">
+            :key="edition.id+''"
+            :label="edition.name"
+            :value="edition.id+''">
           </el-option>
         </el-select>
       </div>
@@ -48,8 +48,8 @@
       </div>
       <div id="activeChart" class="chart" :style="{width: '100%', height: '400px'}"></div>
       <el-radio-group v-model="radioVal" class="radio-box">
-        <el-radio label="dayOrMonthActive">登录用户</el-radio>
-        <el-radio label="loginUser">日活/月活</el-radio>
+        <el-radio label="signinUserCount">登录用户</el-radio>
+        <el-radio label="dayMonthRatio">日活/月活</el-radio>
       </el-radio-group>
  <!--     <Calendar @timeValue="getTableTime" class="calendar-box"></Calendar>-->
       <!--表格-->
@@ -62,24 +62,24 @@
           width="180">
         </el-table-column>
         <el-table-column
-          prop="loginUser"
+          prop="signinUserCount"
           label="登录用户"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="dayOrMonthActive"
+          prop="dayMonthRatio"
           label="日活/月活">
         </el-table-column>
         <el-table-column
-          prop="weekActive"
+          prop="weekUserCount"
           label="周活跃用户">
         </el-table-column>
         <el-table-column
-          prop="monthActive"
+          prop="monthUserCount"
           label="月活跃用户">
         </el-table-column>
         <el-table-column
-          prop="monthsilent"
+          prop="monthSilentUserount"
           label="月沉默用户">
         </el-table-column>
       </el-table>
@@ -127,7 +127,7 @@
           }
         ],
         canals: [{
-          val: '1',
+          val: '-1',
           label: '全部渠道'
         }],
         editions: [{
@@ -143,13 +143,14 @@
           {id: "1", title: "登录用户", message: 'Foo', number: "8096798"},
           {id: "2", title: "日活/月活", message: 'Bar', number: "8096798"}
         ],
+        title: {signinUserCount:'登录用户',dayMonthRatio:'日活/月活'},
         // 表格数据
         tableData: [],
         myChart: null,
-        radioVal: 'dayOrMonthActive',
-        platVal: '1',
-        canalVal: '1',
-        evalVal: "1",
+        radioVal: 'signinUserCount',
+        platVal: '-1',
+        canalVal: '-1',
+        evalVal: "-1",
         start: '',
         end: '',
         token: '',
@@ -186,9 +187,6 @@
           title: {text: '全平台注册用户'},
           tooltip: {
             trigger: 'axis'
-          },
-          legend: {
-            data: ['今天', '昨天']
           },
           xAxis: {
             data: ["0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59"]
@@ -239,7 +237,8 @@
       initParams: function () {
         let date = new Date();
         let start = new Date();
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        start.setTime(start.getTime() - 3600 * 1000 * 24);  //初始起始为前天
+        date.setTime(date.getTime() - 3600 * 1000 * 24);   //初始结束为昨天
         this.start = start.Format("yyyy-MM-dd");
         this.end = date.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
@@ -248,36 +247,64 @@
       init:function () {
         this.getActiveUser();
         this.getActiveUserPages();
+
+        //获取平台
+        this.$http.get('http://192.168.1.32/getPlatform',{
+          params:{
+            adoptToken:this.token
+          }
+        }).then((res)=>{
+          this.plats = res.data.result.result;
+        });
+
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('appPlatId', this.platVal);
+
+        //获取渠道
+        this.$http.post('http://192.168.1.32/getEdition',Params).then((res)=>{
+          if(res.data.status == 0){
+            this.editions = res.data.result.result;
+          }
+          else{
+            //view(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
+          }
+        },(err)=>{
+          //view('网络错误')
+          this.$message.error('网络错误');
+        })
       },
       getActiveUser: function () {
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
-        Params.append('pid', this.platVal);
-        Params.append('editionId', this.evalVal);
+        Params.append('platformId', this.platVal);
+        Params.append('channelId', this.canalVal);
+        Params.append('versionId', this.evalVal);
 
-        this.$http.post('http://192.168.1.201:9999/activeUser',Params).then((res)=>{
+        this.$http.post('http://192.168.1.32/activeUser',Params).then((res)=>{
           if(res.data.status == 0){
-            let data = res.data.result.result;
-            this.chartData = data;
+            this.chartData = res.data.result.result;
             this.myChart.setOption({
               xAxis: {
                 data: this.chartData[this.radioVal].x
               },
               series: [{
                 // 根据名字对应到相应的系列
+                name: this.title[this.radioVal],
                 data: this.chartData[this.radioVal].y
               }]
             })
           }
           else{
             //view(res.data.msg)
-            alert(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
           }
         },(err)=>{
           //view('网络错误')
-          alert('网络错误')
+          this.$message.error('网络错误');
         })
       },
       getActiveUserPages:function () {
@@ -285,16 +312,17 @@
         Params.append('adoptToken', this.token);
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
-        Params.append('pid', this.platVal);
-        Params.append('editionId', this.evalVal);
+        Params.append('platformId', this.platVal);
+        Params.append('channelId', this.canalVal);
+        Params.append('versionId', this.evalVal);
         Params.append('pageSize', this.size);
         Params.append('currentPage', this.currentPage);
 
-        this.$http.post('http://192.168.1.201:9999/activeUserPages',Params).then((res)=>{
+        this.$http.post('http://192.168.1.32/activeUserPages',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
             this.totalCount = res.data.result.totalCount;
-            this.tableData = data
+            this.tableData = data;
           }
           else{
             //view(res.data.msg)

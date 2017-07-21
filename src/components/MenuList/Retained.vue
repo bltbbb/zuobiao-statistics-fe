@@ -20,9 +20,9 @@
         <el-select v-model="platVal" placeholder="平台">
           <el-option
             v-for="plat in plats"
-            :key="plat.value"
-            :label="plat.label"
-            :value="plat.value">
+            :key="plat.id+''"
+            :label="plat.name"
+            :value="plat.id+''">
           </el-option>
         </el-select>
         <el-select v-model="evalVal" placeholder="渠道">
@@ -36,8 +36,8 @@
       </div>
     </div>
     <div class="tabs">
-      <el-tabs type="border-card">
-        <el-tab-pane v-for="(tab,index) in tabs" :key="index">
+      <el-tabs type="border-card" v-model="tabVal">
+        <el-tab-pane v-for="(tab,index) in tabs" :key="index" :name="tab.id">
           <span slot="label"><i class="el-icon-date"></i> {{tab.plat}}</span>
           <div class="table-wrapper">
             <table>
@@ -54,9 +54,9 @@
                 <td class="retain grey-bg">第三十天</td>
               </tr>
               <tr class="line" v-for="item in tableDataList">
-                <td class="grey-bg">{{item.date}}</td>
+                <td class="grey-bg">{{item.statisDate}}</td>
                 <td class="grey-bg">{{item.registeredUser}}</td>
-                <td v-for="list in item.day" :class="'td-retain-'+classMap(list)" class="boderNone">{{list}}%</td>
+                <td v-for="list in item.data" :class="'td-retain-'+classMap(list)" class="boderNone">{{list}}%</td>
               </tr>
             </table>
           </div>
@@ -112,9 +112,10 @@
         value7: '',
 
         // 平台切换
+        tabVal: 'firstRetained',
         tabs: [
-            {id: "1", plat: '新增用户首次使用留存'},
-            {id: "1", plat: '活跃用户留存'}
+            {id: "firstRetained", plat: '新增用户首次使用留存'},
+            {id: "activeRetained", plat: '活跃用户留存'}
           ],
         tableDataList: [
 //          {date:"2017/05/19",regUser:"999",Retention:["30","20","17","14","9","6","0"]},
@@ -154,11 +155,11 @@
           }
         ],
         canals: [{
-          val: '1',
+          val: '-1',
           label: '全部渠道'
         }],
-        platVal: '1',
-        evalVal: '1',
+        platVal: '-1',
+        evalVal: '-1',
         radioVal: '1',
         start: '',
         end: '',
@@ -197,20 +198,34 @@
       getTime(msg){
         this.start = msg[0].Format("yyyy-M-d");
         this.end = msg[1].Format("yyyy-M-d");
-        this.getFirstRetained();
+        this.getRetained();
       },
       initParams: function () {
         let date = new Date();
         let start = new Date();
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        start.setTime(start.getTime() - 3600 * 1000 * 24 *1);
+        date.setTime(date.getTime() - 3600 * 1000 * 24 *1);  //数据原因 默认为昨天
         this.start = start.Format("yyyy-MM-dd");
         this.end = date.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
       },
       init:function () {
-        this.getFirstRetained();
+        this.getRetained();
+
+        //获取平台
+        this.$http.get('http://192.168.1.32/getPlatform',{
+          params:{
+            adoptToken:this.token
+          }
+        }).then((res)=>{
+          this.plats = res.data.result.result;
+        });
+
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('appPlatId', this.platVal);
       },
-      getFirstRetained: function () {
+      getRetained: function () {
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
         Params.append('startDate', this.start);
@@ -219,18 +234,18 @@
         Params.append('channelId', this.evalVal);
         Params.append('retainedType', this.radioVal);
 
-        this.$http.post('http://192.168.1.201:9999/firstRetained',Params).then((res)=>{
+        this.$http.post('http://192.168.1.32/'+this.tabVal,Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
             this.tableDataList = data
           }
           else{
             //view(res.data.msg)
-            alert(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
           }
         },(err)=>{
           //view('网络错误')
-          alert('网络错误')
+          this.$message.error('网络错误');
         })
       }
     },
@@ -239,10 +254,16 @@
     },
     watch: {
       platVal: function (val) {
-        this.getFirstRetained();
+        this.getRetained();
       },
       evalVal: function (val) {
-        this.getFirstRetained();
+        this.getRetained();
+      },
+      tabVal: function (val) {
+        this.getRetained();
+      },
+      radioVal: function (val) {
+        this.getRetained();
       }
     },
     mounted(){
