@@ -34,33 +34,6 @@
         @canalVal1="childcanalVal1"
       >
       </versiongetdata>
-      <!--<div class="title-select-box">-->
-        <!--<el-select v-model="value" placeholder="平台">-->
-          <!--<el-option-->
-            <!--v-for="plat in plats"-->
-            <!--:key="plat.name"-->
-            <!--:label="plat.name"-->
-            <!--:value="plat.id">-->
-          <!--</el-option>-->
-        <!--</el-select>-->
-        <!--<el-select v-model="val" placeholder="渠道">-->
-          <!--<el-option-->
-            <!--v-for="canal in canals"-->
-            <!--:key="canal.val"-->
-            <!--:label="canal.label"-->
-            <!--:value="canal.val">-->
-          <!--</el-option>-->
-        <!--</el-select>-->
-        <!--<el-select v-model="Eval" placeholder="版本">-->
-          <!--<el-option-->
-            <!--v-for="edition in editions"-->
-            <!--:key="edition.appVersionId"-->
-            <!--:label="edition.appVersion"-->
-            <!--:value="edition.appVersionId">-->
-          <!--</el-option>-->
-        <!--</el-select>-->
-      <!--</div>-->
-      <!---->
     </div>
     <div class="trend-box">
       <div class="part1">
@@ -122,29 +95,10 @@
         //  页面
         pages: [],
         pageVal: 4,
-        //  平台
 
         platVal: '',
         evalVal: '',
         canalVal: '',
-
-
-//        value: -1,
-//        plats: [],
-//        //  渠道
-//        canals: [{
-//          val: '-1',
-//          label: '全部渠道'
-//        }],
-//        val: '-1',
-//        //  版本
-//        editions: [],
-//        Eval: -1,
-
-
-
-
-
 
         // 第一部分
         radio2: 1,  //  事件触发数量
