@@ -137,15 +137,7 @@
           label: '全部渠道'
         }],
         plats: [],
-        editions: [
-          {
-          Eval: '1',
-          label: '全部版本'
-        },
-          {
-            Eval: '2',
-            label: '1.4'
-          }],
+        editions: [],
         radio2: 1,
         //  图表
         myChart:null,
@@ -161,19 +153,20 @@
         getEditionId: '',
         totalCount: null
       }
-    }
-    ,
+    },
+
     // 平台图表格-->
     mounted()
     {
       this.drawLine();
       this.initParams();
       this.init();
-    }
-    ,
+    },
+
     components: {
       Calendar
     },
+
     methods: {
       selected: function (gameName) {
         this.activeName = gameName
@@ -187,6 +180,7 @@
         this.end = date.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
       },
+
       init () {
         this.getPlatform();
         this.getEdition();
@@ -251,7 +245,7 @@
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
         Params.append('versionId', this.evalVal);
-        Params.append('eventId', this.platVal);
+        Params.append('appPlatId', this.platVal)
         Params.append('channelId', this.canalVal);
         this.$http.post(this.port + '/errorReporting',Params)
           .then((res)=>{
