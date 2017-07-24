@@ -50,6 +50,7 @@
           this.init();
         },
         methods: {
+
           initParams () {
             this.token = this.$cookie.get('adoptToken');
             this.$emit('canalVal1',this.canalVal)
@@ -60,7 +61,6 @@
             this.getPlatform();
             this.getEdition();
           },
-
 
           //  获取平台信息
           getPlatform () {
@@ -116,6 +116,7 @@
             this.$emit('getEdition1',this.evalVal)
           },
 
+          //  监听平台数据变化
           changeVal (val) {
             this.platVal = val;
             this.evalVal = this.getEditionId
@@ -123,6 +124,7 @@
             this.$emit('changeVal',val);
           },
 
+          //  监听版本数据变化
           changeEvalVal (val) {
             this.$emit('changeEvalVal',val);
           }
