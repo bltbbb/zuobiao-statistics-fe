@@ -20,9 +20,9 @@
         <el-select v-model="platVal" placeholder="平台" size="small">
           <el-option
             v-for="plat in plats"
-            :key="plat.value"
-            :label="plat.label"
-            :value="plat.value">
+            :key="plat.id+''"
+            :label="plat.name"
+            :value="plat.id+''">
           </el-option>
         </el-select>
         <el-select v-model="canalVal" placeholder="渠道">
@@ -36,9 +36,9 @@
         <el-select v-model="evalVal" placeholder="版本">
           <el-option
             v-for="edition in editions"
-            :key="edition.Eval"
-            :label="edition.label"
-            :value="edition.Eval">
+            :key="edition.id+''"
+            :label="edition.name"
+            :value="edition.id+''">
           </el-option>
         </el-select>
       </div>
@@ -70,33 +70,13 @@
     data() {
       return {
         explain: '这是菜单的说明文字',
-        dateType: 'date',
         select: "",
-        platVal: '1',
-        canalVal: '1',
-        evalVal: '1',
-        plats: [{
-          value: '1',
-          label: '全部平台'
-        }, {
-          value: '2',
-          label: 'iOS'
-        },
-          {
-            value: '3',
-            label: 'Android'
-          },
-          {
-            value: '4',
-            label: 'PC'
-          },
-          {
-            value: '5',
-            label: 'web'
-          }
-        ],
+        platVal: '-1',
+        canalVal: '-1',
+        evalVal: '-1',
+        plats: [],
         canals: [{
-          val: '1',
+          val: '-1',
           label: '全部渠道'
         }],
         editions: [{
@@ -263,12 +243,12 @@
               }
             },
             silent: true,
-            barWidth: 40,
+            barWidth: 50,
             barGap: '-100%', // Make series be overlap
-            data: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+            data: []
           }, {
             type: 'bar',
-            barWidth: 40,
+            barWidth: 50,
             z: 10,
             itemStyle: {
               normal: {
@@ -278,7 +258,7 @@
             label:{
               normal:{
                 show: true,
-                position: 'insideTopLeft',
+                position: 'insideTopRight',
                 offset: [0,-25],
                 formatter: '{c}%',
                 textStyle: {
@@ -293,7 +273,7 @@
         ageChart: null,
         indChart: null,
         start: '',
-        end: '',
+        dateType: '',
         token: ''
       }
     },
@@ -303,32 +283,68 @@
     methods:{
       //获取日历时间
       //获取日历时间
-      getTime(msg){
-      this.start = msg.Format("yyyy-M-d");
-      this.getUserAttr();
+      getTime(msg,dateType,date){
+        if(date){
+            this.start = msg.Format("yyyy-MM-dd");
+            this.dateType = '';
+        }else{
+            this.start = new Date().Format("yyyy-MM-dd");
+            this.dateType = dateType;
+        }
+        this.getUserAttr();
       },
       initParams: function () {
-        let date = new Date();
         let start = new Date();
-        start.setTime(start.getTime() - 3600 * 1000 * 24);
+        start.setTime(start.getTime() - 3600 * 1000);
         this.start = start.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
       },
       init:function () {
         this.getUserAttr();
-      },
-      getUserAttr: function () {
+        //获取平台
+        this.$http.get('http://192.168.1.32/getPlatform',{
+          params:{
+            adoptToken:this.token
+          }
+        }).then((res)=>{
+          this.plats = res.data.result.result;
+        });
+
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
-        Params.append('startDate', this.start);
-        Params.append('stopDate', this.end);
-        Params.append('PlatformId', this.platVal);
+        Params.append('appPlatId', this.platVal);
 
-        this.$http.post('http://192.168.1.201:9999/userAttr',Params).then((res)=>{
+        //获取版本
+        this.$http.post('http://192.168.1.32/getEdition',Params).then((res)=>{
+          if(res.data.status == 0){
+            this.editions = res.data.result.result;
+          }
+          else{
+            //view(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
+          }
+        },(err)=>{
+          //view('网络错误')
+          this.$message.error('网络错误');
+        })
+      },
+      getUserAttr: function () {
+          let Params = new URLSearchParams();
+          Params.append('adoptToken', this.token);
+          Params.append('dateType', this.dateType);
+          Params.append('date', this.start);
+          Params.append('platformId', this.platVal);
+          Params.append('channelId', this.canalVal);
+          Params.append('versionId', this.evalVal);
+
+        this.$http.post('http://192.168.1.32/userAttr',Params).then((res)=>{
           if(res.data.status == 0){
             let sexData = res.data.result.result.gender;
             let ageData = res.data.result.result.age;
             let indData = res.data.result.result.industry;
+            indData.y = indData.y.map(function (item) {
+                return item.toFixed(2);
+            })
             this.sexChart.setOption({
               series: [{
                 // 根据名字对应到相应的系列
@@ -350,11 +366,11 @@
               }]
             })
             this.indChart.setOption({
-              yAxis: {
+              xAxis: {
                 data: indData.x
               },
               series: [{
-                data: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+                data: [100, 100, 100, 100, 100, 100, 100, 100, 100]
               },{
                 // 根据名字对应到相应的系列
                 data: indData.y
