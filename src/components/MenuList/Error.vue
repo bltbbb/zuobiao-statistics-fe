@@ -16,32 +16,16 @@
     </div>
     <div class="title-box">
       <Calendar @timeValue="getTime"></Calendar>
-      <div class="title-select-box">
-        <el-select v-model="platVal" placeholder="平台">
-          <el-option
-            v-for="plat in plats"
-            :key="plat.id"
-            :label="plat.name"
-            :value="plat.id">
-          </el-option>
-        </el-select>
-        <el-select v-model="canalVal" placeholder="渠道">
-          <el-option
-            v-for="canal in canals"
-            :key="canal.val"
-            :label="canal.label"
-            :value="canal.val">
-          </el-option>
-        </el-select>
-        <el-select v-model="evalVal" placeholder="版本">
-          <el-option
-            v-for="edition in editions"
-            :key="edition.id"
-            :label="edition.name"
-            :value="edition.id">
-          </el-option>
-        </el-select>
-      </div>
+
+      <versiongetdata
+        @Platform="childgetPlatform"
+        @getEdition1="childgetEdition1"
+        @changeVal="childplatVal1"
+        @changeEvalVal="childchangeEvalVal"
+        @canalVal1="childcanalVal1"
+      >
+      </versiongetdata>
+
     </div>
     <div class="trend-box">
       <div class="part1"></div>
@@ -49,7 +33,6 @@
       <el-radio-group v-model="radio2" class="radio-box">
         <el-radio :label="1">错误次数</el-radio>
       </el-radio-group>
-      <!--     <Calendar @timeValue="getTableTime" class="calendar-box"></Calendar>-->
       <!--表格-->
       <el-table
         :data="tableData5"
@@ -59,9 +42,9 @@
         </el-table-column>
 
         <el-table-column type="expand" class="expand-box">
-          <template scope="scope">
+          <template scope="props">
             <el-form label-position="left" inline class="table-expand">
-              <el-table :data="tableData5[scope.$index].Equipment" style="width: 100%">
+              <el-table :data="tableData5[props.$index].Equipment" style="width: 100%">
                 <el-table-column label="错误设备" prop="equipment">
                 </el-table-column>
                 <el-table-column label="错误次数" prop="errorNum">
@@ -123,21 +106,18 @@
   require('echarts/lib/component/title');
   require('echarts/lib/component/legend');
   import Calendar from '@/components/calendar/Calendar'
+  import versiongetdata from '../versionInformation/VersionGetData'
   export default {
     data() {
       return {
 //        port: 'http://192.168.1.201:9999',
         port: 'http://192.168.1.32:80',
         explain: '这是菜单的说明文字',
-        platVal: -1,
-        canalVal: '1',
-        evalVal: -1,
-        canals: [{
-          val: '1',
-          label: '全部渠道'
-        }],
-        plats: [],
-        editions: [],
+
+        platVal: '',
+        evalVal: '',
+        canalVal: '',
+
         radio2: 1,
         //  图表
         myChart:null,
@@ -164,7 +144,8 @@
     },
 
     components: {
-      Calendar
+      Calendar,
+      versiongetdata
     },
 
     methods: {
@@ -182,61 +163,39 @@
       },
 
       init () {
-        this.getPlatform();
-        this.getEdition();
         this.getReporting();
         this.getType();
       },
 
-      //  获取平台信息
-      getPlatform () {
-        this.$http.get(this.port + '/getPlatform', {
-          params:{
-            adoptToken: this.token
-          }
-        }).then( (res) => {
-          if (res.status == 200) {
-            if (res.data.status == 0) {
-              let data = res.data.result.result;
-              this.plats = data;
-            }
-            else if (res.data.status == 1) {
-              console.log('平台信息请求数据为空');
-            }
-          }
-          else{
-            console.log('请求失败');
-          }
-        }, (err) => {
-          console.log('获取失败');
-          console.log('err',err);
-        });
+
+      //  平台信息
+      childgetPlatform (plats) {
+        this.platVal = plats;
       },
 
-      //  获取版本信息
-      getEdition () {
-        let Params = new URLSearchParams();
-        Params.append('adoptToken', this.token);
-        Params.append('appPlatId', this.platVal)
-        this.$http.post(this.port + '/getEdition',Params).then( (res) => {
-          if (res.status == 200) {
-            if (res.data.status == 0) {
-              let data = res.data.result.result;
-              this.editions = data;
-              this.getEditionId = data[0].id;
-            }
-            else if (res.data.status == 1) {
-              console.log('版本信息请求数据为空');
-            }
-          }
-          else{
-            console.log('请求失败');
-          }
-        }, (err) => {
-          console.log('获取失败');
-          console.log('err',err);
-        });
+      childplatVal1 (childplatVal1) {
+        this.platVal = childplatVal1;
+        this.getReporting();
+        this.getType();
       },
+
+      //  版本信息
+      childgetEdition1 (childgetEdition1) {
+        this.evalVal = childgetEdition1;
+      },
+
+      childchangeEvalVal (childchangeEvalVal) {
+        this.evalVal = childchangeEvalVal;
+        this.getReporting();
+        this.getType();
+      },
+
+      //  渠道信息
+      childcanalVal1 (canalVal) {
+        this.canalVal = canalVal * 1;
+      },
+
+
 
       //  图表信息
       getReporting () {
@@ -367,32 +326,8 @@
       handleLook(index, row) {
         this.$router.push({name: 'ErrorDetail',query:{curerrid: row.id}});
       }
-    },
-
-
-    watch:{
-      // 异步请求待用
-
-      //  平台数据
-      platVal (val) {
-        this.platVal = val;
-        this.getEdition();
-        this.evalVal = this.getEditionId;
-        this.getReporting();
-        this.getType();
-      },
-      canalVal: function (val) {
-        this.canalVal = val;
-        this.init();
-      },
-
-      //  版本数据
-      evalVal: function (val) {
-        this.evalVal = val;
-        this.getReporting();
-        this.getType();
-      }
     }
+
   }
 
 </script>
