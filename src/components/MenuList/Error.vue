@@ -288,9 +288,6 @@
           tooltip: {
             trigger: 'axis'
           },
-          legend: {
-            data: ['今天', '昨天']
-          },
           xAxis: {
             data: ["0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59"]
           },
@@ -300,6 +297,15 @@
           series: [{
             name: '注册用户',
             type: 'line',
+            itemStyle: {
+              normal: {
+                color: '#7a8fe0',
+                areaStyle:{
+                  type: 'default',
+                  color: 'rgba(122, 143, 224,0.5)'
+                }
+              }
+            },
             data: [5, 20, 36, 10, 10, 20]
           }]
 

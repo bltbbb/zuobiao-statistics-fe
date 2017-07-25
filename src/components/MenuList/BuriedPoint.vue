@@ -163,7 +163,7 @@
 
       handleRowHandle (index,event) {
         let testName = event.toElement.outerText;
-          this.$router.push({name: 'AnalysisRegister', query:{eventName: this.tableData[index].name, eventIndex: index, eventId: this.tableData[index].interactionViewId}});
+          this.$router.push({name: 'AnalysisRegister', query:{eventName: this.tableData[index].name, eventId: this.tableData[index].interactionViewId}});
       },
       //获取日历时间
       getTime(msg,dateType,curtext){

@@ -3,7 +3,6 @@
   <div class="content-box">
     <div class="header-wrapper">
       <h1>
-        <!--<span > {{ pages[eventIndex].name }} </span>-->
         <span>{{ eventName }}</span>
         <el-popover
           placement="right"
@@ -92,7 +91,6 @@
         explain: '这是菜单的说明文字',
         getEditionId: '',
         eventName: '',
-        eventIndex: null,
         //  页面
         pages: [],
         pageVal: '',
@@ -139,7 +137,6 @@
 
       initParams () {
         this.eventName = this.$route.query.eventName;
-        this.eventIndex = this.$route.query.eventIndex * 1;
         this.pageVal = this.$route.query.eventId * 1;
         let date = new Date();
         let start = new Date();
@@ -300,6 +297,15 @@
           series: [{
             name: '注册用户',
             type: 'line',
+            itemStyle: {
+              normal: {
+                color: '#7a8fe0',
+                areaStyle:{
+                  type: 'default',
+                  color: 'rgba(122, 143, 224,0.5)'
+                }
+              }
+            },
             data: []
           }]
 
@@ -360,7 +366,6 @@
         if (from.query.length) {
           this.eventName = to.query.eventName;
           this.pageVal = to.query.eventId * 1;
-          this.eventIndex = to.query.eventIndex * 1;
         }
       },
 
