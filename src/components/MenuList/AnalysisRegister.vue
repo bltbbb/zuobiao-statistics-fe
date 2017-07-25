@@ -363,7 +363,7 @@
       },
 
       '$route' (to,from) {
-        if (from.query.length) {
+        if (to.name != undefined) {
           this.eventName = to.query.eventName;
           this.pageVal = to.query.eventId * 1;
         }

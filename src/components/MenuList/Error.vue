@@ -67,13 +67,13 @@
 
         <el-table-column
           label="优先级"
-          prop="priority"
+          prop="crashLevel"
           >
         </el-table-column>
 
         <el-table-column
           label="错误次数"
-          prop="errorNum">
+          prop="errorCount">
         </el-table-column>
 
         <el-table-column label="操作">
@@ -87,11 +87,11 @@
 
       </el-table>
 
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
-                     class="radio-box"
-                     :page-sizes="[20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper"
-                     :total="totalCount">
-      </el-pagination>
+      <!--<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"-->
+                     <!--class="radio-box"-->
+                     <!--:page-sizes="[20, 50, 100]" :page-size="size" layout="total, sizes, prev, pager, next, jumper"-->
+                     <!--:total="totalCount" >-->
+      <!--</el-pagination>-->
     </div>
   </div>
 </template>
@@ -167,7 +167,6 @@
         this.getType();
       },
 
-
       //  平台信息
       childgetPlatform (plats) {
         this.platVal = plats;
@@ -204,7 +203,7 @@
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
         Params.append('versionId', this.evalVal);
-        Params.append('appPlatId', this.platVal)
+        Params.append('platformId', this.platVal);
         Params.append('channelId', this.canalVal);
         this.$http.post(this.port + '/errorReporting',Params)
           .then((res)=>{
@@ -221,7 +220,7 @@
                   }]
                 });
               }
-              else if (res.data.status == 0) {
+              else if (res.data.status == 1) {
                 console.log('图表信息请求数据为空')
               }
             }
@@ -250,17 +249,17 @@
           if (res.status == 200) {
             if (res.data.status == 0) {
               let errorDataList = res.data.result.result;
-              for (let index in errorDataList) {
-                if (errorDataList[index].priority == 1) {
-                  errorDataList[index].priority = '高'
-                }
-                else if (errorDataList[index].priority == 2) {
-                  errorDataList[index].priority = '中'
-                }
-                else if (errorDataList[index].priority == 3) {
-                  errorDataList[index].priority = '低'
-                }
-              }
+//              for (let index in errorDataList) {
+//                if (errorDataList[index].priority == 1) {
+//                  errorDataList[index].priority = '高'
+//                }
+//                else if (errorDataList[index].priority == 2) {
+//                  errorDataList[index].priority = '中'
+//                }
+//                else if (errorDataList[index].priority == 3) {
+//                  errorDataList[index].priority = '低'
+//                }
+//              }
               this.tableData5 = errorDataList;
               this.totalCount = res.data.result.totalCount;
             }
@@ -278,8 +277,7 @@
       },
 
       // 图表格绘制
-      drawLine()
-      {
+      drawLine () {
         // 基于准备好的dom，初始化echarts实例
         this.myChart = echarts.init(document.getElementById('activeChart'));
         // 绘制图表
@@ -330,7 +328,8 @@
       },
       //查看明细
       handleLook(index, row) {
-        this.$router.push({name: 'ErrorDetail',query:{curerrid: row.id}});
+        this.$router.push({name: 'ErrorDetail',query:{errorType: row.errorType}});
+        console.log(row.errorType)
       }
     }
 
