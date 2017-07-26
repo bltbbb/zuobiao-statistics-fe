@@ -18,9 +18,9 @@
       <el-select v-model="pageVal" placeholder="页面" class="page-select">
         <el-option
           v-for="page in pages"
-          :key="page.name"
+          :key="page.id"
           :label="page.name"
-          :value="page.metricId ">
+          :value="page.id">
         </el-option>
       </el-select>
     </div>
@@ -91,10 +91,9 @@
         explain: '这是菜单的说明文字',
         getEditionId: '',
         eventName: '',
-        eventId: '',
         //  页面
         pages: [],
-        pageVal: 4,
+        pageVal: '',
 
         platVal: '',
         evalVal: '',
@@ -111,19 +110,21 @@
         currentDate:'',
         dateType: 1,
         curtext: '',
-        metricId: '',
         totalCount: null,
         eventData: '',
         triggerUserData: ''
       }
-    }
-    ,
+    },
+
+    computed: {
+
+    },
+
     // 平台图表格-->
     mounted () {
       this.initParams();
       this.init();
       this.drawLine();
-
     },
     components: {
       Calendar,
@@ -135,9 +136,8 @@
       },
 
       initParams () {
-        this.eventName =  this.$route.query.eventName;
-        this.eventId =  this.$route.query.eventId;
-        this.metricId = this.eventId;
+        this.eventName = this.$route.query.eventName;
+        this.pageVal = this.$route.query.eventId * 1;
         let date = new Date();
         let start = new Date();
         start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
@@ -191,7 +191,6 @@
               if (res.data.status == 0) {
                 let data = res.data.result.result;
                 this.pages = data;
-                this.pageVal = data[0].metricId;
               }
               else if (res.data.result == 1) {
                 console.log('页面信息请求数据为空')
@@ -233,14 +232,13 @@
             else if (res.data.status == 1) {
               console.log('图表信息请求数据为空')
             }
-
         }
       else {
           console.log('请求失败')
         }
 
       }, (err) => {
-            console.log('获取失败')
+          console.log('获取失败')
           console.log('err',err)
         });
       },
@@ -291,7 +289,7 @@
             data: ['今天', '昨天']
           },
           xAxis: {
-            data: ["0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59"]
+            data: []
           },
           yAxis: {
             type: 'value'
@@ -299,7 +297,16 @@
           series: [{
             name: '注册用户',
             type: 'line',
-            data: [5, 20, 36, 10, 10, 20]
+            itemStyle: {
+              normal: {
+                color: '#7a8fe0',
+                areaStyle:{
+                  type: 'default',
+                  color: 'rgba(122, 143, 224,0.5)'
+                }
+              }
+            },
+            data: []
           }]
 
         });
@@ -327,17 +334,41 @@
 
     },
     watch: {
+
       //  观察者，监听数据是否发生变化
 
       //  监听页面栏
       pageVal (vaule) {
         this.pageVal = vaule;
-        this.value = -1;
-        this.Eval = -1;
+        if (vaule == '56') {
+          this.eventName = 'RegisterPage'
+        }
+        else if (vaule == '57'){
+          this.eventName = 'LoginPage'
+        }
+        else if (vaule == '58'){
+          this.eventName = 'ResetPwdPage'
+        }
+        else if (vaule == '59'){
+          this.eventName = 'LoginSuccess'
+        }
+        else if (vaule == '60'){
+          this.eventName = 'ResetPwdSuccess'
+        }
+        else if (vaule == '61'){
+          this.eventName = 'RegisterSuccess'
+        }
         this.getAnalyzeChart();
         this.getAnalyzePages();
-        console.log('页面',vaule)
       },
+
+      '$route' (to,from) {
+        if (to.name != undefined) {
+          this.eventName = to.query.eventName;
+          this.pageVal = to.query.eventId * 1;
+        }
+      },
+
 
       //  事件切换
       radio2 (trigger) {
@@ -363,6 +394,7 @@
           });
         }
       }
+
     }
   }
 
