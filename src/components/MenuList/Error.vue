@@ -44,12 +44,12 @@
         <el-table-column type="expand" class="expand-box">
           <template scope="props">
             <el-form label-position="left" inline class="table-expand">
-              <el-table :data="tableData5[props.$index].Equipment" style="width: 100%">
-                <el-table-column label="错误设备" prop="equipment">
+              <el-table :data="tableData5[props.$index].manufacturer" style="width: 100%">
+                <el-table-column label="错误设备" prop="name">
                 </el-table-column>
-                <el-table-column label="错误次数" prop="errorNum">
+                <el-table-column label="错误次数" prop="errorCount">
                 </el-table-column>
-                <el-table-column label="占比" prop="Propor">
+                <el-table-column label="占比" prop="errorProp">
                 </el-table-column>
               </el-table>
             </el-form>

@@ -44,7 +44,7 @@
               <!--<div class="detail-box" :class="{ active: isActive }"></div>-->
               <div class="detail-text">
                 <div @click="more(scope.$index,scope.row)">{{text}}</div>
-                <div @click="moreLook" class="look">查看详情</div>
+                <div @click="moreLook(scope.$index,scope.row)" class="look">查看详情</div>
               </div>
             </div>
           </template>
@@ -250,7 +250,15 @@
       },
       //查看明细
       handleEdit(index, row) {
-        this.$router.push({name: 'DetailMore',query:{errId: this.errId}});
+        this.$router.push({name: 'DetailMore',query:{
+          errorType: this.errorType,
+          crashMessageId: row.crashMessageId,
+          startDate: this.start,
+          stopDate: this.end,
+          evalVal: this.evalVal,
+          platVal: this.platVal,
+          canalVal: this.canalVal
+        }});
       },
       more(index,row){
         console.log(row)
@@ -264,8 +272,27 @@
           this.text = "收起";
         }
       },
-      moreLook(){
-        this.$router.push({name: 'DetailMore',query:{errId: this.errId}});
+      moreLook(index,row){
+        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',this.platVal)
+        this.$router.push({name: 'DetailMore',query:{
+          errorType: this.errorType,
+          crashMessageId: row.crashMessageId,
+          startDate: this.start,
+          stopDate: this.end,
+          evalVal: this.evalVal,
+          platVal: this.platVal,
+          canalVal: this.canalVal
+        }});
+      }
+    },
+
+    watch: {
+      $route (to) {
+        console.log(to)
+        if (to.name == 'ErrorDetail') {
+          this.errorType = to.query.errorType;
+          this.getDetailedPages();
+        }
       }
     }
   }
