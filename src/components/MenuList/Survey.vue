@@ -42,8 +42,8 @@
               <div class="box" :key="gameName.id+''">
                 <div class="headText">
                   <p class="slot"></p>
-                  <p>今日</p>
                   <p>昨日</p>
+                  <p>前日</p>
                 </div>
                 <div class="box-list" v-for="data in platData" @click="choice(data.id)" :class="{active:type == data.id}">
                   <div class="" name="first">{{data.title}}</div>
@@ -90,11 +90,10 @@
         // 平台切换
         gameNames: [],
         options: [
-          {key:'1',select:'今天'},
-          {key:'2',select:'昨天'},
-          {key:'3',select:'最近7天'},
-          {key:'4',select:'最近30天'},
-          {key:'5',select:'最近60天'}
+          {key:'1',select:'昨天'},
+          {key:'2',select:'最近7天'},
+          {key:'3',select:'最近30天'},
+          {key:'4',select:'最近60天'}
         ],
         platData: [
           {id:1,title:"注册用户",today:"",yday:""},
@@ -190,7 +189,7 @@
         let date = new Date();
         let start = new Date();
         //初始化事件段
-        start.setTime(start.getTime() - 3600 * 1000 * 24 *2);
+        start.setTime(start.getTime() - 3600 * 1000 * 24);
         date.setTime(date.getTime() - 3600 * 1000 * 24);
 
 
@@ -213,11 +212,11 @@
             }
             else{
               //view(res.data.msg)
-              alert(res.data.msg)
+              this.$message.error('登录过期，请重新登录');
             }
         },(err)=>{
             //view('网络错误')
-            alert('网络错误')
+          this.$message.error('网络错误');
         });
 
         this.$http.get('http://192.168.1.32/getPlatform',{
@@ -235,7 +234,7 @@
           }
         }).then((res)=>{
           if(res.data.status == 0){
-            let data = res.data.result.result
+            let data = res.data.result.result;
             this.platData[0].today = data[0].registerUserCount;
             this.platData[0].yday = data[1].registerUserCount;
             this.platData[1].today = data[0].signinUserCount;
@@ -247,11 +246,11 @@
           }
           else{
             //view(res.data.msg)
-            alert(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
           }
         },(err)=>{
           //view('网络错误')
-          alert('网络错误')
+          this.$message.error('网络错误');
         })
 
         this.getData()
@@ -263,6 +262,9 @@
         Params.append('stopDate', this.end);
         Params.append('PlatformId', this.activeName);
 
+        //初始化this.chartData
+        this.chartData = [];
+
         this.$http.post('http://192.168.1.32/getDateNumber',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
@@ -270,6 +272,7 @@
             this.chartData.push(data.signinUserCount);
             this.chartData.push(data.signinTimesCount);
             this.chartData.push(data.avgSigninTimes);
+            console.log(this.chartData)
             this.myChart = echarts.init(document.getElementById('myChart'));
             this.myChart.setOption({
               xAxis: {
@@ -285,11 +288,11 @@
           }
           else{
             //view(res.data.msg)
-            alert(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
           }
         },(err)=>{
           //view('网络错误')
-          alert('网络错误')
+          this.$message.error('网络错误');
         })
       }
     }
@@ -299,21 +302,22 @@
         let date = new Date();
         let start = new Date();
         if (this.dateVal == "1") {
-          return [new Date(), new Date()];
-        } else if (this.dateVal == "2") {
           start.setTime(date.getTime() - 3600 * 1000 * 24);
           return [start, start];
         }
-        else if (this.dateVal == "3") {
+        else if (this.dateVal == "2") {
           start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+          date.setTime(date.getTime() - 3600 * 1000 * 24 * 1);
+          return [start, date];
+        }
+        else if (this.dateVal == "3") {
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+          date.setTime(date.getTime() - 3600 * 1000 * 24 * 1);
           return [start, date];
         }
         else if (this.dateVal == "4") {
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-          return [start, date];
-        }
-        else if (this.dateVal == "5") {
           start.setTime(start.getTime() - 3600 * 1000 * 24 * 60);
+          date.setTime(date.getTime() - 3600 * 1000 * 24 * 1);
           return [start, date];
         }
       }
