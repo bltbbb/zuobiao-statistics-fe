@@ -20,9 +20,9 @@
         <el-select v-model="platVal" placeholder="平台">
           <el-option
             v-for="plat in plats"
-            :key="plat.value"
-            :label="plat.label"
-            :value="plat.value">
+            :key="plat.id+''"
+            :label="plat.name"
+            :value="plat.id+''">
           </el-option>
         </el-select>
         <el-select v-model="canalVal" placeholder="渠道">
@@ -36,9 +36,9 @@
         <el-select v-model="evalVal" placeholder="版本">
           <el-option
             v-for="edition in editions"
-            :key="edition.Eval"
-            :label="edition.label"
-            :value="edition.Eval">
+            :key="edition.id+''"
+            :label="edition.name"
+            :value="edition.id+''">
           </el-option>
         </el-select>
       </div>
@@ -71,29 +71,29 @@
     </div>
     <div class="radio-wrapper">
       <el-radio-group v-model="radioVal" class="radio-box">
-        <el-radio label="0">注册用户</el-radio>
-        <el-radio label="1">登录用户</el-radio>
+        <el-radio label="1">注册用户</el-radio>
+        <el-radio label="2">登录用户</el-radio>
       </el-radio-group>
     </div>
     <div class="table-wrapper">
-      <el-table :data="tableData5" style="width: 100%">
+      <el-table :data="tableData5" style="width: 100%" @expand="expandEvent">
         <el-table-column type="expand">
           <template scope="props">
-            <el-form label-position="left" inline class="demo-table-expand">
+            <el-form label-position="left" inline class="table-expand">
               <el-form-item label="地市名称" class="city-name">
                 <p v-for="item in props.row.city">{{ item.name }}</p><br>
               </el-form-item>
               <el-form-item label="累计登录用户占比" class="login-percentage">
-                <p v-for="item in props.row.city">{{ item.Propor }}%</p>
+                <p v-for="item in props.row.city">{{ item.signinUserProp  }}%</p>
               </el-form-item>
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column label="地域分布" prop="region">
+        <el-table-column label="地域分布" prop="name">
         </el-table-column>
-        <el-table-column label="注册用户" prop="registeredUser">
+        <el-table-column label="注册用户" prop="newUserCount">
         </el-table-column>
-        <el-table-column label="登录用户" prop="loginUser">
+        <el-table-column label="登录用户" prop="signinUserCount">
         </el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
@@ -139,7 +139,7 @@
           }
         ],
         canals: [{
-          val: '1',
+          val: '-1',
           label: '全部渠道'
         }],
         editions: [{
@@ -181,7 +181,7 @@
             orient: 'horizontal',
             inverse: 'true',
             inRange: {
-              color: ['#fff','rgb(0, 119, 254)']
+              color: ['#E8F3FF','rgb(0, 119, 254)']
             }
           },
           series: [
@@ -216,12 +216,12 @@
         tableData5: [],
         topTen: [],
         myChart: null,
-        radioVal: '0',
-        platVal: '1',
-        canalVal: '1',
-        evalVal: "1",
+        radioVal: '1',
+        platVal: '-1',
+        canalVal: '-1',
+        evalVal: "-1",
         start: '',
-        end: '',
+        dateType: '',
         token: '',
         chartData: [],
         size: 20,
@@ -230,7 +230,8 @@
         loginChartData: [],
         regChartData: [],
         loginTableData: [],
-        regTableData: []
+        regTableData: [],
+        regionId: 0
       }
     },
     components:{
@@ -240,9 +241,16 @@
       drawLine(){
           axios.post('/api/getMapData').then((res)=>{
             echarts.registerMap('china', res.data.data);
-            this.myChart = echarts.init(document.getElementById('map-chart'))
+            this.myChart = echarts.init(document.getElementById('map-chart'));
             this.myChart.setOption(this.options)
           })
+      },
+      expandEvent:function (row, expanded) {
+          if(expanded){
+            var id = row.id - 1;
+            this.regionId = row.regionId;
+            this.getRegionPagesDetails(id);
+          }
       },
       randomData() {
         return Math.round(Math.random()*1000);
@@ -255,15 +263,20 @@
         this.currentPage = val;
         this.getRegionPages();
       },
-      getTime(msg){
-        this.start = msg.Format("yyyy-M-d");
+      getTime(msg,dateType,date){
+        if(date){
+            this.start = msg.Format("yyyy-MM-dd");
+            this.dateType = '';
+        }else{
+            this.start = new Date().Format("yyyy-MM-dd");
+            this.dateType = dateType;
+        }
         this.getRegion();
         this.getRegionPages();
       },
       initParams: function () {
-        let date = new Date();
         let start = new Date();
-        start.setTime(start.getTime() - 3600 * 1000 * 24);
+        start.setTime(start.getTime() - 3600 * 1000);
         this.start = start.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
         this.size = 20;
@@ -271,15 +284,66 @@
       init:function () {
         this.getRegion();
         this.getRegionPages();
+
+        //获取平台
+        this.$http.get('http://192.168.1.32/getPlatform',{
+          params:{
+            adoptToken:this.token
+          }
+        }).then((res)=>{
+          this.plats = res.data.result.result;
+        });
+
+        let Params1 = new URLSearchParams();
+        Params1.append('adoptToken', this.token);
+        Params1.append('appPlatId', this.platVal);
+
+        //获取版本
+        this.$http.post('http://192.168.1.32/getEdition',Params1).then((res)=>{
+          if(res.data.status == 0){
+            this.editions = res.data.result.result;
+          }
+          else{
+            //view(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
+          }
+        },(err)=>{
+          //view('网络错误')
+          this.$message.error('网络错误');
+        });
+
+        let Params2 = new URLSearchParams();
+        Params2.append('adoptToken', this.token);
+        Params2.append('dateType', this.dateType);
+        Params2.append('date', this.start);
+        Params2.append('platformId', this.platVal);
+        Params2.append('channelId', this.canalVal);
+        Params2.append('versionId', this.evalVal);
+
+        //获取平台数据
+        this.$http.post('http://192.168.1.32/regionStatistics',Params2).then((res)=>{
+          if(res.data.status == 0){
+            this.list[0].number = res.data.result.result.newUserUount;  //注册用户number
+            this.list[1].number = res.data.result.result.signinUserCount;  //登录用户number
+          }
+          else{
+            //view(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
+          }
+        },(err)=>{
+          //view('网络错误')
+          this.$message.error('网络错误');
+        })
       },
       getRegion: function () {
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
-        Params.append('startDate', this.start);
-        Params.append('stopDate', this.end);
-        Params.append('pid', this.platVal);
-        Params.append('editionId', this.evalVal);
+        Params.append('dateType', this.dateType);
+        Params.append('date', this.start);
+        Params.append('platformId', this.platVal);
         Params.append('channelId', this.canalVal);
+        Params.append('versionId', this.evalVal);
+        Params.append('type', this.radioVal);
 
         //重置
         this.loginChartData = [];
@@ -290,32 +354,33 @@
         this.regTableData = [];
 
 
-        this.$http.post('http://192.168.1.201:9999/region',Params).then((res)=>{
+        this.$http.post('http://192.168.1.32/region',Params).then((res)=>{
           if(res.data.status == 0){
             let reginData = res.data.result.result.region;
             let userData = res.data.result.result.UserCount;
             let tableData = res.data.result.result.topTen;
             for (let i=0;i<reginData.length;i++){
-                this.loginChartData.push({'name':reginData[i].region,'value':reginData[i].loginUser});
-                this.regChartData.push({'name':reginData[i].region,'value':reginData[i].registeredUser})
+                var str = reginData[i].name;
+                str = str.slice(0,str.length-1);
+                this.loginChartData.push({name:str,value:reginData[i].newUserCount});
+                // this.regChartData.push({'name':reginData[i].region,'value':reginData[i].registeredUser})
             }
             for (let i=0;i<tableData.length;i++){
-              this.loginTableData.push({'index':i+1,'region':tableData[i].region,'value':tableData[i].loginUser,'percentage':tableData[i].loginUserPropor});
-              this.regTableData.push({'index':i+1,'region':tableData[i].region,'value':tableData[i].registeredUser,'percentage':tableData[i].registeredUserPropor})
+              this.regTableData.push({'index':i+1,'region':tableData[i].name,'value':tableData[i].newUserCount,'percentage':tableData[i].newUserProp})
             }
-            this.regChartData.push({name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} });
+            // this.regChartData.push({name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} });
             this.loginChartData.push({name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} });
-            this.chartData.push(this.regChartData);
-            this.chartData.push(this.loginChartData);
-            this.tableDataArr.push(this.regTableData);
-            this.tableDataArr.push(this.loginTableData);
-            this.tableData = this.tableDataArr[0];
-            this.list[0].number = userData.registeredUser;  //注册用户number
-            this.list[1].number = userData.loginUser;   //登录用户number
+            this.chartData = this.loginChartData;
+            // this.chartData.push({name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} });
+            // this.tableDataArr.push(this.regTableData);
+            // this.tableDataArr.push(this.loginTableData);
+            this.tableData = this.regTableData;
+            // this.list[0].number = userData.registeredUser;  //注册用户number
+            // this.list[1].number = userData.loginUser;   //登录用户number
             this.myChart.setOption({
               series: [{
                 // 根据名字对应到相应的系列
-                data: this.chartData[0]
+                data: this.chartData
               }]
             })
           }
@@ -331,19 +396,45 @@
       getRegionPages:function () {
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
-        Params.append('startDate', this.start);
-        Params.append('stopDate', this.end);
-        Params.append('pid', this.platVal);
-        Params.append('editionId', this.evalVal);
+        Params.append('dateType', this.dateType);
+        Params.append('date', this.start);
+        Params.append('platformId', this.platVal);
         Params.append('channelId', this.canalVal);
+        Params.append('versionId', this.evalVal);
+        Params.append('type', this.radioVal);
         Params.append('pageSize', this.size);
         Params.append('currentPage', this.currentPage);
 
-        this.$http.post('http://192.168.1.201:9999/regionPages',Params).then((res)=>{
+        this.$http.post('http://192.168.1.32/regionPages',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
-            this.totalCount = res.data.result.totalCount;
+//            this.totalCount = res.data.result.totalCount;
             this.tableData5 = data
+          }
+          else{
+            //view(res.data.msg)
+            alert(res.data.msg)
+          }
+        },(err)=>{
+          //view('网络错误')
+          alert('网络错误')
+        })
+      },
+      getRegionPagesDetails:function (id) {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('dateType', this.dateType);
+        Params.append('date', this.start);
+        Params.append('platformId', this.platVal);
+        Params.append('channelId', this.canalVal);
+        Params.append('versionId', this.evalVal);
+        Params.append('regionId', this.regionId);
+
+        if(this.tableData5[id].city) return;
+        this.$http.post('http://192.168.1.32/regionPagesDetails',Params).then((res)=>{
+          if(res.data.status == 0){
+            let data = res.data.result.result;
+            this.$set(this.tableData5[id], 'city', data);
           }
           else{
             //view(res.data.msg)
