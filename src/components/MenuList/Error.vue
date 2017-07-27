@@ -240,26 +240,13 @@
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
         Params.append('versionId', this.evalVal);
-        Params.append('eventId', this.platVal);
+        Params.append('platformId', this.platVal);
         Params.append('channelId', this.canalVal);
-        Params.append('pageSize', this.size);
-        Params.append('currentPage', this.currentPage4);
         this.$http.post(this.port + '/errorType',Params)
         .then( (res) => {
           if (res.status == 200) {
             if (res.data.status == 0) {
               let errorDataList = res.data.result.result;
-//              for (let index in errorDataList) {
-//                if (errorDataList[index].priority == 1) {
-//                  errorDataList[index].priority = '高'
-//                }
-//                else if (errorDataList[index].priority == 2) {
-//                  errorDataList[index].priority = '中'
-//                }
-//                else if (errorDataList[index].priority == 3) {
-//                  errorDataList[index].priority = '低'
-//                }
-//              }
               this.tableData5 = errorDataList;
               this.totalCount = res.data.result.totalCount;
             }

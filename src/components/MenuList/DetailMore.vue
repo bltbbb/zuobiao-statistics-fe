@@ -145,11 +145,6 @@
             :data="tableData"
             style="width: 100%">
             <el-table-column
-              prop="id"
-              label="序号"
-              width="180">
-            </el-table-column>
-            <el-table-column
               prop="name"
               label="机型"
               width="180">

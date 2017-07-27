@@ -36,14 +36,11 @@
         <el-table-column label="错误摘要">
           <template scope="scope">
             <div class="detail">
-              <div style="color: #7a8fe0;padding-top: 10px;font-size: 16px">title</div>
               <div >
-                <div class="detail-title detail-box" :class="{ active: isActive }">{{ scope.row.crashMessage }}</div>
+                <div class="detail-title detail-box" :class="{active: type == scope.row.id}" >{{ scope.row.crashMessage }}</div>
               </div>
-
-              <!--<div class="detail-box" :class="{ active: isActive }"></div>-->
               <div class="detail-text">
-                <div @click="more(scope.$index,scope.row)">{{text}}</div>
+                <div @click="more(scope.$index,scope.row)" >{{ type == scope.row.id ? '收起':'展开' }}</div>
                 <div @click="moreLook(scope.$index,scope.row)" class="look">查看详情</div>
               </div>
             </div>
@@ -105,14 +102,15 @@
         value: '1',
         // 表格数据
         tableData: [],
-        text: "展开",
         isActive: false,
+        type: 0,
         currentPage4: 1,
         totalCount: null,
         start: '',
         end: '',
         size: 20,
         errorType: ''
+
       }
     }
     ,
@@ -206,8 +204,7 @@
       },
 
       // 图表格绘制
-      drawLine()
-      {
+      drawLine () {
         // 基于准备好的dom，初始化echarts实例
         let myChart = echarts.init(document.getElementById('activeChart'));
         // 绘制图表
@@ -260,20 +257,17 @@
           canalVal: this.canalVal
         }});
       },
+
       more(index,row){
-        console.log(row)
-        alert(this.isActive)
-        if (this.isActive) {
-          this.isActive = false;
-          this.text = "展开"
+        if (this.type != index + 1) {
+          this.type = index * 1 + 1;
         }
         else {
-          this.isActive = true;
-          this.text = "收起";
+          this.type = 0
         }
       },
+
       moreLook(index,row){
-        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',this.platVal)
         this.$router.push({name: 'DetailMore',query:{
           errorType: this.errorType,
           crashMessageId: row.crashMessageId,
@@ -288,7 +282,6 @@
 
     watch: {
       $route (to) {
-        console.log(to)
         if (to.name == 'ErrorDetail') {
           this.errorType = to.query.errorType;
           this.getDetailedPages();
