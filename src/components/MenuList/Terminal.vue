@@ -20,9 +20,9 @@
         <el-select v-model="platVal" placeholder="平台">
           <el-option
             v-for="plat in plats"
-            :key="plat.value"
-            :label="plat.label"
-            :value="plat.value">
+            :key="plat.id+''"
+            :label="plat.name"
+            :value="plat.id+''">
           </el-option>
         </el-select>
         <el-select v-model="canalVal" placeholder="渠道">
@@ -36,9 +36,9 @@
         <el-select v-model="evalVal" placeholder="版本">
           <el-option
             v-for="edition in editions"
-            :key="edition.Eval"
-            :label="edition.label"
-            :value="edition.Eval">
+            :key="edition.id+''"
+            :label="edition.name"
+            :value="edition.id+''">
           </el-option>
         </el-select>
       </div>
@@ -55,7 +55,7 @@
     <div class="user-wrapper">
       <div class="user-box">
         <h1>累计登录用户数</h1>
-        <span>8765182</span>
+        <span>{{userCount}}</span>
       </div>
     </div>
     <div class="chart-wrapper">
@@ -130,10 +130,10 @@
           <tr v-for="(item,index) in tableData">
             <td>{{index+1}}</td>
             <td style="text-align: left;">{{item.name}}</td>
-            <td>{{item.loginSize}}</td>
-            <td>{{item.loginPropor}}</td>
-            <td>{{item.registerPropor}}</td>
-            <td>{{item.loginUserPropor}}</td>
+            <td>{{item.signinTimesCount}}</td>
+            <td>{{item.signinTimesProp }}%</td>
+            <td>{{item.newUserProp  }}%</td>
+            <td>{{item.signinUserProp}}%</td>
           </tr>
         </tbody>
       </table>
@@ -174,13 +174,13 @@
     data() {
       return {
         explain: '这是菜单的说明文字',
-        equipTooltip: '这是菜单的说明文字',
-        loginTooltip: '这是菜单的说明文字',
+        equipTooltip: '安装应用程序的手机型号和浏览器',
+        loginTooltip: '累计登录过的次数',
         myChart: null,
         radioVal: '1',
-        platVal: '1',
-        canalVal: '1',
-        evalVal: "1",
+        platVal: '-1',
+        canalVal: '-1',
+        evalVal: "-1",
         start: '',
         end: '',
         token: '',
@@ -188,6 +188,8 @@
         size: 20,
         currentPage: 1,
         totalCount: 100,
+        dateType: '',
+        userCount: 0,
         plats: [{
           value: '1',
           label: '全部平台'
@@ -209,7 +211,7 @@
           }
         ],
         canals: [{
-          val: '1',
+          val: '-1',
           label: '全部渠道'
         }],
         editions: [{
@@ -252,7 +254,7 @@
           },
           series : {
               top: 'top',
-              name:'直接访问',
+              name:'累计登录次数',
               type:'bar',
               barWidth: '60%',
               data:[1000, 4100, 200, 300, 900, 300, 200, 900, 300, 2020]
@@ -285,31 +287,57 @@
         this.getTerminalPages();
       },
       initParams: function () {
-        let date = new Date();
         let start = new Date();
         start.setTime(start.getTime() - 3600 * 1000 * 24);
         this.start = start.Format("yyyy-MM-dd");
-        this.end = date.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
         this.size = 20;
       },
       init:function () {
         this.getTerminal();
         this.getTerminalPages();
+
+        //获取平台
+        this.$http.get('http://192.168.1.32/getPlatform',{
+          params:{
+            adoptToken:this.token
+          }
+        }).then((res)=>{
+          this.plats = res.data.result.result;
+        });
+
+        let Params1 = new URLSearchParams();
+        Params1.append('adoptToken', this.token);
+        Params1.append('appPlatId', this.platVal);
+
+        //获取版本
+        this.$http.post('http://192.168.1.32/getEdition',Params1).then((res)=>{
+          if(res.data.status == 0){
+            this.editions = res.data.result.result;
+          }
+          else{
+            //view(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
+          }
+        },(err)=>{
+          //view('网络错误')
+          this.$message.error('网络错误');
+        });
       },
       getTerminal: function () {
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
-        Params.append('startDate', this.start);
-        Params.append('stopDate', this.end);
-        Params.append('PlatformId', this.platVal);
-        Params.append('editionId', this.evalVal);
+        Params.append('dateType', this.dateType);
+        Params.append('date', this.start);
+        Params.append('platformId', this.platVal);
         Params.append('channelId', this.canalVal);
+        Params.append('versionId', this.evalVal);
         Params.append('terminalAttribute', this.radioVal);
 
-        this.$http.post('http://192.168.1.201:9999/terminal',Params).then((res)=>{
+        this.$http.post('http://192.168.1.32/terminal',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
+            this.userCount = data.userCount;
             this.myChart.setOption({
               xAxis: {
                 data: data.x
@@ -332,16 +360,16 @@
       getTerminalPages:function () {
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
-        Params.append('startDate', this.start);
-        Params.append('stopDate', this.end);
-        Params.append('PlatformId', this.platVal);
-        Params.append('editionId', this.evalVal);
+        Params.append('dateType', this.dateType);
+        Params.append('date', this.start);
+        Params.append('platformId', this.platVal);
         Params.append('channelId', this.canalVal);
+        Params.append('versionId', this.evalVal);
         Params.append('terminalAttribute', this.radioVal);
         Params.append('pageSize', this.size);
         Params.append('currentPage', this.currentPage);
 
-        this.$http.post('http://192.168.1.201:9999/terminalPages',Params).then((res)=>{
+        this.$http.post('http://192.168.1.32/terminalPages',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
             this.totalCount = res.data.result.totalCount;
@@ -365,22 +393,18 @@
     watch:{
       // 异步请求待用
       platVal: function (val) {
-        this.siza = val;
         this.getTerminal();
         this.getTerminalPages();
       },
       canalVal: function (val) {
-        this.siza = val;
         this.getTerminal();
         this.getTerminalPages();
       },
       evalVal: function (val) {
-        this.siza = val;
         this.getTerminal();
         this.getTerminalPages();
       },
       radioVal: function (val) {
-        this.siza = val;
         this.getTerminal();
         this.getTerminalPages();
       }
