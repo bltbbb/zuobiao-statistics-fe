@@ -33,22 +33,21 @@
     <div>
       <table class="table-title">
         <thead>
-        <tr>
-          <th class="table-thead-th-1" :style="{width: '180px'}">事件名称</th>
-          <th :style="{width: '180px'}">事件Id</th>
-          <th :style="{width: '40%'}">事件数量（日均）
-            <el-tooltip class="item" effect="light" content="Right Center 提示文字" placement="right" popper-class="hint">
-              <i class="el-icon-information"></i>
-            </el-tooltip>
-          </th>
+          <tr>
+            <th class="table-thead-th-1" :style="{width: '180px'}">事件名称</th>
+            <th :style="{width: '180px'}">事件Id</th>
+            <th :style="{width: '40%'}">事件数量（日均）
+              <el-tooltip class="item" effect="light" content="Right Center 提示文字" placement="right" popper-class="hint">
+                <i class="el-icon-information"></i>
+              </el-tooltip>
+            </th>
 
-          <th :style="{width: 'auto'}">触发用户数（日均）
-            <el-tooltip class="item" effect="light" content="Right Center 提示文字" placement="right" popper-class="hint">
-              <i class="el-icon-information"></i>
-            </el-tooltip>
-          </th>
-        </tr>
-
+            <th :style="{width: 'auto'}">触发用户数（日均）
+              <el-tooltip class="item" effect="light" content="Right Center 提示文字" placement="right" popper-class="hint">
+                <i class="el-icon-information"></i>
+              </el-tooltip>
+            </th>
+          </tr>
         </thead>
         <tbody >
           <tr v-for="(vaule,index) in tableData" >
