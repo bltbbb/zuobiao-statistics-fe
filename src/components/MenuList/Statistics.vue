@@ -16,25 +16,25 @@
     </div>
     <div class="title-box">
       <el-radio-group v-model="chatType" class="chat">
-        <el-radio-button label="单聊" value="1"></el-radio-button>
-        <el-radio-button label="群聊" value="2"></el-radio-button>
+        <el-radio-button :label="1">单聊</el-radio-button>
+        <el-radio-button :label="2">群聊</el-radio-button>
       </el-radio-group>
       <Calendar @timeValue="getTime"></Calendar>
       <div class="title-select-box">
         <el-select v-model="platVal" placeholder="平台">
           <el-option
             v-for="plat in plats"
-            :key="plat.value"
-            :label="plat.label"
-            :value="plat.value">
+            :key="plat.id+''"
+            :label="plat.name"
+            :value="plat.id+''">
           </el-option>
         </el-select>
         <el-select v-model="evalVal" placeholder="版本">
           <el-option
             v-for="edition in editions"
-            :key="edition.Eval"
-            :label="edition.label"
-            :value="edition.Eval">
+            :key="edition.id+''"
+            :label="edition.name"
+            :value="edition.id+''">
           </el-option>
         </el-select>
       </div>
@@ -43,10 +43,11 @@
       <div class="part1">
         <div class="part1">
           <el-row :gutter="20">
-            <el-col :span="6" v-for="item in list" :key="item.id">
-              <div class="grid-content bg-purple" @click="tabSwitch(item.type)">
-                <div class="top-title">{{item.typeName}}
-                  <h2 v-for="data in item.details"><span>{{data.name}}</span> <span>{{data.num}}</span></h2>
+            <el-col :span="6" v-for="(item,index) in list" :key="index">
+              <div class="grid-content bg-purple" @click="tabSwitch(index)">
+                <div class="top-title">{{item.name}}
+                  <h2><span>{{item.newsName}}</span> <span>{{item.newsCount}}</span></h2>
+                  <h2 v-if="item.timeName"><span>{{item.timeName}}</span> <span>{{item.timeCount}}</span></h2>
                 </div>
               </div>
             </el-col>
@@ -56,8 +57,7 @@
       <div id="TendChart" class="chart" :style="{width: '100%', height: '400px'}"></div>
       <div class="radio-box">
         <el-radio-group v-model="radioVal" v-if="showRadio">
-          <el-radio label="news">消息数</el-radio>
-          <el-radio label="time">时长</el-radio>
+          <el-radio v-for="(item,key) in radioName" :label="key">{{item}}</el-radio>
         </el-radio-group>
       </div>
     </div>
@@ -78,9 +78,8 @@
     data() {
       return {
         explain: '这是菜单的说明文字',
-        chatType:"群聊",
         plats: [{
-          value: '1',
+          value: '-1',
           label: '全平台'
         }, {
           value: '2',
@@ -100,7 +99,7 @@
           }
         ],
         editions: [{
-          Eval: '1',
+          Eval: '-1',
           label: '全部版本'
         },
           {
@@ -109,26 +108,31 @@
           }],
         // 第一部分
         list: [
-          {id: "1", title: "单聊",name:"消息数",names:"", message: 'Foo', number: "8096798", numbers: ""},
-          {id: "2", title: "单聊-短语音",name:"消息数",names:"时长", message: 'Foo', number: "8096798", numbers: "8096798"},
-          {id: "3", title: "单聊-图片",name:"图片数",names:"", message: 'Foo', number: "8096798", numbers: ""},
-          {id: "4", title: "单聊-短视频",name:"消息数",names:"时长", message: 'Foo', number: "8096798", numbers: "8096798"},
-          {id: "5", title: "单聊-文件",name:"文件个数",names:"文件大小", message: 'Foo', number: "8096798", numbers: "8096798"},
-          {id: "6", title: "单聊-语音通话",name:"消息数",names:"时长", message: 'Foo', number: "8096798", numbers: "8096798"},
-          {id: "7", title: "单聊-视频通话",name:"消息数",names:"时长", message: 'Foo', number: "8096798", numbers: "8096798"}
+          {id: "1", title: "单聊",name:"消息数",names:"", number: "8096798", numbers: ""},
+          {id: "2", title: "单聊-短语音",name:"消息数",names:"时长", number: "8096798", numbers: "8096798"},
+          {id: "3", title: "单聊-图片",name:"图片数",names:"", number: "8096798", numbers: ""},
+          {id: "4", title: "单聊-短视频",name:"消息数",names:"时长", number: "8096798", numbers: "8096798"},
+          {id: "5", title: "单聊-文件",name:"文件个数",names:"文件大小", number: "8096798", numbers: "8096798"},
+          {id: "6", title: "单聊-语音通话",name:"消息数",names:"时长", number: "8096798", numbers: "8096798"},
+          {id: "7", title: "单聊-视频通话",name:"消息数",names:"时长", number: "8096798", numbers: "8096798"}
         ],
         myChart: null,
-        platVal: '1',
-        evalVal: '1',
+        platVal: '-1',
+        evalVal: '-1',
+        canalVal: '-1',
         start: '',
         end: '',
         token: '',
-        chartType: '1',
+        chatType: '1',
         chartData: [],
         seriesName: '',
         radioVal: 'news',
         showRadio: false,
-        radioData: []
+        radioData: [],
+        radioName: {
+            news: '消息数',
+            size: '时长'
+        }
       }
     }
     ,
@@ -158,9 +162,6 @@
           title: {text: '全平台注册用户'},
           tooltip: {
             trigger: 'axis'
-          },
-          legend: {
-            data: ['今天', '昨天']
           },
           xAxis: {
             data: ["0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59"]
@@ -201,38 +202,68 @@
       },
       //获取日历时间
       getTime(date){
-        this.start = msg[0].Format("yyyy-M-d");
-        this.end = msg[1].Format("yyyy-M-d");
-        this.getFirstRetained();
+        this.start = date[0].Format("yyyy-M-d");
+        this.end = date[1].Format("yyyy-M-d");
+        this.getFunctionCensus();
       },
       initParams: function () {
         let date = new Date();
         let start = new Date();
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        start.setTime(start.getTime() - 3600 * 1000 * 24 );
+        date.setTime(date.getTime() - 3600 * 1000 * 24 );
         this.start = start.Format("yyyy-MM-dd");
         this.end = date.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
       },
       init:function () {
         this.getFunctionCensus();
+
+        //获取平台
+        this.$http.get('http://192.168.1.32/getPlatform',{
+          params:{
+            adoptToken:this.token
+          }
+        }).then((res)=>{
+          this.plats = res.data.result.result;
+        });
+
+        let Params1 = new URLSearchParams();
+        Params1.append('adoptToken', this.token);
+        Params1.append('appPlatId', this.platVal);
+
+        //获取版本
+        this.$http.post('http://192.168.1.32/getEdition',Params1).then((res)=>{
+          if(res.data.status == 0){
+            this.editions = res.data.result.result;
+          }
+          else{
+            //view(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
+          }
+        },(err)=>{
+          //view('网络错误')
+          this.$message.error('网络错误');
+        });
       },
       tabSwitch(id){
           //异步请求待用
-          --id;
-          let length = this.list[id].details.length;
-          if(length==1){
+          let has = this.list[id].timeCount;
+          if(has == undefined){
               this.showRadio = false;
           }else {
               this.showRadio = true;
-              this.radioData = this.chartData[id];
+              this.radioData = this.chartData[id].Chart;
+              this.radioName.news = this.chartData[id].newsName;
+              this.radioName.size = this.chartData[id].timeName;
           }
           this.myChart.setOption({
             xAxis: {
-              data: this.chartData[id].news.x
+              data: this.chartData[id].Chart.news.x
             },
             series: [{
               // 根据名字对应到相应的系列
-              data: this.chartData[id].news.y
+              name: this.chartData[id].newsName,
+              data: this.chartData[id].Chart.news.y
             }]
           })
       },
@@ -241,32 +272,34 @@
         Params.append('adoptToken', this.token);
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
-        Params.append('PlatformId', this.platVal);
-        Params.append('channelId', this.evalVal);
-        Params.append('chatType', this.chartType);
+        Params.append('platformId', this.platVal);
+        Params.append('channelId', this.canalVal);
+        Params.append('versionId', this.evalVal);
+        Params.append('chatType', this.chatType);
 
-        this.$http.post('http://192.168.1.201:9999/functionCensus',Params).then((res)=>{
+        this.$http.post('http://192.168.1.32/functionCensus',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
-            this.list = data.news;
-            this.chartData = data.list;
+            this.list = data;
+            this.chartData = data;
             this.myChart.setOption({
               xAxis: {
-                data: this.chartData[0].news.x
+                data: this.chartData[0].Chart.news.x
               },
               series: [{
                 // 根据名字对应到相应的系列
-                data: this.chartData[0].news.y
+                name: this.chartData[0].newsName,
+                data: this.chartData[0].Chart.news.y
               }]
             })
           }
           else{
             //view(res.data.msg)
-            alert(res.data.msg)
+            this.$message.error(res.data.msg);
           }
         },(err)=>{
           //view('网络错误')
-          alert('网络错误')
+          this.$message.error('网络错误');
         })
       }
     },
@@ -288,6 +321,7 @@
           },
           series: [{
             // 根据名字对应到相应的系列
+            name: this.radioName[val],
             data: this.radioData[val].y
           }]
         })
