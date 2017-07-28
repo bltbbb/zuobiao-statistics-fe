@@ -109,7 +109,7 @@
         size: 20,
         currentDate:'',
         dateType: 1,
-        curtext: '',
+        curtext: null,
         totalCount: null,
         eventData: '',
         triggerUserData: ''
@@ -209,7 +209,7 @@
       getAnalyzeChart () {
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
-        ((this.curtext == '自定义') ? Params.append('date', this.currentDate) : Params.append('dateType', this.dateType));
+        ((this.curtext) ? Params.append('date', this.currentDate) : Params.append('dateType', this.dateType));
         Params.append('platformId', this.platVal);
         Params.append('versionId', this.evalVal);
         Params.append('channelId', this.canalVal);
@@ -230,6 +230,7 @@
               });
             }
             else if (res.data.status == 1) {
+              this.$message.warning('数据为空');
               console.log('图表信息请求数据为空')
             }
         }
@@ -247,7 +248,7 @@
       getAnalyzePages () {
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
-        ((this.curtext == '自定义') ? Params.append('date', this.currentDate) : Params.append('dateType', this.dateType));
+        ((this.curtext) ? Params.append('date', this.currentDate) : Params.append('dateType', this.dateType));
         Params.append('platformId', this.platVal);
         Params.append('versionId', this.evalVal);
         Params.append('channelId', this.canalVal);
@@ -263,6 +264,8 @@
                 this.totalCount = res.data.result.totalCount;
               }
               else if (res.data.status == 1) {
+                this.tableData = [];
+                this.$message.warning('数据为空');
                 console.log('表格信息请求数据为空')
               }
             }

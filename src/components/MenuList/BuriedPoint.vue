@@ -30,19 +30,22 @@
 
     <!--页面名称列表-->
 
-    <div>
-      <table class="table-title">
-        <thead>
-          <tr>
-            <th class="table-thead-th-1" :style="{width: '180px'}">事件名称</th>
+    <div class="title-box" >
+      <div style="border: solid 1px #DFE6EC; border-bottom: 0">
+
+
+      <table class="table-title" width="100%" >
+        <thead >
+          <tr >
+            <th class="table-thead-th-1" :style="{width: '200px'}">事件名称</th>
             <th :style="{width: '180px'}">事件Id</th>
-            <th :style="{width: '40%'}">事件数量（日均）
+            <th >事件数量（日均）
               <el-tooltip class="item" effect="light" content="Right Center 提示文字" placement="right" popper-class="hint">
                 <i class="el-icon-information"></i>
               </el-tooltip>
             </th>
 
-            <th :style="{width: 'auto'}">触发用户数（日均）
+            <th >触发用户数（日均）
               <el-tooltip class="item" effect="light" content="Right Center 提示文字" placement="right" popper-class="hint">
                 <i class="el-icon-information"></i>
               </el-tooltip>
@@ -58,6 +61,8 @@
           </tr>
         </tbody>
       </table>
+      </div>
+
     </div>
   </div>
 </template>
@@ -84,7 +89,7 @@
         Eval: "1",
         currentDate:'',
         dateType: 1,
-        curtext: ''
+        curtext: null
 
       }
     },
@@ -92,9 +97,6 @@
       this.init();
     },
     methods: {
-      handleSelect (key, keyPath) {
-//        console.log(key, keyPath);
-      },
 
       initParams () {
         this.token = this.$cookie.get('adoptToken');
@@ -134,7 +136,7 @@
       getAnalysis () {
           let Params = new URLSearchParams();
           Params.append('adoptToken', this.token);
-         ((this.curtext == '自定义') ? Params.append('date', this.currentDate) : Params.append('dateType', this.dateType));
+         ((this.curtext) ? Params.append('date', this.currentDate) : Params.append('dateType', this.dateType));
           Params.append('platformId', this.platVal);
           Params.append('versionId', this.evalVal);
           Params.append('channelId', this.canalVal);
@@ -146,6 +148,8 @@
                     this.tableData = data
                   }
                   else if (res.data.status == 1) {
+                    this.tableData = [];
+                    this.$message.warning('暂无数据');
                     console.log('事件信息请求数据为空');
                   }
                 }
@@ -232,7 +236,6 @@
   }
 
   .table-title tbody {
-    /*width:100%;*/
     background: #ffffff;
   }
 

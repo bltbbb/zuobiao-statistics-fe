@@ -221,6 +221,7 @@
                 });
               }
               else if (res.data.status == 1) {
+                this.$message.warning('请求数据为空');
                 console.log('图表信息请求数据为空')
               }
             }
@@ -251,6 +252,8 @@
               this.totalCount = res.data.result.totalCount;
             }
             else if (res.data.status == 1) {
+              this.tableData5 = [];
+              this.$message.warning('数据为空');
               console.log('表格信息请求数据为空');
             }
           }
@@ -274,7 +277,7 @@
             trigger: 'axis'
           },
           xAxis: {
-            data: ["0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59"]
+            data: []
           },
           yAxis: {
             type: 'value'
@@ -291,7 +294,7 @@
                 }
               }
             },
-            data: [5, 20, 36, 10, 10, 20]
+            data: []
           }]
 
         });
