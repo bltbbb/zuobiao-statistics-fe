@@ -312,10 +312,10 @@
           else{
             //view(res.data.msg)
             this.$message.error('登录过期，请重新登录');
+            lockr.rm("menuInfo");
+            this.$cookie.delete('adoptToken');
+            this.$router.push('/login');
           }
-        },(err)=>{
-          //view('网络错误')
-          this.$message.error('网络错误');
         })
       },
       getEditions: function () {
@@ -331,6 +331,9 @@
           else{
             //view(res.data.msg)
             this.$message.error('登录过期，请重新登录');
+            lockr.rm("menuInfo");
+            this.$cookie.delete('adoptToken');
+            this.$router.push('/login');
           }
         },(err)=>{
           //view('网络错误')
@@ -388,11 +391,14 @@
           }
           else{
             //view(res.data.msg)
-            alert(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
+            lockr.rm("menuInfo");
+            this.$cookie.delete('adoptToken');
+            this.$router.push('/login');
           }
         },(err)=>{
           //view('网络错误')
-          alert('网络错误')
+          this.$message.error('网络错误');
         })
       },
       getRegionPages:function () {
@@ -415,11 +421,14 @@
           }
           else{
             //view(res.data.msg)
-            alert(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
+            lockr.rm("menuInfo");
+            this.$cookie.delete('adoptToken');
+            this.$router.push('/login');
           }
         },(err)=>{
           //view('网络错误')
-          alert('网络错误')
+          this.$message.error('网络错误');
         })
       },
       getRegionPagesDetails:function (id) {
@@ -440,11 +449,14 @@
           }
           else{
             //view(res.data.msg)
-            alert(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
+            lockr.rm("menuInfo");
+            this.$cookie.delete('adoptToken');
+            this.$router.push('/login');
           }
         },(err)=>{
           //view('网络错误')
-          alert('网络错误')
+          this.$message.error('网络错误');
         })
       }
     },

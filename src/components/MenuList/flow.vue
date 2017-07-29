@@ -357,7 +357,7 @@
         },(err)=>{
           console.log(err+' 123')
           //view('网络错误')
-          alert('网络错误')
+          this.$message.error('网络错误');
         })
       },
       getUserFlow: function () {
@@ -396,7 +396,7 @@
           }
         },(err)=>{
           //view('网络错误')
-          alert('网络错误')
+          this.$message.error('网络错误');
         })
       },
       getFlowAnalyzePages: function () {
@@ -418,13 +418,14 @@
           }
           else if(res.data.status == 1){
             //view(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
             lockr.rm("menuInfo");
             this.$cookie.delete('adoptToken');
             this.$router.push('/login');
           }
         },(err)=>{
           //view('网络错误')
-          alert('网络错误')
+          this.$message.error('网络错误');
         })
       }
     },

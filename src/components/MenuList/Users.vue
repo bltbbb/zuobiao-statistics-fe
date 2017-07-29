@@ -322,10 +322,10 @@
           else{
             //view(res.data.msg)
             this.$message.error('登录过期，请重新登录');
+            lockr.rm("menuInfo");
+            this.$cookie.delete('adoptToken');
+            this.$router.push('/login');
           }
-        },(err)=>{
-          //view('网络错误')
-          this.$message.error('网络错误');
         })
       },
       getUserAttr: function () {
@@ -377,16 +377,14 @@
           }
           else{
             //view(res.data.msg)
-            alert(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
+            lockr.rm("menuInfo");
+            this.$cookie.delete('adoptToken');
+            this.$router.push('/login');
           }
         },(err)=>{
           //view('网络错误')
-          this.$message({
-            showClose: true,
-            message: '网络错误',
-            type: 'error',
-            duration: 2500
-          })
+          this.$message.error('网络错误');
         })
       },
       drawLine(){
