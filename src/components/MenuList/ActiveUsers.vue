@@ -184,7 +184,7 @@
         this.myChart = echarts.init(document.getElementById('activeChart'));
         // 绘制图表
         this.myChart.setOption({
-          title: {text: '全平台注册用户'},
+          title: {text: '登录用户'},
           tooltip: {
             trigger: 'axis'
           },
@@ -355,11 +355,15 @@
       },
       radioVal: function (val) {
         this.myChart.setOption({
+          title: {
+            text: this.title[this.radioVal]
+          },
           xAxis: {
             data: this.chartData[val].x
           },
           series: [{
             // 根据名字对应到相应的系列
+            name: this.title[this.radioVal],
             data: this.chartData[val].y
           }]
         })

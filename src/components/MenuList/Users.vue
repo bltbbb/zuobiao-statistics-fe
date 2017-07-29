@@ -17,7 +17,7 @@
     <div class="title-box">
       <Calendar @timeValue="getTime" :showToday="false"></Calendar>
       <div class="title-select-box" :row="4">
-        <el-select v-model="platVal" placeholder="平台" size="small">
+        <el-select v-model="platVal" placeholder="平台">
           <el-option
             v-for="plat in plats"
             :key="plat.id+''"
@@ -218,7 +218,6 @@
             axisTick: {show: false},
             axisLabel: {
               formatter:'{value}',
-              margin: 20,
               interval: 0
             },
             axisLine: {show: false},
@@ -227,12 +226,9 @@
             show: false,
             splitLine: {show: false},
             axisLabel: {
-              formatter:'{value}',
-              margin: 20
+              formatter:'{value}'
             },
-
-            axisTick: {show: false},
-
+            axisTick: {show: false}
           },
           animationDurationUpdate: 1200,
           series: [{
@@ -243,12 +239,12 @@
               }
             },
             silent: true,
-            barWidth: 50,
+            barWidth: 40,
             barGap: '-100%', // Make series be overlap
-            data: []
+            data: [100,100,100,100,100,100,100,100,100,100,100,100,100]
           }, {
             type: 'bar',
-            barWidth: 50,
+            barWidth: 40,
             z: 10,
             itemStyle: {
               normal: {
@@ -259,14 +255,15 @@
               normal:{
                 show: true,
                 position: 'insideTopRight',
-                offset: [0,-25],
+                offset: [5,-25],
                 formatter: '{c}%',
                 textStyle: {
                   color: '#131f0b'
                 }
               }
             },
-            data: []
+            data: [],
+            barCategoryGap: '5%'
           }]
         },
         sexChart: null,
@@ -372,9 +369,7 @@
               xAxis: {
                 data: indData.x
               },
-              series: [{
-                data: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
-              },{
+              series: [{},{
                 // 根据名字对应到相应的系列
                 data: indData.y
               }]

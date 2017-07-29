@@ -170,7 +170,7 @@
         this.myChart = echarts.init(document.getElementById('TendChart'));
         // 绘制图表
         this.myChart.setOption({
-          title: {text: '全平台注册用户'},
+          title: {text: '注册用户'},
           tooltip: {
             trigger: 'axis'
           },
@@ -353,6 +353,9 @@
       radioVal: function (val) {
         --val;
         this.myChart.setOption({
+          title: {
+            text: this.title[val]
+          },
           xAxis: {
             data: this.chartData[val].x
           },

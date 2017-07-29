@@ -243,6 +243,9 @@
               data : [],
               axisTick: {
                 alignWithLabel: true
+              },
+              axisLabel: {
+                interval: 0
               }
             }
           ],

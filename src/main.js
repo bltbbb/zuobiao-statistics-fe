@@ -19,6 +19,9 @@ Vue.use(VueCookie)
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;
 
+//接口地址
+const Interface = 'http://192.168.1.201:9999';
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -45,14 +48,20 @@ new Vue({
         this.$router.push('/login');
       }
       //为方便开发 不启用验证token
-      // else {
-      //   axios.post('http://192.168.1.201:9999/isAuthenticated', tokenParams).then((res)=>{
-      //     if(res.data.status == 1){
-     //        lockr.rm("menuInfo");
-      //       this.$router.push('/login');
-      //     }
-      //   })
-      // }
+      else {
+        axios.post('http://192.168.1.32/isAuthenticated', tokenParams).then((res)=>{
+          if(res.data.status == 1){
+            lockr.rm("menuInfo");
+            this.$cookie.delete('adoptToken');
+            this.$router.push('/login');
+          }
+        },(err)=>{
+          lockr.rm("menuInfo");
+          this.$cookie.delete('adoptToken');
+          console.log(err.data+'main.js');
+          //this.$router.push('/login');
+        })
+      }
     }
   }
 })
