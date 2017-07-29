@@ -227,12 +227,15 @@
           this.plats = res.data.result.result;
         });
 
-        let Params1 = new URLSearchParams();
-        Params1.append('adoptToken', this.token);
-        Params1.append('appPlatId', this.platVal);
+        this.getEditions();
+      },
+      getEditions: function () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('appPlatId', this.platVal);
 
         //获取版本
-        this.$http.post('http://192.168.1.32/getEdition',Params1).then((res)=>{
+        this.$http.post('http://192.168.1.32/getEdition',Params).then((res)=>{
           if(res.data.status == 0){
             this.editions = res.data.result.result;
           }
@@ -243,7 +246,7 @@
         },(err)=>{
           //view('网络错误')
           this.$message.error('网络错误');
-        });
+        })
       },
       tabSwitch(id){
           //异步请求待用
@@ -307,6 +310,7 @@
       //异步请求待用
       Eval : function (val) {
         this.getFunctionCensus();
+        this.getEditions();
       },
       value: function (val) {
         this.getFunctionCensus();

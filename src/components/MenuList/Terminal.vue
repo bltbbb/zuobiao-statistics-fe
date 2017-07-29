@@ -240,7 +240,7 @@
           xAxis : [
             {
               type : 'category',
-              data : ['iPhone4s', 'iPhone4s', 'iPhone4s', 'iPhone4s', 'iPhone4s', 'iPhone4s', 'iPhone4s', 'iPhone4s', 'iPhone4s', 'iPhone4s'],
+              data : [],
               axisTick: {
                 alignWithLabel: true
               }
@@ -257,7 +257,7 @@
               name:'累计登录次数',
               type:'bar',
               barWidth: '60%',
-              data:[1000, 4100, 200, 300, 900, 300, 200, 900, 300, 2020]
+              data:[]
             }
         },
         tableData: []
@@ -306,12 +306,15 @@
           this.plats = res.data.result.result;
         });
 
-        let Params1 = new URLSearchParams();
-        Params1.append('adoptToken', this.token);
-        Params1.append('appPlatId', this.platVal);
+        this.getEditions();
+      },
+      getEditions: function () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('appPlatId', this.platVal);
 
         //获取版本
-        this.$http.post('http://192.168.1.32/getEdition',Params1).then((res)=>{
+        this.$http.post('http://192.168.1.32/getEdition',Params).then((res)=>{
           if(res.data.status == 0){
             this.editions = res.data.result.result;
           }
@@ -322,7 +325,7 @@
         },(err)=>{
           //view('网络错误')
           this.$message.error('网络错误');
-        });
+        })
       },
       getTerminal: function () {
         let Params = new URLSearchParams();
@@ -395,6 +398,7 @@
       platVal: function (val) {
         this.getTerminal();
         this.getTerminalPages();
+        this.getEditions();
       },
       canalVal: function (val) {
         this.getTerminal();

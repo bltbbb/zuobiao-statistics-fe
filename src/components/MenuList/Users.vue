@@ -295,7 +295,7 @@
       },
       initParams: function () {
         let start = new Date();
-        start.setTime(start.getTime() - 3600 * 1000);
+        start.setTime(start.getTime() - 3600 * 1000 * 24);
         this.start = start.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
       },
@@ -310,6 +310,9 @@
           this.plats = res.data.result.result;
         });
 
+        this.getEditions();
+      },
+      getEditions: function () {
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
         Params.append('appPlatId', this.platVal);
@@ -370,7 +373,7 @@
                 data: indData.x
               },
               series: [{
-                data: [100, 100, 100, 100, 100, 100, 100, 100, 100]
+                data: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
               },{
                 // 根据名字对应到相应的系列
                 data: indData.y
@@ -414,6 +417,7 @@
     watch: {
       platVal: function (val) {
         this.getUserAttr();
+        this.getEditions();
       },
       evalVal: function (val) {
         this.getUserAttr();

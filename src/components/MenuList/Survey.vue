@@ -83,9 +83,9 @@
         explain: '这是菜单的说明文字',
         // 第一部分
         list: [
-            {number:"123123",id:"1",title:"积累用户",message:"Bar"},
-            {number:"123123123",id:"2",title:"过去7天获取用户",message:"BAR"},
-            {number:"498564645",id:"3",title:"过去30天获取用户",message:"BAR"}
+            {number:"0",id:"1",title:"累计用户",message:"Bar"},
+            {number:"0",id:"2",title:"过去7天活跃用户",message:"BAR"},
+            {number:"0",id:"3",title:"过去30天活跃用户",message:"BAR"}
             ],
         // 平台切换
         gameNames: [],
@@ -96,10 +96,10 @@
           {key:'4',select:'最近60天'}
         ],
         platData: [
-          {id:1,title:"注册用户",today:"",yday:""},
-          {id:2,title:"登录用户",today:"",yday:""},
-          {id:3,title:"登录次数",today:"",yday:""},
-          {id:4,title:"人均登录次数",today:"",yday:""},
+          {id:1,title:"注册用户",today:"0",yday:"0"},
+          {id:2,title:"登录用户",today:"0",yday:"0"},
+          {id:3,title:"登录次数",today:"0",yday:"0"},
+          {id:4,title:"人均登录次数",today:"0",yday:"0"},
         ],
         dateVal: '1',
         activeName:"-1",
@@ -130,7 +130,7 @@
         // 绘制图表
         this.myChart.setOption({
           title: {
-              text: '全平台注册用户',
+              text: '注册用户',
               x: 'center',
               top: '0'
           },
@@ -141,7 +141,7 @@
             trigger: 'axis'
           },
           xAxis: {
-            data: ["11","12","13","15","5"]
+            data: []
           },
           yAxis: {
             type: 'value'
@@ -149,7 +149,7 @@
           series: [{
             name: '注册用户',
             type: 'line',
-            data: [5,10,56,0,6],
+            data: [],
             areaStyle: {
               normal: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -175,6 +175,9 @@
       choice:function(value){
           this.type = value;
           this.myChart.setOption({
+            title: {
+              text: this.chartName[value-1]
+            },
             xAxis: {
               data: this.chartData[value-1].x
             },
@@ -227,31 +230,7 @@
             this.gameNames = res.data.result.result;
         })
 
-        this.$http.get('http://192.168.1.32/getFullPlatform',{
-          params:{
-            adoptToken:this.token,
-            platformId:this.platformId
-          }
-        }).then((res)=>{
-          if(res.data.status == 0){
-            let data = res.data.result.result;
-            this.platData[0].today = data[0].registerUserCount;
-            this.platData[0].yday = data[1].registerUserCount;
-            this.platData[1].today = data[0].signinUserCount;
-            this.platData[1].yday = data[1].signinUserCount;
-            this.platData[2].today = data[0].signinUserCount;
-            this.platData[2].yday = data[1].signinUserCount;
-            this.platData[3].today = data[0].avgSigninTimes;
-            this.platData[3].yday = data[1].avgSigninTimes;
-          }
-          else{
-            //view(res.data.msg)
-            this.$message.error('登录过期，请重新登录');
-          }
-        },(err)=>{
-          //view('网络错误')
-          this.$message.error('网络错误');
-        })
+        this.getFullPlat();
 
         this.getData()
       },
@@ -260,7 +239,7 @@
         Params.append('adoptToken', this.token);
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
-        Params.append('PlatformId', this.activeName);
+        Params.append('platformId', this.activeName);
 
         //初始化this.chartData
         this.chartData = [];
@@ -294,6 +273,33 @@
           //view('网络错误')
           this.$message.error('网络错误');
         })
+      },
+      getFullPlat(){
+        this.$http.get('http://192.168.1.32/getFullPlatform',{
+          params:{
+            adoptToken:this.token,
+            platformId:this.activeName
+          }
+        }).then((res)=>{
+          if(res.data.status == 0){
+            let data = res.data.result.result;
+            this.platData[0].today = data[0].registerUserCount;
+            this.platData[0].yday = data[1].registerUserCount;
+            this.platData[1].today = data[0].signinUserCount;
+            this.platData[1].yday = data[1].signinUserCount;
+            this.platData[2].today = data[0].signinTimesCount;
+            this.platData[2].yday = data[1].signinTimesCount;
+            this.platData[3].today = data[0].avgSigninTimes;
+            this.platData[3].yday = data[1].avgSigninTimes;
+          }
+          else{
+            //view(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
+          }
+        },(err)=>{
+          //view('网络错误')
+          this.$message.error('网络错误');
+        });
       }
     }
     ,
@@ -334,6 +340,7 @@
       activeName: function (val) {
         //异步请求数据
         this.getData();
+        this.getFullPlat();
       }
     }
   }

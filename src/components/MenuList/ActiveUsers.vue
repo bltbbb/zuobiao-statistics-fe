@@ -220,7 +220,7 @@
         window.onresize = this.myChart.resize;
       },
       handleSizeChange(val) {
-        this.siza = val;
+        this.size = val;
         this.getActiveUserPages();
       },
       handleCurrentChange(val) {
@@ -229,6 +229,7 @@
       },
       //获取日历时间
       getTime(msg){
+          console.log(msg)
         this.start = msg[0].Format("yyyy-M-d");
         this.end = msg[1].Format("yyyy-M-d");
         this.getActiveUser();
@@ -257,11 +258,14 @@
           this.plats = res.data.result.result;
         });
 
+        this.getEditions();
+      },
+      getEditions: function () {
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
         Params.append('appPlatId', this.platVal);
 
-        //获取渠道
+        //获取版本
         this.$http.post('http://192.168.1.32/getEdition',Params).then((res)=>{
           if(res.data.status == 0){
             this.editions = res.data.result.result;
@@ -339,6 +343,7 @@
       platVal: function (val) {
         this.getActiveUser();
         this.getActiveUserPages();
+        this.getEditions();
       },
       canalVal: function (val) {
         this.getActiveUser();
@@ -370,4 +375,3 @@
   @import '../../assets/css/page/trend.scss';
 </style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-

@@ -3,7 +3,7 @@
   <div class="Map content-box">
     <div class="header-wrapper">
       <h1>
-        用户属性
+        地域分布
         <el-popover
           placement="right"
           width="200"
@@ -276,7 +276,7 @@
       },
       initParams: function () {
         let start = new Date();
-        start.setTime(start.getTime() - 3600 * 1000);
+        start.setTime(start.getTime() - 3600 * 1000 *24);
         this.start = start.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
         this.size = 20;
@@ -294,23 +294,7 @@
           this.plats = res.data.result.result;
         });
 
-        let Params1 = new URLSearchParams();
-        Params1.append('adoptToken', this.token);
-        Params1.append('appPlatId', this.platVal);
-
-        //获取版本
-        this.$http.post('http://192.168.1.32/getEdition',Params1).then((res)=>{
-          if(res.data.status == 0){
-            this.editions = res.data.result.result;
-          }
-          else{
-            //view(res.data.msg)
-            this.$message.error('登录过期，请重新登录');
-          }
-        },(err)=>{
-          //view('网络错误')
-          this.$message.error('网络错误');
-        });
+        this.getEditions();
 
         let Params2 = new URLSearchParams();
         Params2.append('adoptToken', this.token);
@@ -319,12 +303,30 @@
         Params2.append('platformId', this.platVal);
         Params2.append('channelId', this.canalVal);
         Params2.append('versionId', this.evalVal);
-
         //获取平台数据
         this.$http.post('http://192.168.1.32/regionStatistics',Params2).then((res)=>{
           if(res.data.status == 0){
             this.list[0].number = res.data.result.result.newUserUount;  //注册用户number
             this.list[1].number = res.data.result.result.signinUserCount;  //登录用户number
+          }
+          else{
+            //view(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
+          }
+        },(err)=>{
+          //view('网络错误')
+          this.$message.error('网络错误');
+        })
+      },
+      getEditions: function () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('appPlatId', this.platVal);
+
+        //获取版本
+        this.$http.post('http://192.168.1.32/getEdition',Params).then((res)=>{
+          if(res.data.status == 0){
+            this.editions = res.data.result.result;
           }
           else{
             //view(res.data.msg)
@@ -363,15 +365,15 @@
                 var str = reginData[i].name;
                 str = str.slice(0,str.length-1);
                 this.loginChartData.push({name:str,value:reginData[i].newUserCount});
-                // this.regChartData.push({'name':reginData[i].region,'value':reginData[i].registeredUser})
+                this.regChartData.push({name:str,value:reginData[i].signinUserCount})
             }
             for (let i=0;i<tableData.length;i++){
               this.regTableData.push({'index':i+1,'region':tableData[i].name,'value':tableData[i].newUserCount,'percentage':tableData[i].newUserProp})
             }
-            // this.regChartData.push({name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} });
+            this.regChartData.push({name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} });
             this.loginChartData.push({name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} });
-            this.chartData = this.loginChartData;
-            // this.chartData.push({name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} });
+            this.chartData.push(this.regChartData);
+            this.chartData.push(this.loginChartData);
             // this.tableDataArr.push(this.regTableData);
             // this.tableDataArr.push(this.loginTableData);
             this.tableData = this.regTableData;
@@ -380,7 +382,7 @@
             this.myChart.setOption({
               series: [{
                 // 根据名字对应到相应的系列
-                data: this.chartData
+                data: this.chartData[0]
               }]
             })
           }
@@ -456,6 +458,7 @@
       platVal: function (val) {
         this.getRegion();
         this.getRegionPages();
+        this.getEditions();
       },
       canalVal: function (val) {
         this.getRegion();
@@ -470,6 +473,7 @@
         this.getRegionPages();
       },
       radioVal: function (val) {
+        val--;
         this.tableData = this.tableDataArr[val];
         this.myChart.setOption({
           series: [{

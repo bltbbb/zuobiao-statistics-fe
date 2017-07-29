@@ -230,7 +230,7 @@
         Params.append('adoptToken', this.token);
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
-        Params.append('PlatformId', this.platVal);
+        Params.append('platformId', this.platVal);
         Params.append('channelId', this.evalVal);
         Params.append('retainedType', this.radioVal);
 

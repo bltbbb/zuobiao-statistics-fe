@@ -18,12 +18,11 @@
 
     <!--双日期-->
     <el-radio-group v-model="radio2" @change="datarangeChange" v-if="showToday">
-      <el-radio-button name="1" label="今天"></el-radio-button>
-      <el-radio-button name="2" label="昨天"></el-radio-button>
-      <el-radio-button name="3" label="最近7天"></el-radio-button>
-      <el-radio-button name="4" label="最近30天"></el-radio-button>
-      <el-radio-button name="5" label="最近60天"></el-radio-button>
-      <el-radio-button name="6" label="自定义" class="time-box" ref="custom">
+      <el-radio-button name="1" label="昨天"></el-radio-button>
+      <el-radio-button name="2" label="最近7天"></el-radio-button>
+      <el-radio-button name="3" label="最近30天"></el-radio-button>
+      <el-radio-button name="4" label="最近60天"></el-radio-button>
+      <el-radio-button name="5" label="自定义" class="time-box" ref="custom">
         <el-date-picker v-model="value2" type="daterange" placeholder=""
                         class="data-piker" @change="rangeChange" @focus="focusPiker"
                         :picker-options="pickerOptions0">
@@ -45,10 +44,10 @@
     data () {
       return {
         radio1: '昨天',
-        radio2: '今天',
-        value1: new Date().setTime(new Date().getTime() - 3600 * 1000),  //单日期默认昨天
-        value2: [new Date(),new Date()],
-        value3: new Date().setTime(new Date().getTime() - 3600 * 1000),
+        radio2: '昨天',
+        value1: new Date().setTime(new Date().getTime() - 3600 * 1000 * 24),  //单日期默认昨天
+        value2: [new Date() - 3600 * 1000 * 24 , new Date() - 3600 * 1000 * 24],
+        value3: new Date().setTime(new Date().getTime() - 3600 * 1000 * 24),
         date: false,
         pickerOptions0: {
           disabledDate(time) {
@@ -70,21 +69,23 @@
       datarangeChange(val){
         let date = new Date();
         let start = new Date();
-        if (val == "今天") {
-          this.value2 = [new Date(), new Date()];
-        } else if (val == "昨天") {
+        if (val == "昨天") {
           start.setTime(date.getTime() - 3600 * 1000 * 24);
+          date.setTime(date.getTime() - 3600 * 1000 * 24);
           this.value2 = [start, start];
         }
         else if (val == "最近7天") {
           start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+          date.setTime(date.getTime() - 3600 * 1000 * 24);
           this.value2 = [start, date];
         }
         else if (val == "最近30天") {
+          date.setTime(date.getTime() - 3600 * 1000 * 24);
           start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
           this.value2 = [start, date];
         }
         else if (val == "最近60天") {
+          date.setTime(date.getTime() - 3600 * 1000 * 24);
           start.setTime(start.getTime() - 3600 * 1000 * 24 * 60);
           this.value2 = [start, date];
         }

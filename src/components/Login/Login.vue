@@ -8,7 +8,7 @@
     <transition name="slide-down">
       <div class="login-table" v-show="showTable">
         <div class="login-content">
-          <div class="img-wrapper"><img src="../../assets/img/login-logo.png" alt=""></div>
+          <div class="img-wrapper"><img src="../../assets/img/logo2.png" alt=""></div>
           <div class="clearfix nameBar">
             <input type="text" id="userName" placeholder="请输入用户名" v-model="userName" :class="{danger:userEmpty}" @focus="userEmpty = false">
           </div>
@@ -90,7 +90,7 @@
 
 
           //测试接口 登录成功后将获取的token保存在cookie中
-          axios.post('http://192.168.1.201:9999/authc/login', loginParams).then((res)=>{
+          axios.post('http://192.168.1.32/authc/login', loginParams).then((res)=>{
               if(res.data.status === 0){
                 //设置cookie
                 this.$cookie.set('adoptToken', res.data.result.adoptToken, 1);
@@ -100,7 +100,7 @@
                 tokenParams.append('adoptToken', res.data.result.adoptToken);
 
                 //请求
-                axios.post('http://192.168.1.201:9999/getAuthMenus',tokenParams).then((res)=>{
+                axios.post('http://192.168.1.32/getAuthMenus',tokenParams).then((res)=>{
                   this.$store.state.menuInfo = res.data;
                   lockr.set("menuInfo",res.data);      //将数据存入localStorage 以便免登陆应用
                   this.$router.push('/Content/Survey');    //跳转

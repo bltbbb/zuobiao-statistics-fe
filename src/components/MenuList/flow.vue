@@ -16,7 +16,7 @@
     </div>
     <div class="title-box">
       <Calendar @timeValue="getTime"></Calendar>
-      <el-input v-model="searchName" class="searchInput" label-width="50px" placeholder="搜索账号或昵称" icon="search"></el-input>
+      <el-input v-model="searchName" class="searchInput" placeholder="搜索账号或昵称" icon="search"></el-input>
       <div class="title-select-box">
         <el-select v-model="platVal" placeholder="平台">
           <el-option
@@ -337,22 +337,25 @@
         Params.append('adoptToken', this.token);
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
-        Params.append('PlatformId', this.platVal);
+        Params.append('platformId', this.platVal);
         Params.append('editionId', this.evalVal);
         Params.append('channelId', this.canalVal);
 
         this.$http.post('http://192.168.1.201:9999/flowAnalyzeTopten',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
-            this.tableData = data
-            this.userId = data[0].id
-            console.log( this.userId)
+            this.tableData = data;
+            this.userId = data[0].id;
           }
-          else{
+          else if(res.data.status == 1){
             //view(res.data.msg)
-            alert(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
+            lockr.rm("menuInfo");
+            this.$cookie.delete('adoptToken');
+            this.$router.push('/login');
           }
         },(err)=>{
+          console.log(err+' 123')
           //view('网络错误')
           alert('网络错误')
         })
@@ -362,7 +365,7 @@
         Params.append('adoptToken', this.token);
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
-        Params.append('PlatformId', this.platVal);
+        Params.append('platformId', this.platVal);
         Params.append('editionId', this.evalVal);
         Params.append('channelId', this.canalVal);
         Params.append('userId', this.userId);
@@ -384,9 +387,12 @@
               }]
             })
           }
-          else{
+          else if(res.data.status == 1){
             //view(res.data.msg)
-            alert(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
+            lockr.rm("menuInfo");
+            this.$cookie.delete('adoptToken');
+            this.$router.push('/login');
           }
         },(err)=>{
           //view('网络错误')
@@ -398,7 +404,7 @@
         Params.append('adoptToken', this.token);
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
-        Params.append('PlatformId', this.platVal);
+        Params.append('platformId', this.platVal);
         Params.append('editionId', this.evalVal);
         Params.append('channelId', this.canalVal);
         Params.append('userId', this.userId);
@@ -410,9 +416,11 @@
             let data = res.data.result.result;
             this.tableData5 = data;
           }
-          else{
+          else if(res.data.status == 1){
             //view(res.data.msg)
-            alert(res.data.msg)
+            lockr.rm("menuInfo");
+            this.$cookie.delete('adoptToken');
+            this.$router.push('/login');
           }
         },(err)=>{
           //view('网络错误')
@@ -468,6 +476,7 @@
       .searchInput
         float: left
         width: 10%
+        min-width: 160px
         margin-left: 10px
     .flow-box
       box-sizing: border-box

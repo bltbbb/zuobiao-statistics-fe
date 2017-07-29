@@ -123,7 +123,7 @@
         explain: '这是菜单的说明文字',
         plats: [],
         canals: [{
-          val: '1',
+          val: '-1',
           label: '全部渠道'
         }],
         editions: [],
@@ -135,7 +135,7 @@
         tableData: [],
         radioVal: 1,
         platVal: '-1',
-        canalVal: '1',
+        canalVal: '-1',
         evalVal: "-1",
         start: '',
         end: '',
@@ -227,7 +227,7 @@
         let date = new Date();
         let start = new Date();
         date.setTime(date.getTime() - 3600 * 1000 * 24);
-        start.setTime(start.getTime() - 3600 * 1000 * 24 *2);
+        start.setTime(start.getTime() - 3600 * 1000 * 24);
         this.start = start.Format("yyyy-MM-dd");
         this.end = date.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
@@ -246,23 +246,25 @@
           this.plats = res.data.result.result;
         });
 
+       this.getEditions();
+      },
+      getEditions: function () {
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
         Params.append('appPlatId', this.platVal);
 
-        //获取渠道
+        //获取版本
         this.$http.post('http://192.168.1.32/getEdition',Params).then((res)=>{
           if(res.data.status == 0){
-            let data = res.data.result.result;
-            this.editions = data;
+            this.editions = res.data.result.result;
           }
           else{
             //view(res.data.msg)
-            alert(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
           }
         },(err)=>{
           //view('网络错误')
-          alert('网络错误')
+          this.$message.error('网络错误');
         })
       },
       getAnlysis:function () {
@@ -270,8 +272,12 @@
         Params.append('adoptToken', this.token);
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
-        Params.append('pid', this.platVal);
-        Params.append('editionId', this.evalVal);
+        Params.append('platformId', this.platVal);
+        Params.append('channelId', this.canalVal);
+        Params.append('versionId', this.evalVal);
+
+        //初始化
+        this.chartData = [];
 
         this.$http.post('http://192.168.1.32/trendAnalysis',Params).then((res)=>{
           if(res.data.status == 0){
@@ -305,8 +311,9 @@
         Params.append('adoptToken', this.token);
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
-        Params.append('pid', this.platVal);
-        Params.append('editionId', this.evalVal);
+        Params.append('platformId', this.platVal);
+        Params.append('channelId', this.canalVal);
+        Params.append('versionId', this.evalVal);
         Params.append('pageSize', this.size);
         Params.append('currentPage', this.currentPage);
 
@@ -329,9 +336,9 @@
     watch:{
       // 异步请求待用
       platVal: function (val) {
-        this.pid = val;
         this.getAnlysis();
         this.getAnlysisDetails();
+        this.this.getEditions();
       },
       canalVal: function (val) {
 //        this.editionId = val;  //渠道备用
