@@ -140,29 +140,31 @@
           </table>
 
         </el-tab-pane>
-        <el-tab-pane label="按本地时间" name="five">
-          <el-table
-            :data="tableData"
-            style="width: 100%">
-            <el-table-column
-              prop="name"
-              label="机型"
-              width="180">
-            </el-table-column>
-            <el-table-column
-              prop="errorCount"
-              label="错误次数">
-            </el-table-column>
-            <el-table-column
-              prop="errorProp"
-              label="占比">
-            </el-table-column>
-            <el-table-column
-              prop="userCount"
-              label="影响用户数">
-            </el-table-column>
-          </el-table>
-        </el-tab-pane>
+
+        <!--<el-tab-pane label="按本地时间" name="five">-->
+          <!--<el-table-->
+            <!--:data="tableData"-->
+            <!--style="width: 100%">-->
+            <!--<el-table-column-->
+              <!--prop="name"-->
+              <!--label="机型"-->
+              <!--width="180">-->
+            <!--</el-table-column>-->
+            <!--<el-table-column-->
+              <!--prop="errorCount"-->
+              <!--label="错误次数">-->
+            <!--</el-table-column>-->
+            <!--<el-table-column-->
+              <!--prop="errorProp"-->
+              <!--label="占比">-->
+            <!--</el-table-column>-->
+            <!--<el-table-column-->
+              <!--prop="userCount"-->
+              <!--label="影响用户数">-->
+            <!--</el-table-column>-->
+          <!--</el-table>-->
+        <!--</el-tab-pane>-->
+
       </el-tabs>
     </div>
   </div>
