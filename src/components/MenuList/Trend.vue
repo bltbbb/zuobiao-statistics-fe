@@ -67,10 +67,10 @@
       <!--</div>-->
       <div id="TendChart" class="chart" :style="{width: '100%', height: '400px'}"></div>
       <el-radio-group v-model="radioVal" class="radio-box">
-        <el-radio :label="1">注册用户</el-radio>
-        <el-radio :label="2">注册用户占比</el-radio>
-        <el-radio :label="3">登录用户</el-radio>
-        <el-radio :label="4">登录次数</el-radio>
+        <el-radio :label="0">注册用户</el-radio>
+        <el-radio :label="1">注册用户占比</el-radio>
+        <el-radio :label="2">登录用户</el-radio>
+        <el-radio :label="3">登录次数</el-radio>
       </el-radio-group>
       <!--表格-->
       <el-table
@@ -133,7 +133,7 @@
         myChart: null,
         // 表格数据
         tableData: [],
-        radioVal: 1,
+        radioVal: 0,
         platVal: '-1',
         canalVal: '-1',
         evalVal: "-1",
@@ -288,12 +288,12 @@
             this.chartData.push(data.signinTimesCount);
             this.myChart.setOption({
               xAxis: {
-                data: this.chartData[0].x
+                data: this.chartData[this.radioVal].x
               },
               series: [{
                 // 根据名字对应到相应的系列
-                name: this.title[0],
-                data: this.chartData[0].y
+                name: this.title[this.radioVal],
+                data: this.chartData[this.radioVal].y
               }]
             })
           }
@@ -344,7 +344,8 @@
       platVal: function (val) {
         this.getAnlysis();
         this.getAnlysisDetails();
-        this.this.getEditions();
+        this.getEditions();
+        this.evalVal = "-1";
       },
       canalVal: function (val) {
 //        this.editionId = val;  //渠道备用
@@ -357,7 +358,6 @@
         this.getAnlysisDetails();
       },
       radioVal: function (val) {
-        --val;
         this.myChart.setOption({
           title: {
             text: this.title[val]

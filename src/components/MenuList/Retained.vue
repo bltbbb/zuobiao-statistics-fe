@@ -43,15 +43,8 @@
             <table>
               <tr class="line">
                 <td class="retain grey-bg">首次使用时间</td>
-                <td class="retain grey-bg">注册用户</td>
-                <td class="retain grey-bg">第二天</td>
-                <td class="retain grey-bg">第三天</td>
-                <td class="retain grey-bg">第四天</td>
-                <td class="retain grey-bg">第五天</td>
-                <td class="retain grey-bg">第六天</td>
-                <td class="retain grey-bg">第七天</td>
-                <td class="retain grey-bg">第十五天</td>
-                <td class="retain grey-bg">第三十天</td>
+                <td class="retain grey-bg">{{userText}}</td>
+                <td class="retain grey-bg" v-for="item in Identification">{{item}}</td>
               </tr>
               <tr class="line" v-for="item in tableDataList">
                 <td class="grey-bg">{{item.statisDate}}</td>
@@ -117,6 +110,10 @@
             {id: "firstRetained", plat: '新增用户首次使用留存'},
             {id: "activeRetained", plat: '活跃用户留存'}
           ],
+        tabsText:{
+          'firstRetained': '注册用户',
+          'activeRetained': '活跃用户'
+        },
         tableDataList: [
 //          {date:"2017/05/19",regUser:"999",Retention:["30","20","17","14","9","6","0"]},
 //          {date:"2017/05/19",regUser:"1009",Retention:["40","23","27","19","13","0","0"]},
@@ -158,6 +155,13 @@
           val: '-1',
           label: '全部渠道'
         }],
+        Identification: [],
+        IdentificationArr:[
+          ['第二天' ,'第三天','第四天','第五天','第六天','第七天','第十五天','第三十天'],
+          ['第二周' ,'第三周','第四周','第五周','第六周','第七周','第八周','第九周'],
+          ['第二月' ,'第三月','第四月','第五月','第六月','第七月','第八月','第九月']
+        ],
+        userText: '',
         platVal: '-1',
         evalVal: '-1',
         radioVal: '1',
@@ -208,6 +212,8 @@
         this.start = start.Format("yyyy-MM-dd");
         this.end = date.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
+        this.Identification = this.IdentificationArr[0];
+        this.userText = '注册用户';
       },
       init:function () {
         this.getRetained();
@@ -237,7 +243,7 @@
         this.$http.post('http://192.168.1.32/'+this.tabVal,Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
-            this.tableDataList = data
+            this.tableDataList = data;
           }
           else{
             //view(res.data.msg)
@@ -264,9 +270,12 @@
       },
       tabVal: function (val) {
         this.getRetained();
+        this.userText = this.tabsText[val];
       },
       radioVal: function (val) {
+        val--;
         this.getRetained();
+        this.Identification = this.IdentificationArr[val];
       }
     },
     mounted(){

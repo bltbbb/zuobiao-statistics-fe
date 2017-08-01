@@ -9,3 +9,5 @@ yarn-error.log*
 .idea/
 .vscode/launch.json
 .vscode/settings.json
+src/assets/img/login-logo.psd
+.project

@@ -57,7 +57,7 @@
       <div id="TendChart" class="chart" :style="{width: '100%', height: '400px'}"></div>
       <div class="radio-box">
         <el-radio-group v-model="radioVal" v-if="showRadio">
-          <el-radio v-for="(item,key) in radioName" :label="key">{{item}}</el-radio>
+          <el-radio v-for="(item,key) in radioName" :label="key" :key="key">{{item}}</el-radio>
         </el-radio-group>
       </div>
     </div>

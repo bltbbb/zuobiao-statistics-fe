@@ -87,8 +87,6 @@
           loginParams.append('loginName', this.userName);
           loginParams.append('password', this.password);
 
-
-
           //测试接口 登录成功后将获取的token保存在cookie中
           axios.post('http://192.168.1.32/authc/login', loginParams).then((res)=>{
               if(res.data.status === 0){
@@ -110,6 +108,7 @@
                 },(err)=>{
                   this.showScreen = false;
                   this.$message.error('网络错误');
+                  this.showScreen = false;
                 })
 
               }else if(res.status === 1){
@@ -122,6 +121,7 @@
             }
           },(err)=>{
             this.$message.error('网络错误');
+            this.showScreen = false;
           });
         }
     },
