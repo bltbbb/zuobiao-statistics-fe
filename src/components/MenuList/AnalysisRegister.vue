@@ -136,7 +136,7 @@
       },
 
       initParams () {
-        this.eventName = this.$route.query.eventName;
+//        this.eventName = this.$route.query.eventName;
         this.pageVal = this.$route.query.eventId * 1;
         let date = new Date();
         let start = new Date();
@@ -344,22 +344,22 @@
       pageVal (vaule) {
         this.pageVal = vaule;
         if (vaule == '56') {
-          this.eventName = 'RegisterPage'
+          this.eventName = '注册页面'
         }
         else if (vaule == '57'){
-          this.eventName = 'LoginPage'
+          this.eventName = '登录页面'
         }
         else if (vaule == '58'){
-          this.eventName = 'ResetPwdPage'
+          this.eventName = '重置密码页面'
         }
         else if (vaule == '59'){
-          this.eventName = 'LoginSuccess'
+          this.eventName = '登录成功'
         }
         else if (vaule == '60'){
-          this.eventName = 'ResetPwdSuccess'
+          this.eventName = '重置密码成功'
         }
         else if (vaule == '61'){
-          this.eventName = 'RegisterSuccess'
+          this.eventName = '注册成功'
         }
         this.getAnalyzeChart();
         this.getAnalyzePages();
