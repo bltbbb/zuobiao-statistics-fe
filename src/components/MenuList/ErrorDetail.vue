@@ -179,7 +179,7 @@
         Params.append('pageSize', this.size);
         Params.append('currentPage', this.currentPage4);
         Params.append('versionId', this.evalVal);
-        Params.append('appPlatId', this.platVal)
+        Params.append('platformId', this.platVal)
         Params.append('channelId', this.canalVal);
         this.$http.post(this.port + '/errorDetailedPages',Params)
           .then( (res) => {

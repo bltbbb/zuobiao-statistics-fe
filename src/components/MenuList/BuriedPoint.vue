@@ -32,8 +32,6 @@
 
     <div class="title-box" >
       <div style="border: solid 1px #DFE6EC; border-bottom: 0">
-
-
       <table class="table-title" width="100%" >
         <thead >
           <tr >
