@@ -3,7 +3,7 @@
   <div class="Error content-box">
     <div class="header-wrapper">
       <h1>
-        错误明细
+        [{{ errorType }}] 错误明细
         <el-popover
           placement="right"
           width="200"
@@ -15,16 +15,50 @@
       </h1>
     </div>
     <div class="title-box">
-      <Calendar @timeValue="getTime"></Calendar>
+      <!--双日期-->
+      <el-radio-group v-model="radio2" @change="datarangeChange">
+        <el-radio-button name="1" label="昨天"></el-radio-button>
+        <el-radio-button name="2" label="最近7天"></el-radio-button>
+        <el-radio-button name="3" label="最近30天"></el-radio-button>
+        <el-radio-button name="4" label="最近60天"></el-radio-button>
+        <el-radio-button name="5" label="自定义" class="time-box" ref="custom">
+          <el-date-picker v-model="value2" type="daterange" placeholder=""
+                          class="data-piker" @change="rangeChange" @focus="focusPiker"
+                          :picker-options="pickerOptions0">
+          </el-date-picker>
+        </el-radio-button>
+      </el-radio-group>
 
-      <versiongetdata
-        @Platform="childgetPlatform"
-        @getEdition1="childgetEdition1"
-        @changeVal="childplatVal1"
-        @changeEvalVal="childchangeEvalVal"
-        @canalVal1="childcanalVal1"
-      >
-      </versiongetdata>
+
+      <div class="title-select-box" >
+        <el-select v-model="platVal" placeholder="平台" @change="changeVal">
+          <el-option
+            v-for="plat in plats"
+            :key="plat.name"
+            :label="plat.name"
+            :value="plat.id">
+          </el-option>
+        </el-select>
+        <el-select v-model="canalVal" placeholder="渠道">
+          <el-option
+            v-for="canal in canals"
+            :key="canal.val"
+            :label="canal.label"
+            :value="canal.val">
+          </el-option>
+        </el-select>
+        <el-select v-model="evalVal" placeholder="版本" @change="changeEvalVal">
+          <el-option
+            v-for="edition in editions"
+            :key="edition.appVersion"
+            :label="edition.appVersion"
+            :value="edition.appVersionId">
+          </el-option>
+        </el-select>
+      </div>
+
+
+
 
     </div>
     <div class="trend-box">
@@ -37,7 +71,7 @@
           <template scope="scope">
             <div class="detail">
               <div >
-                <div class="detail-title detail-box" :class="{active: type == scope.row.id}" >{{ scope.row.crashMessage }}</div>
+                <div class="detail-title detail-box" :class="{active: type == scope.row.id}"  v-html="scope.row.crashMessage"></div>
               </div>
               <div class="detail-text">
                 <div @click="more(scope.$index,scope.row)" >{{ type == scope.row.id ? '收起':'展开' }}</div>
@@ -95,8 +129,14 @@
         explain: '这是菜单的说明文字',
 
         platVal: '',
+        plats: [],
         evalVal: '',
+        editions: [],
         canalVal: '',
+        canals: [{
+          val: -1,
+          label: '全部渠道'
+        }],
 
         getEditionId: '',
         value: '1',
@@ -109,18 +149,27 @@
         start: '',
         end: '',
         size: 20,
-        errorType: ''
+        errorType: '',
+
+        name: 'calendar',
+        radio2: '',
+        value2: [new Date() - 3600 * 1000 * 24 , new Date() - 3600 * 1000 * 24],
+        pickerOptions0: {
+          disabledDate(time) {
+            return time.getTime() > Date.now();
+          }
+        },
 
       }
-    }
-    ,
+    },
     // 平台图表格-->
     mounted() {
 //      this.drawLine();
       this.initParams();
+      this.datarangeChange();
       this.init();
-    }
-    ,
+    },
+
     components: {
       Calendar,
       versiongetdata
@@ -132,42 +181,134 @@
 
       initParams () {
         this.errorType =  this.$route.query.errorType;
-        let date = new Date();
-        let start = new Date();
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
-        this.start = start.Format("yyyy-MM-dd");
-        this.end = start.Format("yyyy-MM-dd");
+        this.start =  this.$route.query.start;
+        this.end =  this.$route.query.end;
+        this.platVal =  this.$route.query.platVal * 1;
+        this.getEditionId =  this.$route.query.evalVal * 1;
+        this.canalVal =  this.$route.query.canalVal * 1;
+        this.value2 = [this.start, this.end];
+        let oldDate1 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 1)).Format('yyyy-M-d');
+        let oldDate2 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 7)).Format('yyyy-M-d');
+        let oldDate3 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 30)).Format('yyyy-M-d');
+        let oldDate4 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 60)).Format('yyyy-M-d');
+        if (this.start == oldDate1){
+          this.radio2 = '昨天'
+        }
+        else if (this.start == oldDate2) {
+          this.radio2 = '最近7天'
+        }
+        else if (this.start == oldDate3) {
+          this.radio2 = '最近30天'
+        }
+        else if (this.start == oldDate4) {
+          this.radio2 = '最近60天'
+        }
         this.token = this.$cookie.get('adoptToken');
       },
 
       init () {
+        this.getPlatform();
+        this.getEdition();
         this.getDetailedPages();
       },
 
-      //  平台信息
-      childgetPlatform (plats) {
-        this.platVal = plats;
+
+      //当前时间点击赋值
+      datarangeChange(val){
+        let date = new Date();
+        let start = new Date();
+        if (val == "昨天") {
+          start.setTime(date.getTime() - 3600 * 1000 * 24);
+          date.setTime(date.getTime() - 3600 * 1000 * 24);
+          this.value2 = [start, start];
+        }
+        else if (val == "最近7天") {
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+          date.setTime(date.getTime() - 3600 * 1000 * 24);
+          this.value2 = [start, date];
+        }
+        else if (val == "最近30天") {
+          date.setTime(date.getTime() - 3600 * 1000 * 24);
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+          this.value2 = [start, date];
+        }
+        else if (val == "最近60天") {
+          date.setTime(date.getTime() - 3600 * 1000 * 24);
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 60);
+          this.value2 = [start, date];
+        }
       },
 
-      childplatVal1 (childplatVal1) {
-        this.platVal = childplatVal1;
+      rangeChange:function(val){
+        if(!val){
+          return
+        }
+        if(val[0] == null || val[1] == null){
+          return
+        }
+        this.start = this.value2[0].Format('yyyy-M-d');
+        this.end = this.value2[1].Format('yyyy-M-d')
         this.getDetailedPages();
       },
 
-      //  版本信息
-      childgetEdition1 (childgetEdition1) {
-        this.evalVal = childgetEdition1;
+      focusPiker() {
+        // 模拟点击自定义 使其获得is-active类名
+        this.$refs.custom.$el.click()
       },
 
-      childchangeEvalVal (childchangeEvalVal) {
-        this.evalVal = childchangeEvalVal;
-        this.getDetailedPages();
+
+      //  获取平台信息
+      getPlatform () {
+        this.$http.get(this.port + '/getPlatform', {
+          params:{
+            adoptToken: this.token
+          }
+        }).then( (res) => {
+          if (res.status == 200) {
+            if (res.data.status == 0) {
+              let data = res.data.result.result;
+              this.plats = data;
+            }
+            else if (res.data.status == 1) {
+              console.log('平台信息请求数据为空');
+            }
+          }
+          else{
+            console.log('请求失败');
+          }
+
+        }, (err) => {
+          console.log('获取失败');
+          console.log('err',err);
+        });
       },
 
-      //  渠道信息
-      childcanalVal1 (canalVal) {
-        this.canalVal = canalVal * 1;
+      //  获取版本信息
+      getEdition () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('appPlatId', this.platVal)
+        this.$http.post(this.port + '/getLogOrEventEdition',Params).then( (res) => {
+          if (res.status == 200) {
+            if (res.data.status == 0) {
+              let data = res.data.result.result;
+              this.editions = data;
+              this.getEditionId = data[0].appVersionId;
+            }
+            else if (res.data.status == 1) {
+              console.log('版本信息请求数据为空');
+            }
+          }
+          else{
+            console.log('请求失败');
+          }
+
+        }, (err) => {
+          console.log('获取失败');
+          console.log('err',err);
+        });
       },
+
 
       //  表格信息
       getDetailedPages () {
@@ -188,6 +329,9 @@
                 let data = res.data.result.result;
                 this.tableData = data;
                 this.totalCount = res.data.result.totalCount;
+                for (let i in data){
+                  this.tableData[i].crashMessage = data[i].crashMessage.replace(/\r\n/g,"<br>").replace(/ /g,"&nbsp;&nbsp;");
+                }
               }
               else if (res.data.status == 1) {
                 console.log('表格信息请求数据为空');
@@ -277,16 +421,53 @@
           platVal: this.platVal,
           canalVal: this.canalVal
         }});
+      },
+
+      //  监听平台数据变化
+      changeVal (val) {
+        this.platVal = val;
+        this.evalVal = this.getEditionId;
+        this.getEdition();
+        this.getDetailedPages();
+      },
+
+      //  监听版本数据变化
+      changeEvalVal (val) {
+        this.evalVal = val;
+        this.getDetailedPages();
       }
+
     },
 
     watch: {
       $route (to) {
         if (to.name == 'ErrorDetail') {
           this.errorType = to.query.errorType;
+          this.canalVal = to.query.canalVal;
+          this.evalVal = to.query.evalVal;
+          this.platVal = to.query.platVal;
+          this.start = to.query.start;
+          this.end = to.query.end;
+          let oldDate1 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 1)).Format('yyyy-M-d');
+          let oldDate2 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 7)).Format('yyyy-M-d');
+          let oldDate3 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 30)).Format('yyyy-M-d');
+          let oldDate4 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 60)).Format('yyyy-M-d');
+          if (this.start == oldDate1){
+            this.radio2 = '昨天'
+          }
+          else if (this.start == oldDate2) {
+            this.radio2 = '最近7天'
+          }
+          else if (this.start == oldDate3) {
+            this.radio2 = '最近30天'
+          }
+          else if (this.start == oldDate4) {
+            this.radio2 = '最近60天'
+          }
           this.getDetailedPages();
         }
       }
+
     }
   }
 

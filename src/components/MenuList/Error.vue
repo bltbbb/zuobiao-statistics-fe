@@ -272,7 +272,7 @@
         this.myChart = echarts.init(document.getElementById('activeChart'));
         // 绘制图表
         this.myChart.setOption({
-          title: {text: '全平台注册用户'},
+          title: {text: '错误次数'},
           tooltip: {
             trigger: 'axis'
           },
@@ -318,8 +318,15 @@
       },
       //查看明细
       handleLook(index, row) {
-        this.$router.push({name: 'ErrorDetail',query:{errorType: row.errorType}});
-        console.log(row.errorType)
+        this.$router.push({name: 'ErrorDetail',query:{
+          errorType: row.errorType,
+          start: this.start,
+          end: this.end,
+          platVal: this.platVal,
+          evalVal: this.evalVal,
+          canalVal: this.canalVal
+        }});
+//        console.log('aaaaaaaaaaa',this.platVal)
       }
     }
 

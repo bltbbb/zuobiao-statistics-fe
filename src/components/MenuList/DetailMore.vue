@@ -3,7 +3,7 @@
   <div class="Error content-box">
     <div class="header-wrapper">
       <h1>
-        错误详情
+        错误详情 [{{ startDate }} ~ {{ stopDate }}]
         <el-popover
           placement="right"
           width="200"
@@ -34,10 +34,16 @@
 
         </el-row>
       </div>
+      <div>
+        eacharts
+      </div>
       <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
-        <el-tab-pane label="错误日志" name="first">
-          {{ login }}
+        <div>
+        <el-tab-pane label="错误日志" name="first" v-html="login">
+          <!--{{ login }}-->
         </el-tab-pane>
+        </div>
+
         <el-tab-pane label="按机型分布" name="second">
           <table style="width: 100%; text-align: left" cellspacing="0" cellpadding="0">
             <thead >
@@ -70,8 +76,6 @@
             </tbody>
           </table>
         </el-tab-pane>
-
-
         <el-tab-pane label="按系统分布" name="third">
           <table style="width: 100%; text-align: left" cellspacing="0" cellpadding="0">
             <thead >
@@ -140,7 +144,6 @@
           </table>
 
         </el-tab-pane>
-
         <!--<el-tab-pane label="按本地时间" name="five">-->
           <!--<el-table-->
             <!--:data="tableData"-->
@@ -268,7 +271,7 @@
                 this.list[2].number = data.errDetail.errorCount;
                 this.list[3].number = data.errDetail.userCount;
                 this.list[4].number = '未修复';
-                this.login = data.crashMessage;
+                this.login = data.crashMessage.replace(/\r\n/g,"<br>").replace(/ /g,"&nbsp;&nbsp;");
                 this.tableData = data.model;
                 this.tableData1 = data.os;
                 this.tableData2 = data.version;

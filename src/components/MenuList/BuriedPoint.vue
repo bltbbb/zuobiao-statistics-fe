@@ -231,6 +231,10 @@
     padding-left: 20px;
   }
 
+  .table-thead-th-2 {
+    color: #7A8FE4;
+  }
+  
   .table-thead-th-2:hover{
     text-decoration: underline;
     cursor: pointer;
