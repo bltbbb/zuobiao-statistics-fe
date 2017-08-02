@@ -263,6 +263,7 @@
               this.radioName.size = this.chartData[id].timeName;
           }
           this.myChart.setOption({
+            title: {text: this.list[id].name},
             xAxis: {
               data: this.chartData[id].Chart.news.x
             },
@@ -289,6 +290,7 @@
             this.list = data;
             this.chartData = data;
             this.myChart.setOption({
+              title: {text: this.list[0].name},
               xAxis: {
                 data: this.chartData[0].Chart.news.x
               },
@@ -326,6 +328,7 @@
       },
       radioVal: function (val) {
         this.myChart.setOption({
+          title: {text: this.list[0].name},
           xAxis: {
             data: this.radioData[val].x
           },

@@ -218,9 +218,12 @@
             axisTick: {show: false},
             axisLabel: {
               formatter:'{value}',
-              interval: 0
+              interval: 0,
+              rotate: -20
             },
-            axisLine: {show: false},
+            axisLine: {
+                show: false
+            }
           },
           yAxis: {
             show: false,
@@ -239,12 +242,12 @@
               }
             },
             silent: true,
-            barWidth: 40,
+            barWidth: 30,
             barGap: '-100%', // Make series be overlap
-            data: [100,100,100,100,100,100,100,100,100,100,100,100,100]
+            data: [100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100]
           }, {
             type: 'bar',
-            barWidth: 40,
+            barWidth: 30,
             z: 10,
             itemStyle: {
               normal: {
@@ -255,7 +258,7 @@
               normal:{
                 show: true,
                 position: 'insideTopRight',
-                offset: [5,-25],
+                offset: [9,-25],
                 formatter: '{c}%',
                 textStyle: {
                   color: '#131f0b'
