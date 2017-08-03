@@ -342,9 +342,9 @@
 
       init () {
         this.getPlatform();
-        this.getEdition();
-        this.getDetailed();
-        this.errorDetailedChart();
+//        this.getEdition();
+//        this.getDetailed();
+//        this.errorDetailedChart();
       },
 
       //当前时间点击赋值

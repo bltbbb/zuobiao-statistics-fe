@@ -164,8 +164,10 @@
     mounted() {
 //      this.drawLine();
       this.initParams();
+      this.getPlatform();
+//      this.getEdition();
       this.datarangeChange();
-      this.init();
+//      this.init();
     },
 
 //    components: {
@@ -205,8 +207,6 @@
       },
 
       init () {
-        this.getPlatform();
-        this.getEdition();
         this.getDetailedPages();
       },
 
@@ -245,7 +245,6 @@
         if(val[0] == null || val[1] == null){
           return
         }
-
         this.start = new Date(this.value2[0]).Format('yyyy-M-d');
         this.end = new Date(this.value2[1]).Format('yyyy-M-d');
         this.getDetailedPages();
@@ -428,8 +427,9 @@
       //  监听平台数据变化
       changeVal (val) {
         this.platVal = val;
-        this.evalVal = this.getEditionId;
         this.getEdition();
+        this.evalVal = this.getEditionId;
+//        ((this.evalVal != '-1') ? this.getDetailedPages() : '');
         this.getDetailedPages();
       },
 
