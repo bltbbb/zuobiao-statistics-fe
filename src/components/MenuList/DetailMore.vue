@@ -14,7 +14,52 @@
         </el-popover>
       </h1>
     </div>
+    <div class="title-box">
+
+      <!--双日期-->
+      <el-radio-group v-model="radio2" @change="datarangeChange">
+        <el-radio-button name="1" label="昨天"></el-radio-button>
+        <el-radio-button name="2" label="最近7天"></el-radio-button>
+        <el-radio-button name="3" label="最近30天"></el-radio-button>
+        <el-radio-button name="4" label="最近60天"></el-radio-button>
+        <el-radio-button name="5" label="自定义" class="time-box" ref="custom">
+          <el-date-picker v-model="value2" type="daterange" placeholder=""
+                          class="data-piker" @change="rangeChange" @focus="focusPiker"
+                          :picker-options="pickerOptions0">
+          </el-date-picker>
+        </el-radio-button>
+      </el-radio-group>
+
+      <div class="title-select-box" >
+        <el-select v-model="platVal" placeholder="平台" @change="changeVal">
+          <el-option
+            v-for="plat in plats"
+            :key="plat.name"
+            :label="plat.name"
+            :value="plat.id">
+          </el-option>
+        </el-select>
+        <el-select v-model="canalVal" placeholder="渠道">
+          <el-option
+            v-for="canal in canals"
+            :key="canal.val"
+            :label="canal.label"
+            :value="canal.val">
+          </el-option>
+        </el-select>
+        <el-select v-model="evalVal" placeholder="版本" @change="changeEvalVal">
+          <el-option
+            v-for="edition in editions"
+            :key="edition.appVersion"
+            :label="edition.appVersion"
+            :value="edition.appVersionId">
+          </el-option>
+        </el-select>
+      </div>
+
+    </div>
     <div class="trend-box">
+
       <div class="part1">
         <el-row :gutter="20">
           <el-col :span="4" v-for="item in list" :key="item.id">
@@ -33,8 +78,10 @@
           </el-col>
 
         </el-row>
+
       </div>
-      <div>
+
+      <div id="activeChart" class="chart" :style="{width: '100%', height: '400px'}">
         eacharts
       </div>
       <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
@@ -192,8 +239,14 @@
         explain: '这是菜单的说明文字',
 
         platVal: '',
+        plats: [],
         evalVal: '',
+        editions: [],
         canalVal: '',
+        canals: [{
+          val: -1,
+          label: '全部渠道'
+        }],
 
         getEditionId: '',
         value: '1',
@@ -222,7 +275,17 @@
         crashMessageId: '',
         errorType: '',
         startDate: '',
-        stopDate: ''
+        stopDate: '',
+
+        name: 'calendar',
+        radio2: '',
+        value2: [new Date() - 3600 * 1000 * 24 , new Date() - 3600 * 1000 * 24],
+        pickerOptions0: {
+          disabledDate(time) {
+            return time.getTime() > Date.now();
+          }
+        }
+
       }
     },
     components: {
@@ -230,6 +293,7 @@
     },
     mounted () {
       this.initParams();
+      this.datarangeChange();
       this.init();
     },
     methods: {
@@ -241,14 +305,132 @@
         this.errorType = this.$route.query.errorType;
         this.startDate = this.$route.query.startDate;
         this.stopDate = this.$route.query.stopDate;
-        this.evalVal =  this.$route.query.evalVal;
-        this.platVal =  this.$route.query.platVal;
-        this.canalVal =  this.$route.query.canalVal;
+        this.getEditionId =  this.$route.query.evalVal * 1;
+        this.platVal =  this.$route.query.platVal * 1;
+        this.canalVal =  this.$route.query.canalVal * 1;
         this.token = this.$cookie.get('adoptToken');
+        this.value2 = [this.startDate, this.stopDate];
+        let oldDate1 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 1)).Format('yyyy-M-d');
+        let oldDate2 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 7)).Format('yyyy-M-d');
+        let oldDate3 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 30)).Format('yyyy-M-d');
+        let oldDate4 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 60)).Format('yyyy-M-d');
+        if (this.startDate == oldDate1){
+          this.radio2 = '昨天'
+        }
+        else if (this.startDate == oldDate2) {
+          this.radio2 = '最近7天'
+        }
+        else if (this.startDate == oldDate3) {
+          this.radio2 = '最近30天'
+        }
+        else if (this.startDate == oldDate4) {
+          this.radio2 = '最近60天'
+        }
       },
+
       init () {
+        this.getPlatform();
+        this.getEdition();
+        this.getDetailed();
+        this.drawLine();
+      },
+
+      //当前时间点击赋值
+      datarangeChange(val){
+        let date = new Date();
+        let start = new Date();
+        if (val == "昨天") {
+          start.setTime(date.getTime() - 3600 * 1000 * 24);
+          date.setTime(date.getTime() - 3600 * 1000 * 24);
+          this.value2 = [start, start];
+        }
+        else if (val == "最近7天") {
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+          date.setTime(date.getTime() - 3600 * 1000 * 24);
+          this.value2 = [start, date];
+        }
+        else if (val == "最近30天") {
+          date.setTime(date.getTime() - 3600 * 1000 * 24);
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+          this.value2 = [start, date];
+        }
+        else if (val == "最近60天") {
+          date.setTime(date.getTime() - 3600 * 1000 * 24);
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 60);
+          this.value2 = [start, date];
+        }
+      },
+
+    //  监听时间变化
+      rangeChange:function(val){
+        if(!val){
+          return
+        }
+        if(val[0] == null || val[1] == null){
+          return
+        }
+        this.startDate = this.value2[0].Format('yyyy-M-d');
+        this.stopDate = this.value2[1].Format('yyyy-M-d')
         this.getDetailed();
       },
+
+      focusPiker() {
+        // 模拟点击自定义 使其获得is-active类名
+        this.$refs.custom.$el.click()
+      },
+
+      //  获取平台信息
+      getPlatform () {
+        this.$http.get(this.port + '/getPlatform', {
+          params:{
+            adoptToken: this.token
+          }
+        }).then( (res) => {
+          if (res.status == 200) {
+            if (res.data.status == 0) {
+              let data = res.data.result.result;
+              this.plats = data;
+            }
+            else if (res.data.status == 1) {
+              console.log('平台信息请求数据为空');
+            }
+          }
+          else{
+            console.log('请求失败');
+          }
+
+        }, (err) => {
+          console.log('获取失败');
+          console.log('err',err);
+        });
+      },
+
+      //  获取版本信息
+      getEdition () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('appPlatId', this.platVal)
+        this.$http.post(this.port + '/getLogOrEventEdition',Params).then( (res) => {
+          if (res.status == 200) {
+            if (res.data.status == 0) {
+              let data = res.data.result.result;
+              this.editions = data;
+              this.getEditionId = data[0].appVersionId;
+            }
+            else if (res.data.status == 1) {
+              console.log('版本信息请求数据为空');
+            }
+          }
+          else{
+            console.log('请求失败');
+          }
+
+        }, (err) => {
+          console.log('获取失败');
+          console.log('err',err);
+        });
+      },
+
 
       //  获取错误日志，错误机型
       getDetailed () {
@@ -289,10 +471,54 @@
         });
       },
 
+      // 图表格绘制
+      drawLine () {
+        // 基于准备好的dom，初始化echarts实例
+        let myChart = echarts.init(document.getElementById('activeChart'));
+        // 绘制图表
+        myChart.setOption({
+          title: {text: '全平台注册用户'},
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['今天', '昨天']
+          },
+          xAxis: {
+            data: ["0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59"]
+          },
+          yAxis: {
+            type: 'value'
+          },
+          series: [{
+            name: '注册用户',
+            type: 'line',
+            data: [5, 20, 36, 10, 10, 20]
+          }]
+
+        });
+        window.onresize = myChart.resize;
+      },
+
       //  页签切换
       handleClick(tab, event) {
 //        console.log(tab, event);
       },
+
+      //  监听平台数据变化
+      changeVal (val) {
+        this.platVal = val;
+        this.evalVal = this.getEditionId;
+        this.getEdition();
+        this.getDetailed();
+      },
+
+      //  监听版本数据变化
+      changeEvalVal (val) {
+        this.evalVal = val;
+        this.getDetailed();
+      }
+
     },
 
     watch: {
@@ -305,6 +531,22 @@
           this.evalVal = to.query.evalVal;
           this.platVal = to.query.platVal;
           this.canalVal = to.query.canalVal;
+          let oldDate1 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 1)).Format('yyyy-M-d');
+          let oldDate2 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 7)).Format('yyyy-M-d');
+          let oldDate3 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 30)).Format('yyyy-M-d');
+          let oldDate4 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 60)).Format('yyyy-M-d');
+          if (this.startDate == oldDate1){
+            this.radio2 = '昨天'
+          }
+          else if (this.startDate == oldDate2) {
+            this.radio2 = '最近7天'
+          }
+          else if (this.startDate == oldDate3) {
+            this.radio2 = '最近30天'
+          }
+          else if (this.startDate == oldDate4) {
+            this.radio2 = '最近60天'
+          }
           this.getDetailed();
         }
       }

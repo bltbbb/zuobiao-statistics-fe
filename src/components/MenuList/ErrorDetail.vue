@@ -158,7 +158,7 @@
           disabledDate(time) {
             return time.getTime() > Date.now();
           }
-        },
+        }
 
       }
     },
@@ -399,6 +399,7 @@
           evalVal: this.evalVal,
           platVal: this.platVal,
           canalVal: this.canalVal
+
         }});
       },
 
