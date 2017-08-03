@@ -283,7 +283,7 @@
             type: 'value'
           },
           series: [{
-            name: '注册用户',
+            name: '错误次数',
             type: 'line',
             itemStyle: {
               normal: {

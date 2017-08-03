@@ -298,7 +298,7 @@
             type: 'value'
           },
           series: [{
-            name: '注册用户',
+            name: '事件数',
             type: 'line',
             itemStyle: {
               normal: {
@@ -382,7 +382,8 @@
               data: this.triggerUserData.x
             },
             series: [{
-              data: this.triggerUserData.y
+              data: this.triggerUserData.y,
+              name: '用户数触发数'
             }]
           });
         }
@@ -392,7 +393,8 @@
               data: this.eventData.x
             },
             series: [{
-              data: this.eventData.y
+              data: this.eventData.y,
+              name: '事件数'
             }]
           });
         }

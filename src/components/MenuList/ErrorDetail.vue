@@ -14,6 +14,7 @@
         </el-popover>
       </h1>
     </div>
+
     <div class="title-box">
       <!--双日期-->
       <el-radio-group v-model="radio2" @change="datarangeChange">
@@ -28,7 +29,6 @@
           </el-date-picker>
         </el-radio-button>
       </el-radio-group>
-
 
       <div class="title-select-box" >
         <el-select v-model="platVal" placeholder="平台" @change="changeVal">
@@ -56,9 +56,6 @@
           </el-option>
         </el-select>
       </div>
-
-
-
 
     </div>
     <div class="trend-box">

@@ -81,9 +81,7 @@
 
       </div>
 
-      <div id="activeChart" class="chart" :style="{width: '100%', height: '400px'}">
-        eacharts
-      </div>
+      <div id="activeChart" class="chart" :style="{width: '100%', height: '400px'}"></div>
 
       <div>
         <el-radio-group v-model="eventRadio" class="radio-box">
@@ -562,8 +560,17 @@
             type: 'value'
           },
           series: [{
-            name: '注册用户',
+            name: '错误次数',
             type: 'line',
+            itemStyle: {
+              normal: {
+                color: '#7a8fe0',
+                areaStyle:{
+                  type: 'default',
+                  color: 'rgba(122, 143, 224,0.5)'
+                }
+              }
+            },
             data: [5, 20, 36, 10, 10, 20]
           }]
 
@@ -637,7 +644,8 @@
               data: this.xAxisData
             },
             series: [{
-              data: this.seriesData
+              data: this.seriesData,
+              name: '错误次数',
             }]
           });
 
@@ -650,7 +658,8 @@
               data: this.xAxisData
             },
             series: [{
-              data: this.seriesData
+              data: this.seriesData,
+              name: '影响用户数',
             }]
           });
         }
