@@ -119,8 +119,8 @@
   require('echarts/lib/component/tooltip');
   require('echarts/lib/component/title');
   require('echarts/lib/component/legend');
-  import Calendar from '@/components/calendar/Calendar'
-  import versiongetdata from '../versionInformation/VersionGetData'
+//  import Calendar from '@/components/calendar/Calendar'
+//  import versiongetdata from '../versionInformation/VersionGetData'
   export default {
     data() {
       return {
@@ -150,6 +150,7 @@
         end: '',
         size: 20,
         errorType: '',
+        crashMessageId: '',
 
         name: 'calendar',
         radio2: '',
@@ -170,10 +171,10 @@
       this.init();
     },
 
-    components: {
-      Calendar,
-      versiongetdata
-    },
+//    components: {
+//      Calendar,
+//      versiongetdata
+//    },
     methods: {
       selected: function (gameName) {
         this.activeName = gameName
@@ -237,6 +238,7 @@
           start.setTime(start.getTime() - 3600 * 1000 * 24 * 60);
           this.value2 = [start, date];
         }
+
       },
 
       rangeChange:function(val){
@@ -246,8 +248,9 @@
         if(val[0] == null || val[1] == null){
           return
         }
-        this.start = this.value2[0].Format('yyyy-M-d');
-        this.end = this.value2[1].Format('yyyy-M-d')
+
+        this.start = new Date(this.value2[0]).Format('yyyy-M-d');
+        this.end = new Date(this.value2[1]).Format('yyyy-M-d');
         this.getDetailedPages();
       },
 
@@ -399,7 +402,6 @@
           evalVal: this.evalVal,
           platVal: this.platVal,
           canalVal: this.canalVal
-
         }});
       },
 
@@ -413,11 +415,13 @@
       },
 
       moreLook(index,row){
+        console.log(row)
         this.$router.push({name: 'DetailMore',query:{
           errorType: this.errorType,
           crashMessageId: row.crashMessageId,
           startDate: this.start,
           stopDate: this.end,
+//          value2: this.value2,
           evalVal: this.evalVal,
           platVal: this.platVal,
           canalVal: this.canalVal
@@ -444,15 +448,16 @@
       $route (to) {
         if (to.name == 'ErrorDetail') {
           this.errorType = to.query.errorType;
-          this.canalVal = to.query.canalVal;
-          this.evalVal = to.query.evalVal;
-          this.platVal = to.query.platVal;
+          this.canalVal = to.query.canalVal * 1;
+          this.evalVal = to.query.evalVal * 1;
+          this.platVal = to.query.platVal * 1;
           this.start = to.query.start;
           this.end = to.query.end;
           let oldDate1 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 1)).Format('yyyy-M-d');
           let oldDate2 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 7)).Format('yyyy-M-d');
           let oldDate3 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 30)).Format('yyyy-M-d');
           let oldDate4 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 60)).Format('yyyy-M-d');
+          this.value2 = [to.query.start, to.query.end];
           if (this.start == oldDate1){
             this.radio2 = '昨天'
           }

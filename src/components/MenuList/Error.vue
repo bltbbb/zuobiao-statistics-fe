@@ -157,8 +157,8 @@
         let date = new Date();
         let start = new Date();
         start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
-        this.start = start.Format("yyyy-MM-dd");
-        this.end = start.Format("yyyy-MM-dd");
+        this.start = start.Format("yyyy-M-d");
+        this.end = start.Format("yyyy-M-d");
         this.token = this.$cookie.get('adoptToken');
       },
 

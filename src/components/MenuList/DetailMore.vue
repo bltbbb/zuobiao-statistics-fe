@@ -84,6 +84,14 @@
       <div id="activeChart" class="chart" :style="{width: '100%', height: '400px'}">
         eacharts
       </div>
+
+      <div>
+        <el-radio-group v-model="eventRadio" class="radio-box">
+          <el-radio :label="1">错误次数</el-radio>
+          <el-radio :label="2">影响用户数</el-radio>
+        </el-radio-group>
+      </div>
+
       <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
         <div>
         <el-tab-pane label="错误日志" name="first" v-html="login">
@@ -229,7 +237,7 @@
   require('echarts/lib/component/tooltip');
   require('echarts/lib/component/title');
   require('echarts/lib/component/legend');
-  import versiongetdata from '../versionInformation/VersionGetData'
+//  import versiongetdata from '../versionInformation/VersionGetData'
   export default {
     data() {
       return {
@@ -247,9 +255,9 @@
           val: -1,
           label: '全部渠道'
         }],
-
         getEditionId: '',
         value: '1',
+
         // 第一部分
         list: [
           {id: "1", title: "出错最多机型", message: 'Foo', number: "8096798"},
@@ -266,7 +274,7 @@
         currentPage4: 1,
         activeName2: 'first',
         //  按机型分布
-        tableData: [],  //  里面为对象
+        tableData: [],  //  里面为对象格式
         //  按系统分布
         tableData1: [],
         //  按版本分布
@@ -284,17 +292,23 @@
           disabledDate(time) {
             return time.getTime() > Date.now();
           }
-        }
+        },
+
+        myChart: null,
+        eventRadio: 1,
+        errorCount1: [],
+        userCount1: []
 
       }
     },
-    components: {
-      versiongetdata
-    },
+//    components: {
+//      versiongetdata
+//    },
     mounted () {
       this.initParams();
       this.datarangeChange();
       this.init();
+      this.drawLine();
     },
     methods: {
       selected: function (gameName) {
@@ -332,7 +346,7 @@
         this.getPlatform();
         this.getEdition();
         this.getDetailed();
-        this.drawLine();
+        this.errorDetailedChart();
       },
 
       //当前时间点击赋值
@@ -369,8 +383,8 @@
         if(val[0] == null || val[1] == null){
           return
         }
-        this.startDate = this.value2[0].Format('yyyy-M-d');
-        this.stopDate = this.value2[1].Format('yyyy-M-d')
+        this.start = new Date(this.value2[0]).Format('yyyy-M-d');
+        this.end = new Date(this.value2[1]).Format('yyyy-M-d');
         this.getDetailed();
       },
 
@@ -448,15 +462,29 @@
             if (res.status == 200) {
               if (res.data.status == 0) {
                 let data = res.data.result.result;
-                this.list[0].number = data.errDetail.manufacturerModelName;
-                this.list[1].number = data.errDetail.errorSystem;
-                this.list[2].number = data.errDetail.errorCount;
-                this.list[3].number = data.errDetail.userCount;
-                this.list[4].number = '未修复';
-                this.login = data.crashMessage.replace(/\r\n/g,"<br>").replace(/ /g,"&nbsp;&nbsp;");
-                this.tableData = data.model;
-                this.tableData1 = data.os;
-                this.tableData2 = data.version;
+                if (data.errDetail != null && data.errDetail != undefined && data.errDetail != ' ') {
+                  this.list[0].number = data.errDetail.manufacturerModelName;
+                  this.list[1].number = data.errDetail.errorSystem;
+                  this.list[2].number = data.errDetail.errorCount;
+                  this.list[3].number = data.errDetail.userCount;
+                  this.list[4].number = '未修复';
+                  this.login = data.crashMessage.replace(/\r\n/g,"<br>").replace(/ /g,"&nbsp;&nbsp;");
+                  this.tableData = data.model;
+                  this.tableData1 = data.os;
+                  this.tableData2 = data.version;
+                }
+                else {
+                  this.list[0].number = '暂无数据';
+                  this.list[1].number = '暂无数据';
+                  this.list[2].number = '暂无数据';
+                  this.list[3].number = '暂无数据';
+                  this.list[4].number = '暂无数据';
+                  this.login = '暂无数据';
+                  this.tableData = '';
+                  this.tableData1 = '';
+                  this.tableData2 = '';
+                }
+
               }
               else if (res.data.status == 1) {
                 console.log('请求数据为空');
@@ -471,13 +499,55 @@
         });
       },
 
+      //  图表信息
+      errorDetailedChart () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken',this.token);
+        Params.append('startDate',this.startDate);
+        Params.append('stopDate',this.stopDate);
+        Params.append('platformId',this.platVal);
+        Params.append('versionId',this.evalVal);
+        Params.append('channelId',this.canalVal);
+        Params.append('errorType',this.errorType);
+        Params.append('crashMessageId',this.crashMessageId);
+        this.$http.post(this.port + '/errorDetailedChart',Params)
+          .then((res)=>{
+            if(res.status == 200){
+              if (res.data.status == 0) {
+                this.errorCount1 = res.data.result.result.errorCount;
+                this.userCount1 = res.data.result.result.userCount;
+                this.xAxisData = this.errorCount1.x;
+                this.seriesData = this.errorCount1.y;
+                this.myChart.setOption({
+                  xAxis: {
+                    data: this.xAxisData
+                  },
+                  series: [{
+                    data: this.seriesData
+                  }]
+                });
+              }
+              else if (res.data.status == 1) {
+                this.$message.warning('请求数据为空');
+                console.log('图表信息请求数据为空')
+              }
+            }
+            else{
+              console.log('请求失败');
+            }
+          },(err)=>{
+            console.log('获取失败');
+            console.log('err',err);
+          })
+      },
+
       // 图表格绘制
       drawLine () {
         // 基于准备好的dom，初始化echarts实例
-        let myChart = echarts.init(document.getElementById('activeChart'));
+        this.myChart = echarts.init(document.getElementById('activeChart'));
         // 绘制图表
-        myChart.setOption({
-          title: {text: '全平台注册用户'},
+        this.myChart.setOption({
+          title: {text: '趋势图'},
           tooltip: {
             trigger: 'axis'
           },
@@ -497,7 +567,7 @@
           }]
 
         });
-        window.onresize = myChart.resize;
+        window.onresize = this.myChart.resize;
       },
 
       //  页签切换
@@ -528,13 +598,16 @@
           this.errorType = to.query.errorType;
           this.startDate = to.query.startDate;
           this.stopDate = to.query.stopDate;
-          this.evalVal = to.query.evalVal;
-          this.platVal = to.query.platVal;
-          this.canalVal = to.query.canalVal;
+//          console.log(to.query.vaule2)
+          this.evalVal = to.query.evalVal * 1;
+          this.platVal = to.query.platVal * 1;
+          this.canalVal = to.query.canalVal * 1;
           let oldDate1 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 1)).Format('yyyy-M-d');
           let oldDate2 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 7)).Format('yyyy-M-d');
           let oldDate3 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 30)).Format('yyyy-M-d');
           let oldDate4 = new Date((new Date()).setTime((new Date()).getTime() - 86400000 * 60)).Format('yyyy-M-d');
+
+          this.value2 = [new Date(to.query.startDate),new Date(to.query.stopDate)];
           if (this.startDate == oldDate1){
             this.radio2 = '昨天'
           }
@@ -547,7 +620,35 @@
           else if (this.startDate == oldDate4) {
             this.radio2 = '最近60天'
           }
-          this.getDetailed();
+          this.init();
+        }
+      },
+
+      eventRadio (val) {
+        if (val == 1) {
+          this.xAxisData = this.errorCount1.x;
+          this.seriesData = this.errorCount1.y;
+          this.myChart.setOption({
+            xAxis: {
+              data: this.xAxisData
+            },
+            series: [{
+              data: this.seriesData
+            }]
+          });
+
+        }
+        else if (val == 2) {
+          this.xAxisData = this.userCount1.x;
+          this.seriesData = this.userCount1.y;
+          this.myChart.setOption({
+            xAxis: {
+              data: this.xAxisData
+            },
+            series: [{
+              data: this.seriesData
+            }]
+          });
         }
       }
     }
