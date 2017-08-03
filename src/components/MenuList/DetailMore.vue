@@ -383,9 +383,10 @@
         if(val[0] == null || val[1] == null){
           return
         }
-        this.start = new Date(this.value2[0]).Format('yyyy-M-d');
-        this.end = new Date(this.value2[1]).Format('yyyy-M-d');
+        this.startDate = new Date(this.value2[0]).Format('yyyy-M-d');
+        this.stopDate = new Date(this.value2[1]).Format('yyyy-M-d');
         this.getDetailed();
+        this.errorDetailedChart();
       },
 
       focusPiker() {
@@ -581,12 +582,14 @@
         this.evalVal = this.getEditionId;
         this.getEdition();
         this.getDetailed();
+        this.errorDetailedChart();
       },
 
       //  监听版本数据变化
       changeEvalVal (val) {
         this.evalVal = val;
         this.getDetailed();
+        this.errorDetailedChart();
       }
 
     },
