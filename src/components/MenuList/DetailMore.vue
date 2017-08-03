@@ -623,7 +623,8 @@
           else if (this.startDate == oldDate4) {
             this.radio2 = '最近60天'
           }
-          this.init();
+          this.getDetailed();
+          this.errorDetailedChart();
         }
       },
 

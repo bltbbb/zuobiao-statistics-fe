@@ -380,11 +380,11 @@
       },
       handleSizeChange(val) {
         this.size = val;
-        this.init();
+        this.getDetailedPages();
       },
       handleCurrentChange(val) {
         this.currentPage4 = val;
-        this.init();
+        this.getDetailedPages();
       },
       //获取日历时间
       getTime(msg){
