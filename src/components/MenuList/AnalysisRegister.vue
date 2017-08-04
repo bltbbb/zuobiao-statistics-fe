@@ -366,7 +366,7 @@
       },
 
       '$route' (to,from) {
-        if (to.name == 'BuriedPoint') {
+        if (to.name == 'AnalysisRegister') {
           this.eventName = to.query.eventName;
           this.pageVal = to.query.eventId * 1;
         }
