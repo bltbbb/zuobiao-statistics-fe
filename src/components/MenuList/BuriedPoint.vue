@@ -52,7 +52,7 @@
         </thead>
         <tbody >
           <tr v-for="(vaule,index) in tableData" >
-            <td class="table-thead-th-1 table-thead-th-2" @click="handleRowHandle(index)" >{{ vaule.name }}</td>
+            <td class="table-thead-th-1 table-thead-th-2" @click="handleRowHandle(index, $event)" >{{ vaule.name }}</td>
             <td>{{ vaule.interactionViewId }}</td>
             <td>{{ vaule.visitCount }}</td>
             <td>{{ vaule.deviceCount }}</td>
@@ -161,7 +161,7 @@
           });
       },
 
-      handleRowHandle (index) {
+      handleRowHandle (index, evnet) {
           this.$router.push({name: 'AnalysisRegister', query:{eventId: this.tableData[index].interactionViewId}});
       },
       //获取日历时间
