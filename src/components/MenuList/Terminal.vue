@@ -54,7 +54,7 @@
     </div>
     <div class="user-wrapper">
       <div class="user-box">
-        <h1>累计登录用户数</h1>
+        <h1>{{titleSingle}}</h1>
         <span>{{userCount}}</span>
       </div>
     </div>
@@ -63,7 +63,9 @@
     </div>
     <div class="raido2-wrapper">
       <el-radio-group v-model="radioValue2">
-        <el-radio label="0">累计登陆用户数</el-radio>
+        <el-radio label="1">登陆次数</el-radio>
+        <el-radio label="2">新注册用户数</el-radio>
+        <el-radio label="3">登陆用户数</el-radio>
       </el-radio-group>
     </div>
     <div class="table-wrapper">
@@ -111,7 +113,7 @@
               </el-popover>
             </th>
             <th>
-              累计登录次数
+              登录次数
               <el-popover
                 placement="right"
                 width="200"
@@ -121,9 +123,11 @@
                 <i class="el-icon-information" slot="reference"></i>
               </el-popover>
             </th>
-            <th>累计登录次数占比</th>
-            <th>累计注册用户占比</th>
-            <th>累计登录用户占比</th>
+            <th>登录次数占比</th>
+            <th>注册用户</th>
+            <th>注册用户占比</th>
+            <th>登录用户</th>
+            <th>登录用户占比</th>
           </tr>
         </thead>
         <tbody>
@@ -132,7 +136,9 @@
             <td style="text-align: left;">{{item.name}}</td>
             <td>{{item.signinTimesCount}}</td>
             <td>{{item.signinTimesProp }}%</td>
-            <td>{{item.newUserProp  }}%</td>
+            <td>{{item.newUserCount }}</td>
+            <td>{{item.newUserProp }}%</td>
+            <td>{{item.signinUserCount}}</td>
             <td>{{item.signinUserProp}}%</td>
           </tr>
         </tbody>
@@ -222,7 +228,7 @@
             Eval: '2',
             label: '1.4'
           }],
-        radioValue2: '0',
+        radioValue2: '1',
         options:{
           color: ['#3398DB'],
           tooltip : {
@@ -234,8 +240,8 @@
           grid: {
             left: '3%',
             right: '4%',
-            bottom: '3%',
-            containLabel: true
+            bottom: '60',
+            containLabel: true,
           },
           xAxis : [
             {
@@ -245,7 +251,9 @@
                 alignWithLabel: true
               },
               axisLabel: {
-                interval: 0
+                interval: 0,
+                rotate: -20,
+                margin: 10
               }
             }
           ],
@@ -263,7 +271,9 @@
               data:[]
             }
         },
-        tableData: []
+        tableData: [],
+        titleArr: ['登录次数','新用户注册数','登录用户数'],
+        titleSingle: '登录次数'
       }
     },
     components:{
@@ -284,8 +294,14 @@
         this.currentPage = val;
         this.getTerminalPages();
       },
-      getTime(msg){
-        this.start = msg.Format("yyyy-M-d");
+      getTime(msg,dateType,date){
+        if(date){
+          this.start = msg.Format("yyyy-MM-dd");
+          this.dateType = '';
+        }else{
+          this.start = new Date().Format("yyyy-MM-dd");
+          this.dateType = dateType;
+        }
         this.getTerminal();
         this.getTerminalPages();
       },
@@ -301,7 +317,7 @@
         this.getTerminalPages();
 
         //获取平台
-        this.$http.get('http://192.168.1.32/getPlatform',{
+        this.$http.get(this.$store.state.domain+'/getPlatform',{
           params:{
             adoptToken:this.token
           }
@@ -317,7 +333,7 @@
         Params.append('appPlatId', this.platVal);
 
         //获取版本
-        this.$http.post('http://192.168.1.32/getEdition',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/getEdition',Params).then((res)=>{
           if(res.data.status == 0){
             this.editions = res.data.result.result;
           }
@@ -339,8 +355,9 @@
         Params.append('channelId', this.canalVal);
         Params.append('versionId', this.evalVal);
         Params.append('terminalAttribute', this.radioVal);
+        Params.append('type', parseInt(this.radioValue2));
 
-        this.$http.post('http://192.168.1.32/terminal',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/terminal',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
             this.userCount = data.userCount;
@@ -378,7 +395,7 @@
         Params.append('pageSize', this.size);
         Params.append('currentPage', this.currentPage);
 
-        this.$http.post('http://192.168.1.32/terminalPages',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/terminalPages',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
             this.totalCount = res.data.result.totalCount;
@@ -420,6 +437,10 @@
       radioVal: function (val) {
         this.getTerminal();
         this.getTerminalPages();
+      },
+      radioValue2:function (val) {
+        this.getTerminal();
+        this.titleSingle = this.titleArr[--val];
       }
     }
   }
@@ -453,10 +474,11 @@
         border-radius: 4px
         font-size: 16px
     .chart-wrapper
-      padding: 0 20px 20px 20px
+      padding: 0 20px 0 20px
+      margin-bottom: 20px
       #chart-content
         width: 100%
-        height: 500px
+        height: 550px
     .raido2-wrapper
       text-align: center
     .table-wrapper

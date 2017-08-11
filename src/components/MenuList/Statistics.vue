@@ -219,7 +219,7 @@
         this.getFunctionCensus();
 
         //获取平台
-        this.$http.get('http://192.168.1.32/getPlatform',{
+        this.$http.get(this.$store.state.domain+'/getPlatform',{
           params:{
             adoptToken:this.token
           }
@@ -235,7 +235,7 @@
         Params.append('appPlatId', this.platVal);
 
         //获取版本
-        this.$http.post('http://192.168.1.32/getEdition',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/getEdition',Params).then((res)=>{
           if(res.data.status == 0){
             this.editions = res.data.result.result;
           }
@@ -284,7 +284,7 @@
         Params.append('versionId', this.evalVal);
         Params.append('chatType', this.chatType);
 
-        this.$http.post('http://192.168.1.32/functionCensus',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/functionCensus',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
             this.list = data;

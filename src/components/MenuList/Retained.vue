@@ -219,7 +219,7 @@
         this.getRetained();
 
         //获取平台
-        this.$http.get('http://192.168.1.32/getPlatform',{
+        this.$http.get(this.$store.state.domain+'/getPlatform',{
           params:{
             adoptToken:this.token
           }
@@ -240,7 +240,7 @@
         Params.append('channelId', this.evalVal);
         Params.append('retainedType', this.radioVal);
 
-        this.$http.post('http://192.168.1.32/'+this.tabVal,Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/'+this.tabVal,Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
             this.tableDataList = data;

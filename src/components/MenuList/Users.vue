@@ -302,7 +302,7 @@
       init:function () {
         this.getUserAttr();
         //获取平台
-        this.$http.get('http://192.168.1.32/getPlatform',{
+        this.$http.get(this.$store.state.domain+'/getPlatform',{
           params:{
             adoptToken:this.token
           }
@@ -318,7 +318,7 @@
         Params.append('appPlatId', this.platVal);
 
         //获取版本
-        this.$http.post('http://192.168.1.32/getEdition',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/getEdition',Params).then((res)=>{
           if(res.data.status == 0){
             this.editions = res.data.result.result;
           }
@@ -340,7 +340,7 @@
           Params.append('channelId', this.canalVal);
           Params.append('versionId', this.evalVal);
 
-        this.$http.post('http://192.168.1.32/userAttr',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/userAttr',Params).then((res)=>{
           if(res.data.status == 0){
             let sexData = res.data.result.result.gender;
             let ageData = res.data.result.result.age;

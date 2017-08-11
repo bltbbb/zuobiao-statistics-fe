@@ -20,6 +20,9 @@
 //              console.log(this.$store)
 //          },500)
 //      }
+    },
+    created(){
+      document.title="统计分析-坐标";
     }
   }
 </script>

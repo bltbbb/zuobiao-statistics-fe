@@ -95,8 +95,16 @@
           label="登录用户">
         </el-table-column>
         <el-table-column
+          prop="signinUserShare"
+          label="登录用户占比">
+        </el-table-column>
+        <el-table-column
           prop="signinTimesCount"
           label="登录次数">
+        </el-table-column>
+        <el-table-column
+          prop="signinTimesShare"
+          label="登录次数占比">
         </el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
@@ -238,7 +246,7 @@
         this.getAnlysisDetails();
 
         //获取平台
-        this.$http.get('http://192.168.1.32/getPlatform',{
+        this.$http.get(this.$store.state.domain+'/getPlatform',{
           params:{
             adoptToken:this.token
           }
@@ -254,7 +262,7 @@
         Params.append('appPlatId', this.platVal);
 
         //获取版本
-        this.$http.post('http://192.168.1.32/getEdition',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/getEdition',Params).then((res)=>{
           if(res.data.status == 0){
             this.editions = res.data.result.result;
           }
@@ -279,7 +287,7 @@
         //初始化
         this.chartData = [];
 
-        this.$http.post('http://192.168.1.32/trendAnalysis',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/trendAnalysis',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
             this.chartData.push(data.newUserCount);
@@ -320,7 +328,7 @@
         Params.append('pageSize', this.size);
         Params.append('currentPage', this.currentPage);
 
-        this.$http.post('http://192.168.1.32/trendAnalysisDetails',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/trendAnalysisDetails',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
             this.totalCount = res.data.result.totalCount;

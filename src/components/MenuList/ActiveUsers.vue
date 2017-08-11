@@ -229,7 +229,6 @@
       },
       //获取日历时间
       getTime(msg){
-          console.log(msg)
         this.start = msg[0].Format("yyyy-M-d");
         this.end = msg[1].Format("yyyy-M-d");
         this.getActiveUser();
@@ -238,8 +237,8 @@
       initParams: function () {
         let date = new Date();
         let start = new Date();
-        start.setTime(start.getTime() - 3600 * 1000 * 24);  //初始起始为前天
-        date.setTime(date.getTime() - 3600 * 1000 * 24);   //初始结束为昨天
+        date.setTime(date.getTime() - 3600 * 1000 * 24);
+        start.setTime(start.getTime() - 3600 * 1000 * 24);
         this.start = start.Format("yyyy-MM-dd");
         this.end = date.Format("yyyy-MM-dd");
         this.token = this.$cookie.get('adoptToken');
@@ -250,7 +249,7 @@
         this.getActiveUserPages();
 
         //获取平台
-        this.$http.get('http://192.168.1.32/getPlatform',{
+        this.$http.get(this.$store.state.domain+'/getPlatform',{
           params:{
             adoptToken:this.token
           }
@@ -266,7 +265,7 @@
         Params.append('appPlatId', this.platVal);
 
         //获取版本
-        this.$http.post('http://192.168.1.32/getEdition',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/getEdition',Params).then((res)=>{
           if(res.data.status == 0){
             this.editions = res.data.result.result;
           }
@@ -291,7 +290,7 @@
         Params.append('channelId', this.canalVal);
         Params.append('versionId', this.evalVal);
 
-        this.$http.post('http://192.168.1.32/activeUser',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/activeUser',Params).then((res)=>{
           if(res.data.status == 0){
             this.chartData = res.data.result.result;
             this.myChart.setOption({
@@ -328,7 +327,7 @@
         Params.append('pageSize', this.size);
         Params.append('currentPage', this.currentPage);
 
-        this.$http.post('http://192.168.1.32/activeUserPages',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/activeUserPages',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
             this.totalCount = res.data.result.totalCount;
@@ -343,7 +342,7 @@
           }
         },(err)=>{
           //view('网络错误')
-          alert('网络错误')
+          this.$message.error('网络错误');
         })
       }
     },

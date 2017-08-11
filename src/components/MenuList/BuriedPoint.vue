@@ -72,7 +72,7 @@
   export default {
     data() {
       return {
-        port: 'http://192.168.1.32:80',
+        port: this.$store.state.domain,
         explain: '这是菜单的说明文字',
 
         platVal: '',
@@ -234,7 +234,7 @@
   .table-thead-th-2 {
     color: #7A8FE4;
   }
-  
+
   .table-thead-th-2:hover{
     text-decoration: underline;
     cursor: pointer;

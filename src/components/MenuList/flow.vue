@@ -142,9 +142,9 @@
         myChart: null,
         charData: [],
         radioVal: 'total',
-        platVal: '1',
-        canalVal: '1',
-        evalVal: "1",
+        platVal: '-1',
+        canalVal: '-1',
+        evalVal: "-1",
         userId: 1,
         start: '',
         end: '',
@@ -159,7 +159,7 @@
         currentPage: 1,
         totalCount: 100,
         plats: [{
-          value: '1',
+          value: '-1',
           label: '全平台'
         }, {
           value: '2',
@@ -179,11 +179,11 @@
           }
         ],
         canals: [{
-          val: '1',
+          val: '-1',
           label: '全部渠道'
         }],
         editions: [{
-          Eval: '1',
+          Eval: '-1',
           label: '全部版本'
         },
           {
@@ -338,10 +338,10 @@
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
         Params.append('platformId', this.platVal);
-        Params.append('editionId', this.evalVal);
+        Params.append('versionId', this.evalVal);
         Params.append('channelId', this.canalVal);
 
-        this.$http.post('http://192.168.1.201:9999/flowAnalyzeTopten',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/flowAnalyzeTopten',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
             this.tableData = data;
@@ -366,11 +366,11 @@
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
         Params.append('platformId', this.platVal);
-        Params.append('editionId', this.evalVal);
+        Params.append('versionId', this.evalVal);
         Params.append('channelId', this.canalVal);
         Params.append('userId', this.userId);
 
-        this.$http.post('http://192.168.1.201:9999/userFlow',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/userFlow',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
             this.chartData.total = data.total;
@@ -405,13 +405,13 @@
         Params.append('startDate', this.start);
         Params.append('stopDate', this.end);
         Params.append('platformId', this.platVal);
-        Params.append('editionId', this.evalVal);
+        Params.append('versionId', this.evalVal);
         Params.append('channelId', this.canalVal);
         Params.append('userId', this.userId);
         Params.append('pageSize', this.size);
         Params.append('currentPage', this.currentPage);
 
-        this.$http.post('http://192.168.1.201:9999/flowAnalyzePages',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/flowAnalyzePages',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
             this.tableData5 = data;

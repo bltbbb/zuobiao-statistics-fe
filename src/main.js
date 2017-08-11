@@ -10,12 +10,13 @@ import store from './store/store'
 import VueCookie from 'vue-cookie'
 import lockr from 'lockr'
 import axios from 'axios'
+import qs from 'qs'
 
 import './assets/js/function/DateFormat'
 
 Vue.use(Vuex);
 Vue.use(ElementUI);
-Vue.use(VueCookie)
+Vue.use(VueCookie);
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;
 
@@ -47,9 +48,8 @@ new Vue({
         lockr.rm("menuInfo");
         this.$router.push('/login');
       }
-      //为方便开发 不启用验证token
       else {
-        axios.post('http://192.168.1.32/isAuthenticated', tokenParams).then((res)=>{
+        axios.post(this.$store.state.domain+'/isAuthenticated', tokenParams).then((res)=>{
           if(res.data.status == 1){
             lockr.rm("menuInfo");
             this.$cookie.delete('adoptToken');
@@ -58,8 +58,7 @@ new Vue({
         },(err)=>{
           lockr.rm("menuInfo");
           this.$cookie.delete('adoptToken');
-          console.log(err.data+'main.js');
-          //this.$router.push('/login');
+          this.$router.push('/login');
         })
       }
     }

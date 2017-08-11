@@ -45,7 +45,7 @@
     </div>
     <div class="user-wrapper">
       <el-row :gutter="20">
-        <el-col :span="12" v-for="(item,index) in list" :key="index">
+        <el-col :span="8" v-for="(item,index) in list" :key="index">
           <div class="grid-content bg-purple">
             <div class="top-title">{{item.title}}</div>
             <h1>{{item.number}}</h1>
@@ -71,20 +71,21 @@
     </div>
     <div class="radio-wrapper">
       <el-radio-group v-model="radioVal" class="radio-box">
-        <el-radio label="1">注册用户</el-radio>
-        <el-radio label="2">登录用户</el-radio>
+        <el-radio label="1">登录次数</el-radio>
+        <el-radio label="2">注册用户</el-radio>
+        <el-radio label="3">登录用户</el-radio>
       </el-radio-group>
     </div>
     <div class="table-wrapper">
-      <el-table :data="tableData5" style="width: 100%" @expand="expandEvent">
+      <el-table :data="tableData5" style="width: 100%">
         <el-table-column type="expand">
           <template scope="props">
             <el-form label-position="left" inline class="table-expand">
               <el-form-item label="地市名称" class="city-name">
-                <p v-for="item in props.row.city">{{ item.name }}</p><br>
+                <p v-for="item in props.row.details">{{ item.name }}</p><br>
               </el-form-item>
               <el-form-item label="累计登录用户占比" class="login-percentage">
-                <p v-for="item in props.row.city">{{ item.signinUserProp  }}%</p>
+                <p v-for="item in props.row.details">{{ item.signinUserProp  }}%</p>
               </el-form-item>
             </el-form>
           </template>
@@ -93,7 +94,15 @@
         </el-table-column>
         <el-table-column label="注册用户" prop="newUserCount">
         </el-table-column>
+        <el-table-column label="注册用户占比" prop="newUserProp">
+        </el-table-column>
         <el-table-column label="登录用户" prop="signinUserCount">
+        </el-table-column>
+        <el-table-column label="登录用户占比" prop="signinUserProp">
+        </el-table-column>
+        <el-table-column label="登录次数" prop="signinTimesCount">
+        </el-table-column>
+        <el-table-column label="登录次数占比" prop="signinTimesProp">
         </el-table-column>
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
@@ -115,7 +124,8 @@
         explain: '这是菜单的说明文字',
         list: [
           {id: "1", title: "注册用户", number: "8096798"},
-          {id: "2", title: "登录用户", number: "8096798"}
+          {id: "2", title: "登录用户", number: "8096798"},
+          {id: "3", title: "登录次数", number: "8096798"}
         ],
         select: "",
         plats: [{
@@ -189,7 +199,7 @@
             {
               name: 'iphone3',
               type: 'map',
-              mapType: 'china',
+              map: 'china',
               roam: false,
               top: 'top',
               itemStyle: {
@@ -230,30 +240,18 @@
         totalCount: 100,
         loginChartData: [],
         regChartData: [],
+        loginTimesChartData:[],
         loginTableData: [],
         regTableData: [],
+        loginTimesTableData:[],
         regionId: 0,
-        charName: ['注册用户','登录用户']
+        charName: ['登录次数','注册用户','登录用户']
       }
     },
     components:{
       Calendar
     },
     methods: {
-      drawLine(){
-          axios.post('/api/getMapData').then((res)=>{
-            echarts.registerMap('china', res.data.data);
-            this.myChart = echarts.init(document.getElementById('map-chart'));
-            this.myChart.setOption(this.options)
-          })
-      },
-      expandEvent:function (row, expanded) {
-          if(expanded){
-            var id = row.id - 1;
-            this.regionId = row.regionId;
-            this.getRegionPagesDetails(id);
-          }
-      },
       randomData() {
         return Math.round(Math.random()*1000);
       },
@@ -278,6 +276,7 @@
         this.getStatistics();
       },
       initParams: function () {
+
         let start = new Date();
         start.setTime(start.getTime() - 3600 * 1000 *24);
         this.start = start.Format("yyyy-MM-dd");
@@ -287,9 +286,8 @@
       init:function () {
         this.getRegion();
         this.getRegionPages();
-
         //获取平台
-        this.$http.get('http://192.168.1.32/getPlatform',{
+        this.$http.get(this.$store.state.domain+'/getPlatform',{
           params:{
             adoptToken:this.token
           }
@@ -300,6 +298,13 @@
         this.getEditions();
         this.getStatistics();
       },
+      drawLine(){
+        axios.get('../map.json',).then((res)=>{
+          echarts.registerMap('china', res.data);
+          this.myChart = echarts.init(document.getElementById('map-chart'));
+          this.myChart.setOption(this.options)
+        })
+      },
       getStatistics: function () {
         let Params2 = new URLSearchParams();
         Params2.append('adoptToken', this.token);
@@ -309,10 +314,11 @@
         Params2.append('channelId', this.canalVal);
         Params2.append('versionId', this.evalVal);
         //获取平台数据
-        this.$http.post('http://192.168.1.32/regionStatistics',Params2).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/regionStatistics',Params2).then((res)=>{
           if(res.data.status == 0){
             this.list[0].number = res.data.result.result.newUserUount;  //注册用户number
             this.list[1].number = res.data.result.result.signinUserCount;  //登录用户number
+            this.list[2].number = res.data.result.result.signinTimesCount;  //登录次数number
           }
           else{
             //view(res.data.msg)
@@ -329,7 +335,7 @@
         Params.append('appPlatId', this.platVal);
 
         //获取版本
-        this.$http.post('http://192.168.1.32/getEdition',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/getEdition',Params).then((res)=>{
           if(res.data.status == 0){
             this.editions = res.data.result.result;
           }
@@ -358,79 +364,49 @@
         //重置
         this.loginChartData = [{name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} }];
         this.regChartData = [{name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} }];
+        this.loginTimesChartData = [{name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} }];
         this.chartData = [];
         this.tableDataArr = [];
         this.loginTableData = [];
         this.regTableData = [];
+        this.loginTimesTableData = [];
 
 
-        this.$http.post('http://192.168.1.32/region',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/region',Params).then((res)=>{
           if(res.data.status == 0){
             let reginData = res.data.result.result.region;
-            let userData = res.data.result.result.UserCount;
             let tableData = res.data.result.result.topTen;
             for (let i=0;i<reginData.length;i++){
                 var str = reginData[i].name;
                 str = str.slice(0,str.length-1);
-                this.loginChartData.push({name:str,value:reginData[i].newUserCount,title:'登录用户'});
-                this.regChartData.push({name:str,value:reginData[i].signinUserCount,title:'注册用户'})
+                this.loginTimesChartData.push({name:str,value:reginData[i].signinTimesCount,title:'登录次数'})
+                this.loginChartData.push({name:str,value:reginData[i].signinUserCount,title:'登录用户'});
+                this.regChartData.push({name:str,value:reginData[i].newUserCount,title:'注册用户'});
             }
             for (let i=0;i<tableData.length;i++){
-              this.regTableData.push({'index':i+1,'region':tableData[i].name,'value':tableData[i].newUserCount,'percentage':tableData[i].newUserProp})
+              this.loginTimesTableData.push({'index':i+1,'region':tableData[i].name,'value':tableData[i].signinTimesCount,'percentage':tableData[i].signinTimesProp});
+              this.regTableData.push({'index':i+1,'region':tableData[i].name,'value':tableData[i].newUserCount,'percentage':tableData[i].newUserProp});
+              this.loginTableData.push({'index':i+1,'region':tableData[i].name,'value':tableData[i].signinUserCount,'percentage':tableData[i].signinUserProp});
             }
             this.regChartData.push({name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} });
             this.loginChartData.push({name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} });
+            this.loginTimesChartData.push({name: '南海诸岛',value: 0, itemStyle:{ normal:{opacity:0}} });
+            this.chartData.push(this.loginTimesChartData);
             this.chartData.push(this.regChartData);
             this.chartData.push(this.loginChartData);
-            // this.tableDataArr.push(this.regTableData);
-            // this.tableDataArr.push(this.loginTableData);
-            this.tableData = this.regTableData;
+            this.tableDataArr.push(this.loginTimesTableData);
+            this.tableDataArr.push(this.regTableData);
+            this.tableDataArr.push(this.loginTableData);
+            this.tableData = this.tableDataArr[this.radioVal-1];
             // this.list[0].number = userData.registeredUser;  //注册用户number
             // this.list[1].number = userData.loginUser;   //登录用户number
             this.myChart.setOption({
               series: [{
                 // 根据名字对应到相应的系列
-                name: this.charName[0],
-                data: this.chartData[0]
+                name: this.charName[this.radioVal-1],
+                data: this.chartData[this.radioVal-1]
               }]
             })
-          }
-          else{
-            //view(res.data.msg)
-            this.$message.error('登录过期，请重新登录');
-            lockr.rm("menuInfo");
-            this.$cookie.delete('adoptToken');
-            this.$router.push('/login');
-          }
-        },(err)=>{
-          //view('网络错误')
-          this.$message.error('网络错误');
-        })
-      },
-      getRegionTopTen: function () {
-        let Params = new URLSearchParams();
-        Params.append('adoptToken', this.token);
-        Params.append('dateType', this.dateType);
-        Params.append('date', this.start);
-        Params.append('platformId', this.platVal);
-        Params.append('channelId', this.canalVal);
-        Params.append('versionId', this.evalVal);
-        Params.append('type', this.radioVal);
-
-        //重置
-        this.tableData = [];
-        this.regTableData = [];
-
-
-        this.$http.post('http://192.168.1.32/region',Params).then((res)=>{
-          if(res.data.status == 0){
-            let reginData = res.data.result.result.region;
-            let userData = res.data.result.result.UserCount;
-            let tableData = res.data.result.result.topTen;
-            for (let i=0;i<tableData.length;i++){
-              this.regTableData.push({'index':i+1,'region':tableData[i].name,'value':tableData[i].newUserCount,'percentage':tableData[i].newUserProp})
-            }
-            this.tableData = this.regTableData;
           }
           else{
             //view(res.data.msg)
@@ -456,39 +432,11 @@
         Params.append('pageSize', this.size);
         Params.append('currentPage', this.currentPage);
 
-        this.$http.post('http://192.168.1.32/regionPages',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/regionPages',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
-//            this.totalCount = res.data.result.totalCount;
+            this.totalCount = res.data.result.totalCount;
             this.tableData5 = data
-          }
-          else{
-            //view(res.data.msg)
-            this.$message.error('登录过期，请重新登录');
-            lockr.rm("menuInfo");
-            this.$cookie.delete('adoptToken');
-            this.$router.push('/login');
-          }
-        },(err)=>{
-          //view('网络错误')
-          this.$message.error('网络错误');
-        })
-      },
-      getRegionPagesDetails:function (id) {
-        let Params = new URLSearchParams();
-        Params.append('adoptToken', this.token);
-        Params.append('dateType', this.dateType);
-        Params.append('date', this.start);
-        Params.append('platformId', this.platVal);
-        Params.append('channelId', this.canalVal);
-        Params.append('versionId', this.evalVal);
-        Params.append('regionId', this.regionId);
-
-        if(this.tableData5[id].city) return;
-        this.$http.post('http://192.168.1.32/regionPagesDetails',Params).then((res)=>{
-          if(res.data.status == 0){
-            let data = res.data.result.result;
-            this.$set(this.tableData5[id], 'city', data);
           }
           else{
             //view(res.data.msg)
@@ -528,15 +476,7 @@
         this.getRegionPages();
       },
       radioVal: function (val) {
-        val--;
-        this.getRegionTopTen();
-        this.myChart.setOption({
-          series: [{
-            // 根据名字对应到相应的系列
-            name: this.charName[val],
-            data: this.chartData[val]
-          }]
-        })
+        this.getRegion();
       }
     }
   }
@@ -567,6 +507,9 @@
         &:nth-child(2)
           .grid-content
             background: #FF9999
+        &:nth-child(3)
+          .grid-content
+            background: #7A8FE0
     .chart-wrapper
       box-sizing: border-box
       padding: 20px

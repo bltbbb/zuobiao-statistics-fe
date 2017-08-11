@@ -203,7 +203,7 @@
       init:function () {
         //参数
 
-        this.$http.get('http://192.168.1.32/getTotalSurvey',{
+        this.$http.get(this.$store.state.domain+'/getTotalSurvey',{
           params:{
             adoptToken:this.token
           }
@@ -225,7 +225,7 @@
           this.$message.error('网络错误');
         });
 
-        this.$http.get('http://192.168.1.32/getPlatform',{
+        this.$http.get(this.$store.state.domain+'/getPlatform',{
             params:{
               adoptToken:this.token
             }
@@ -247,7 +247,7 @@
         //初始化this.chartData
         this.chartData = [];
 
-        this.$http.post('http://192.168.1.32/getDateNumber',Params).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/getDateNumber',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
             this.chartData.push(data.registerUserCount);
@@ -281,7 +281,7 @@
         })
       },
       getFullPlat(){
-        this.$http.get('http://192.168.1.32/getFullPlatform',{
+        this.$http.get(this.$store.state.domain+'/getFullPlatform',{
           params:{
             adoptToken:this.token,
             platformId:this.activeName

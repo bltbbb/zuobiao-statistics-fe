@@ -55,7 +55,7 @@
         let tokenParams = new URLSearchParams();
         tokenParams.append('adoptToken', this.$cookie.get('adoptToken'));
         //用户信息
-        axios.post('http://192.168.1.201:9999/getTokenUser',tokenParams).then((res)=>{
+        axios.post(this.$store.state.domain+'/getTokenUser',tokenParams).then((res)=>{
           this.userInfo = res.data.result
         })
       },

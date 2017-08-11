@@ -32,7 +32,7 @@
         name: 'hello',
         data () {
             return {
-              port: 'http://192.168.1.32:80',
+              port: this.$store.state.domain,
               platVal: -1,
               plats: [],
               canalVal: '-1',

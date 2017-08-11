@@ -86,8 +86,8 @@
   export default {
     data() {
       return {
-//        port: 'http://192.168.1.201:9999',
-        port: 'http://192.168.1.32:80',
+//        port: this.$store.state.domain+'',
+        port: this.$store.state.domain,
         explain: '这是菜单的说明文字',
         getEditionId: '',
         eventName: '',
@@ -366,7 +366,7 @@
       },
 
       '$route' (to,from) {
-        if (to.name != undefined) {
+        if (to.name == "BuriedPoint") {
           this.eventName = to.query.eventName;
           this.pageVal = to.query.eventId * 1;
         }
