@@ -366,11 +366,7 @@
       },
 
       '$route' (to,from) {
-<<<<<<< HEAD
-        if (to.name == "BuriedPoint") {
-=======
         if (to.name == 'AnalysisRegister') {
->>>>>>> cced0cd2d3d5aae55d140b90e4d98dfb0e1c6c6e
           this.eventName = to.query.eventName;
           this.pageVal = to.query.eventId * 1;
         }
