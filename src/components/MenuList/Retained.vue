@@ -35,6 +35,13 @@
         </el-select>
       </div>
     </div>
+    <div class="radio-box">
+      <el-radio-group v-model="radioVal">
+        <el-radio label="1">日留存</el-radio>
+        <el-radio label="2">周留存</el-radio>
+        <el-radio label="3">月留存</el-radio>
+      </el-radio-group>
+    </div>
     <div class="tabs">
       <el-tabs type="border-card" v-model="tabVal">
         <el-tab-pane v-for="(tab,index) in tabs" :key="index" :name="tab.id">
@@ -56,13 +63,7 @@
         </el-tab-pane>
       </el-tabs>
     </div>
-    <div class="radio-box">
-      <el-radio-group v-model="radioVal">
-        <el-radio label="1">日留存</el-radio>
-        <el-radio label="2">周留存</el-radio>
-        <el-radio label="3">月留存</el-radio>
-      </el-radio-group>
-    </div>
+
   </div>
 </template>
 

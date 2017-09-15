@@ -61,13 +61,14 @@
     <div class="chart-wrapper">
       <div id="chart-content"></div>
     </div>
-    <div class="raido2-wrapper">
-      <el-radio-group v-model="radioValue2">
-        <el-radio label="1">登陆次数</el-radio>
-        <el-radio label="2">新注册用户数</el-radio>
-        <el-radio label="3">登陆用户数</el-radio>
-      </el-radio-group>
-    </div>
+    <!--8-15需求去掉-->
+    <!--<div class="raido2-wrapper">-->
+      <!--<el-radio-group v-model="radioValue2">-->
+        <!--<el-radio label="1">登陆次数</el-radio>-->
+        <!--<el-radio label="2">新注册用户数</el-radio>-->
+        <!--<el-radio label="3">登陆用户数</el-radio>-->
+      <!--</el-radio-group>-->
+    <!--</div>-->
     <div class="table-wrapper">
       <!--<table class="table-title">-->
         <!--<thead>-->
@@ -105,7 +106,6 @@
               设备型号
               <el-popover
                 placement="right"
-                width="200"
                 trigger="hover"
                 popper-class="popover-class">
                 <slot>{{equipTooltip}}</slot>
@@ -113,21 +113,21 @@
               </el-popover>
             </th>
             <th>
-              登录次数
+              启动次数
               <el-popover
                 placement="right"
-                width="200"
                 trigger="hover"
                 popper-class="popover-class">
                 <slot>{{loginTooltip}}</slot>
                 <i class="el-icon-information" slot="reference"></i>
               </el-popover>
             </th>
-            <th>登录次数占比</th>
-            <th>注册用户</th>
-            <th>注册用户占比</th>
-            <th>登录用户</th>
-            <th>登录用户占比</th>
+            <th>启动次数占比</th>
+            <th>新增用户</th>
+            <th>新增用户占比</th>
+            <!--8-15需求去掉-->
+            <!--<th>登录用户</th>-->
+            <!--<th>登录用户占比</th>-->
           </tr>
         </thead>
         <tbody>
@@ -138,8 +138,8 @@
             <td>{{item.signinTimesProp }}%</td>
             <td>{{item.newUserCount }}</td>
             <td>{{item.newUserProp }}%</td>
-            <td>{{item.signinUserCount}}</td>
-            <td>{{item.signinUserProp}}%</td>
+            <!--<td>{{item.signinUserCount}}</td>-->
+            <!--<td>{{item.signinUserProp}}%</td>-->
           </tr>
         </tbody>
       </table>
@@ -273,7 +273,7 @@
         },
         tableData: [],
         titleArr: ['登录次数','新用户注册数','登录用户数'],
-        titleSingle: '登录次数'
+        titleSingle: '累计登录用户数'
       }
     },
     components:{

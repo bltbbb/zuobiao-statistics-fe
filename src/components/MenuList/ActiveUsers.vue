@@ -48,8 +48,9 @@
       </div>
       <div id="activeChart" class="chart" :style="{width: '100%', height: '400px'}"></div>
       <el-radio-group v-model="radioVal" class="radio-box">
-        <el-radio label="signinUserCount">登录用户</el-radio>
-        <el-radio label="dayMonthRatio">日活/月活</el-radio>
+        <el-radio label="signinUserCount">日活跃用户</el-radio>
+        <!--8-15需求去掉-->
+        <!--<el-radio label="dayMonthRatio">日活/月活</el-radio>-->
       </el-radio-group>
  <!--     <Calendar @timeValue="getTableTime" class="calendar-box"></Calendar>-->
       <!--表格-->
@@ -58,18 +59,17 @@
         style="width: 100%">
         <el-table-column
           prop="date"
-          label="日期"
-          width="180">
+          label="日期">
         </el-table-column>
         <el-table-column
           prop="signinUserCount"
-          label="登录用户"
-          width="180">
+          label="登录用户">
         </el-table-column>
-        <el-table-column
-          prop="dayMonthRatio"
-          label="日活/月活">
-        </el-table-column>
+        <!--8-15需求去掉-->
+        <!--<el-table-column-->
+          <!--prop="dayMonthRatio"-->
+          <!--label="日活/月活">-->
+        <!--</el-table-column>-->
         <el-table-column
           prop="weekUserCount"
           label="周活跃用户">
@@ -78,10 +78,11 @@
           prop="monthUserCount"
           label="月活跃用户">
         </el-table-column>
-        <el-table-column
-          prop="monthSilentUserount"
-          label="月沉默用户">
-        </el-table-column>
+        <!--8-15需求去掉-->
+        <!--<el-table-column-->
+          <!--prop="monthSilentUserount"-->
+          <!--label="月沉默用户">-->
+        <!--</el-table-column>-->
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
                      class="radio-box"

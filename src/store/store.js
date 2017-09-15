@@ -12,7 +12,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    domain:'http://125.208.1.67:9101', //保存后台请求的地址，修改时方便（比方说从测试服改成正式服域名）
+    domain:'http://192.168.1.40:9101', //保存后台请求的地址
+    //domain:'http://125.208.1.67:9101', //保存后台请求的地址
     //保存用户信息
     userInfo: [],
     //保存菜单信息

@@ -316,12 +316,12 @@
     },
     watch:{
       //异步请求待用
-      Eval : function (val) {
+      evalVal : function (val) {
+        this.getFunctionCensus();
+      },
+      platVal: function (val) {
         this.getFunctionCensus();
         this.getEditions();
-      },
-      value: function (val) {
-        this.getFunctionCensus();
       },
       chatType: function (val) {
         this.getFunctionCensus();

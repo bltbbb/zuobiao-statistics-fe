@@ -71,9 +71,9 @@
     </div>
     <div class="radio-wrapper">
       <el-radio-group v-model="radioVal" class="radio-box">
-        <el-radio label="1">登录次数</el-radio>
-        <el-radio label="2">注册用户</el-radio>
-        <el-radio label="3">登录用户</el-radio>
+        <el-radio label="1">启动次数</el-radio>
+        <el-radio label="2">新增用户</el-radio>
+        <el-radio label="3">启动用户</el-radio>
       </el-radio-group>
     </div>
     <div class="table-wrapper">
@@ -92,18 +92,18 @@
         </el-table-column>
         <el-table-column label="地域分布" prop="name">
         </el-table-column>
-        <el-table-column label="注册用户" prop="newUserCount">
+        <el-table-column label="新增用户" prop="newUserCount">
         </el-table-column>
-        <el-table-column label="注册用户占比" prop="newUserProp">
+        <!--<el-table-column label="注册用户占比" prop="newUserProp">-->
+        <!--</el-table-column>-->
+        <el-table-column label="启动用户" prop="signinUserCount">
         </el-table-column>
-        <el-table-column label="登录用户" prop="signinUserCount">
+        <!--<el-table-column label="登录用户占比" prop="signinUserProp">-->
+        <!--</el-table-column>-->
+        <el-table-column label="启动次数" prop="signinTimesCount">
         </el-table-column>
-        <el-table-column label="登录用户占比" prop="signinUserProp">
-        </el-table-column>
-        <el-table-column label="登录次数" prop="signinTimesCount">
-        </el-table-column>
-        <el-table-column label="登录次数占比" prop="signinTimesProp">
-        </el-table-column>
+        <!--<el-table-column label="登录次数占比" prop="signinTimesProp">-->
+        <!--</el-table-column>-->
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
                      class="radio-box"
@@ -123,9 +123,9 @@
       return {
         explain: '这是菜单的说明文字',
         list: [
-          {id: "1", title: "注册用户", number: "8096798"},
-          {id: "2", title: "登录用户", number: "8096798"},
-          {id: "3", title: "登录次数", number: "8096798"}
+          {id: "1", title: "新增用户", number: "8096798"},
+          {id: "2", title: " 启动用户", number: "8096798"},
+          {id: "3", title: " 启动次数", number: "8096798"}
         ],
         select: "",
         plats: [{
@@ -195,9 +195,7 @@
               color: ['#E8F3FF','rgb(0, 119, 254)']
             }
           },
-          series: [
-            {
-              name: 'iphone3',
+          series: {
               type: 'map',
               map: 'china',
               roam: false,
@@ -220,7 +218,6 @@
               },
               data:[]
             }
-          ]
         },
         tableDataArr: [],
         tableData:[],
@@ -245,11 +242,16 @@
         regTableData: [],
         loginTimesTableData:[],
         regionId: 0,
-        charName: ['登录次数','注册用户','登录用户']
+        charName: ['启动次数','新增用户','启动用户']
       }
     },
     components:{
       Calendar
+    },
+    mounted(){
+      this.drawLine();
+      this.initParams();
+      this.init();
     },
     methods: {
       randomData() {
@@ -299,10 +301,10 @@
         this.getStatistics();
       },
       drawLine(){
+        this.myChart = echarts.init(document.getElementById('map-chart'));
         axios.get('../map.json',).then((res)=>{
           echarts.registerMap('china', res.data);
-          this.myChart = echarts.init(document.getElementById('map-chart'));
-          this.myChart.setOption(this.options)
+          this.myChart.setOption(this.options);
         })
       },
       getStatistics: function () {
@@ -450,11 +452,6 @@
           this.$message.error('网络错误');
         })
       }
-    },
-    mounted(){
-        this.drawLine();
-        this.initParams();
-        this.init();
     },
     watch:{
       // 异步请求待用

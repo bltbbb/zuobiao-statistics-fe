@@ -77,6 +77,7 @@
   require('echarts/lib/component/tooltip');
   require('echarts/lib/component/title');
   require('echarts/lib/component/legend');
+  import lockr from 'lockr'
   export default {
     data () {
       return {
@@ -96,10 +97,10 @@
           {key:'4',select:'最近60天'}
         ],
         platData: [
-          {id:1,title:"注册用户",today:"0",yday:"0"},
-          {id:2,title:"登录用户",today:"0",yday:"0"},
-          {id:3,title:"登录次数",today:"0",yday:"0"},
-          {id:4,title:"人均登录次数",today:"0",yday:"0"},
+          {id:1,title:"新增用户",today:"0",yday:"0"},
+          {id:2,title:"启动用户",today:"0",yday:"0"},
+          {id:3,title:"启动次数",today:"0",yday:"0"},
+          {id:4,title:"次日留存率",today:"0",yday:"0"},
         ],
         dateVal: '1',
         activeName:"-1",
@@ -108,7 +109,7 @@
         end: '',
         token: '',
         chartData: [],
-        chartName: ['注册用户','登录用户','登录次数','人均登录次数'],
+        chartName: ['新增用户','启动用户','启动次数','次日留存率'],
         type: 1
       }
     }
@@ -253,9 +254,7 @@
             this.chartData.push(data.registerUserCount);
             this.chartData.push(data.signinUserCount);
             this.chartData.push(data.signinTimesCount);
-            this.chartData.push(data.avgSigninTimes);
-            console.log(this.chartData)
-            this.myChart = echarts.init(document.getElementById('myChart'));
+            this.chartData.push(data.nextRemainsRate);
             this.myChart.setOption({
               xAxis: {
                 data: this.chartData[0].x
@@ -295,8 +294,8 @@
             this.platData[1].yday = data[1].signinUserCount;
             this.platData[2].today = data[0].signinTimesCount;
             this.platData[2].yday = data[1].signinTimesCount;
-            this.platData[3].today = data[0].avgSigninTimes;
-            this.platData[3].yday = data[1].avgSigninTimes;
+            this.platData[3].today = data[0].nextRemainsRate;
+            this.platData[3].yday = data[1].nextRemainsRate;
           }
           else{
             //view(res.data.msg)

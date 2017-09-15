@@ -78,34 +78,34 @@
         style="width: 100%">
         <el-table-column
           prop="date"
-          label="日期"
-          width="180">
+          label="日期">
         </el-table-column>
         <el-table-column
           prop="newUserCount"
-          label="注册用户"
-          width="180">
+          label="新增用户">
         </el-table-column>
         <el-table-column
           prop="newUserShare"
-          label="注册用户占比">
+          label="新增用户占比">
         </el-table-column>
         <el-table-column
           prop="signinUserCount"
-          label="登录用户">
+          label="启动用户">
         </el-table-column>
-        <el-table-column
-          prop="signinUserShare"
-          label="登录用户占比">
-        </el-table-column>
+        <!--8-15需求去掉-->
+        <!--<el-table-column-->
+          <!--prop="signinUserShare"-->
+          <!--label="登录用户占比">-->
+        <!--</el-table-column>-->
         <el-table-column
           prop="signinTimesCount"
           label="登录次数">
         </el-table-column>
-        <el-table-column
-          prop="signinTimesShare"
-          label="登录次数占比">
-        </el-table-column>
+        <!--8-15需求去掉-->
+        <!--<el-table-column-->
+          <!--prop="signinTimesShare"-->
+          <!--label="登录次数占比">-->
+        <!--</el-table-column>-->
       </el-table>
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
                      class="radio-box"
