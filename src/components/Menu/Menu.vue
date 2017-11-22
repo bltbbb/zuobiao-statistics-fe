@@ -1,16 +1,16 @@
 <template>
   <div class="menu-wrapper">
-    <el-menu default-active="2" class="el-menu-vertical-demo menu" @open="handleOpen" @close="handleClose" theme="dark">
+    <el-menu unique-opened default-active="2" class="el-menu-vertical-demo menu" @open="handleOpen" @close="handleClose" theme="dark">
 <!--      <li class="logo"><img src="../../assets/img/logo.png"></li>-->
       <div class="menu-div" v-for="(item,key1,index1) in menuList" :key="index1">
-        <el-menu-item :index="index1+''" v-if="!item.children">
-          <router-link :to="'/Content/'+key1" style="text-align: left"><i :class="'el-icon-'+iconFont[key1]"></i>概况</router-link>
+        <el-menu-item :index="key1+''" v-if="!item.children">
+          <router-link :to="'/Content/'+item.menuNameQp" style="text-align: left"><i :class="'el-icon-'+iconFont[item.menuNameQp]"></i>概况</router-link>
         </el-menu-item>
-        <el-submenu :index="index1+''" v-if="item.children">
-          <template slot="title"><i :class="'el-icon-'+iconFont[key1]"></i>{{item.menuName}}</template>
+        <el-submenu :index="key1+''" v-if="item.children">
+          <template slot="title"><i :class="'el-icon-'+iconFont[item.menuNameQp]"></i>{{item.menuName}}</template>
           <el-menu-item-group v-if="item.children" >
-            <el-menu-item v-for="(list,key2,index2) in item.children"  :index="index1+'-'+index2"  :key="index2">
-              <router-link :to="'/Content/'+key2">{{list}}</router-link>
+            <el-menu-item v-for="(list,key2,index2) in item.children"  :index="key1+'-'+key2"  :key="index2" v-if="list.menuType != 3">
+              <router-link :to="'/Content/'+list.menuNameQp">{{list.menuName}}</router-link>
             </el-menu-item>
           </el-menu-item-group>
         </el-submenu>
@@ -76,6 +76,8 @@
 </template>
 <script>
   import '../../assets/js/page/menu.js'
+  import lockr from 'lockr'
+
   export default {
     data() {
       return {
@@ -85,7 +87,8 @@
             Basicindex: 'information',
             UserAnalysis: 'star-on',
             EventAnalysis: 'document',
-            LogAnalysis: 'plus'
+            LogAnalysis: 'plus',
+            Manage: 'setting'
           }
 //        options: {
 //            survey : {
@@ -109,19 +112,22 @@
     },
     computed: {
       menuList(){
-        const objTemp = {}
+        let objTemp = {}
         this.$store.commit('updateMenuInfo')
-        this.$store.state.menuInfo.forEach((item)=>{
-          objTemp[item.menuNameQp] = {}
-          objTemp[item.menuNameQp]["menuName"] = item.menuName
-          if(item.children){
-              objTemp[item.menuNameQp]["children"] = {}
-              item.children.forEach((list)=>{
-                objTemp[item.menuNameQp]["children"][list.menuNameQp] = list.menuName
-              })
-          }
-        })
-        return objTemp
+//        this.$store.state.menuInfo.forEach((item)=>{
+//          objTemp[item.menuNameQp] = {}
+//          objTemp[item.menuNameQp]["menuName"] = item.menuName
+//          if(item.children){
+//              objTemp[item.menuNameQp]["children"] = {}
+//              item.children.forEach((list)=>{
+//                objTemp[item.menuNameQp]["children"][list.menuNameQp] = list.menuName
+//              })
+//          }
+//        })
+//        this.$store.commit('updateMenuArr');
+//        console.log(this.$store.state.menuInfo)
+//        return objTemp
+        return this.$store.state.menuInfo
       }
     }
   }

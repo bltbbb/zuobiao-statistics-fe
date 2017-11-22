@@ -47,8 +47,8 @@
                 </div>
                 <div class="box-list" v-for="data in platData" @click="choice(data.id)" :class="{active:type == data.id}">
                   <div class="" name="first">{{data.title}}</div>
-                  <div class=""  name="second">{{data.today}}</div>
-                  <div class=""  name="third">{{data.yday}}</div>
+                  <div class=""  name="second">{{data.yday}}</div>
+                  <div class=""  name="third">{{data.eveday}}</div>
                 </div>
               </div>
           </el-tab-pane>
@@ -97,10 +97,10 @@
           {key:'4',select:'最近60天'}
         ],
         platData: [
-          {id:1,title:"新增用户",today:"0",yday:"0"},
-          {id:2,title:"启动用户",today:"0",yday:"0"},
-          {id:3,title:"启动次数",today:"0",yday:"0"},
-          {id:4,title:"次日留存率",today:"0",yday:"0"},
+          {id:1,title:"新增用户",yday:"0",eveday:"0"},
+          {id:2,title:"启动用户",yday:"0",eveday:"0"},
+          {id:3,title:"启动次数",yday:"0",eveday:"0"},
+          {id:4,title:"次日留存率",yday:"0",eveday:"0"},
         ],
         dateVal: '1',
         activeName:"-1",
@@ -288,14 +288,14 @@
         }).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;
-            this.platData[0].today = data[0].registerUserCount;
-            this.platData[0].yday = data[1].registerUserCount;
-            this.platData[1].today = data[0].signinUserCount;
-            this.platData[1].yday = data[1].signinUserCount;
-            this.platData[2].today = data[0].signinTimesCount;
-            this.platData[2].yday = data[1].signinTimesCount;
-            this.platData[3].today = data[0].nextRemainsRate;
-            this.platData[3].yday = data[1].nextRemainsRate;
+            this.platData[0].yday = data[0].registerUserCount;
+            this.platData[0].eveday = data[1].registerUserCount;
+            this.platData[1].yday = data[0].signinUserCount;
+            this.platData[1].eveday = data[1].signinUserCount;
+            this.platData[2].yday = data[0].signinTimesCount;
+            this.platData[2].eveday = data[1].signinTimesCount;
+            this.platData[3].yday = data[0].nextRemainsRate;
+            this.platData[3].eveday = data[1].nextRemainsRate;
           }
           else{
             //view(res.data.msg)

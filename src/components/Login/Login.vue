@@ -98,6 +98,7 @@
                 //请求
                 axios.post(this.$store.state.domain+'/getAuthMenus',qs.stringify(data)).then((res)=>{
                   this.$store.state.menuInfo = res.data;
+                  this.toMenuArr(res.data)
                   lockr.set("menuInfo",res.data);      //将数据存入localStorage 以便免登陆应用
                   this.$router.push('/Content/Survey');    //跳转
                   this.showScreen = false;
@@ -121,6 +122,18 @@
             this.$message.error('网络错误');
             this.showScreen = false;
           });
+        },
+        toMenuArr(arr){
+          let arrTemp = [];
+          arr.forEach((item)=>{
+            if(!item.children){arrTemp.push(item.menuNameQp)}
+            if(item.children){
+              item.children.forEach((list)=>{
+                arrTemp.push(list.menuNameQp)
+              })
+            }
+          })
+          lockr.set("menuArr",arrTemp);
         }
     },
     created(){

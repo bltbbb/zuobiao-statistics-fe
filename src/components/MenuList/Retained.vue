@@ -56,7 +56,7 @@
               <tr class="line" v-for="item in tableDataList">
                 <td class="grey-bg">{{item.statisDate}}</td>
                 <td class="grey-bg">{{item.registeredUser}}</td>
-                <td v-for="list in item.data" :class="'td-retain-'+classMap(list)" class="boderNone">{{list}}%</td>
+                <td v-for="list in item.data" :class="'td-retain-'+classMap(list)" class="boderNone">{{list}}<span>{{precent}}</span></td>
               </tr>
             </table>
           </div>
@@ -169,7 +169,12 @@
         start: '',
         end: '',
         token: '',
-        tableData: []
+        tableData: [],
+        precent: '',
+        precentRadio: {
+          'firstRetained': '',
+          'activeRetained': '%'
+        }
       }
     },
     methods:{
@@ -215,6 +220,7 @@
         this.token = this.$cookie.get('adoptToken');
         this.Identification = this.IdentificationArr[0];
         this.userText = '注册用户';
+        this.precent = '%'
       },
       init:function () {
         this.getRetained();
@@ -272,6 +278,7 @@
       tabVal: function (val) {
         this.getRetained();
         this.userText = this.tabsText[val];
+        this.precent = this.precentRadio[val]
       },
       radioVal: function (val) {
         val--;

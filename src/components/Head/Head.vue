@@ -62,6 +62,7 @@
       methods:{
         loginOut(){
           lockr.rm("menuInfo");
+          lockr.rm("menuArr")
           this.$cookie.delete('adoptToken');
           this.$router.push('/login');
         }
