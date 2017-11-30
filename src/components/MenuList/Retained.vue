@@ -56,7 +56,7 @@
               <tr class="line" v-for="item in tableDataList">
                 <td class="grey-bg">{{item.statisDate}}</td>
                 <td class="grey-bg">{{item.registeredUser}}</td>
-                <td v-for="list in item.data" :class="'td-retain-'+classMap(list)" class="boderNone">{{list}}<span>{{precent}}</span></td>
+                <td v-for="list in item.data" :class="'td-retain-'+classMap(list)" class="boderNone">{{list}}</td>
               </tr>
             </table>
           </div>

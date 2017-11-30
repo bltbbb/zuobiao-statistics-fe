@@ -273,7 +273,7 @@
         },
         tableData: [],
         titleArr: ['登录次数','新用户注册数','登录用户数'],
-        titleSingle: '累计登录用户数'
+        titleSingle: '累计登录次数'
       }
     },
     components:{

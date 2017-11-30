@@ -151,7 +151,7 @@ const router = new Router({
           component: RoleMan
         },
         {
-          path: '/Content/RoleManDetail',
+          path: '/Content/RoleManDetail/:id',
           name: 'RoleManDetail',
           component: RoleManDetail
         },
