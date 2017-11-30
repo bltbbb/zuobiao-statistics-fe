@@ -642,15 +642,17 @@
             this.privVisitId = ''
             this.menuId = ''
             this.highlightModel = false
+            this.newKey = ''
+            this.oldKey = ''
+            this.form3 = {}
           }else {
             this.highlightModel = true
             this.privVisitId = data.privVisitId
             this.menuId = data.menuId
+            this.form3 = data
+            this.getUrlSelected()
+            this.getPanel()
           }
-          this.form3 = data
-          console.log(this.form3)
-          this.getUrlSelected()
-          this.getPanel()
           this.oldKey = this.newKey
       },
       getUrlSelected(){

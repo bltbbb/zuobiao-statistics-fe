@@ -86,7 +86,8 @@
             UserAnalysis: 'star-on',
             EventAnalysis: 'document',
             LogAnalysis: 'plus',
-            Manage: 'setting'
+            Manage: 'setting',
+            LogMan:'date'
           }
 //        options: {
 //            survey : {

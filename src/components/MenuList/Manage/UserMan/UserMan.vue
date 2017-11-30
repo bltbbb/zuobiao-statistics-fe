@@ -25,7 +25,10 @@
                 <el-input v-model="form.nickName"></el-input>
               </el-form-item>
               <el-form-item label="用户性别">
-                <el-input v-model="form.sex"></el-input>
+                <el-select v-model="form.sex" placeholder="请选择性别">
+                  <el-option label="男" value="1"></el-option>
+                  <el-option label="女" value="2"></el-option>
+                </el-select>
               </el-form-item>
               <el-form-item label="邮箱">
                 <el-input v-model="form.email"></el-input>
@@ -33,7 +36,7 @@
             </div>
             <div class="form-btn">
               <el-button @click="searchRole">查询</el-button>
-              <el-button>重置</el-button>
+              <el-button @click="reset">重置</el-button>
               <!--<el-button>导入</el-button>-->
               <!--<el-button>导出</el-button>-->
             </div>
@@ -51,7 +54,7 @@
           </div>
           <div class="list-table">
             <el-table
-              ref="multipleTable"
+              reff="multipleTable"
               :data="tableData"
               border
               tooltip-effect="dark"
@@ -166,11 +169,6 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="角色分配">
-          <el-form :model="form3" label-width="80px">
-            <el-form-item label="系统名称">
-              <el-input v-model="form.name"></el-input>
-            </el-form-item>
-          </el-form>
           <div class="transfer-wrapper">
             <el-transfer
               filterable
@@ -182,7 +180,7 @@
             </el-transfer>
           </div>
           <div class="tab-2-btn">
-            <el-button type="primary">提交</el-button>
+            <el-button type="primary" @click="postTransfer">提交</el-button>
           </div>
         </el-tab-pane>
         <el-tab-pane label="密码修改">
@@ -225,22 +223,26 @@
                 <el-table
                   :data="tableData2"
                   border
-                  style="width: 100%">
+                  style="width: 100%"
+                  max-height="450"
+                  highlight-current-row
+                  @cell-click="panelTableClick">
                   <el-table-column
-                    prop="name"
-                    label="面板1">
+                    prop="panelName"
+                    label="面板名称">
                   </el-table-column>
                   <el-table-column
-                    prop="address"
-                    label="面板2">
+                    prop="remark"
+                    label="描述">
                   </el-table-column>
                   <el-table-column
-                    prop="address"
-                    label="面板3">
+                    prop="createUser"
+                    label="创建人">
                   </el-table-column>
                   <el-table-column
                     label="操作"
-                    width="100">
+                    width="100"
+                    prop="handle">
                     <template scope="scope">
                       <el-button
                         size="small"
@@ -267,16 +269,16 @@
                   border
                   style="width: 100%">
                   <el-table-column
-                    prop="name"
-                    label="元素1">
+                    prop="elementName"
+                    label="元素名称">
                   </el-table-column>
                   <el-table-column
-                    prop="address"
-                    label="元素2">
+                    prop="remark"
+                    label="描述">
                   </el-table-column>
                   <el-table-column
-                    prop="address"
-                    label="元素3">
+                    prop="createUser"
+                    label="创建人">
                   </el-table-column>
                   <el-table-column
                     label="操作"
@@ -444,16 +446,14 @@
         totalPages: 50,
         tableData: [],
         tableData2: [],
-        tableData3: [{
-          name: 1,
-          address: 2
-        }],
+        tableData3: [],
         dialogFormVisible: false,
         dialogTreeVisible: false,
         token: '',
         selectUserId: [],
         userId:'',
-        privVisitId:''
+        privVisitId:'',
+        panelId:''
       }
     },
     mounted(){
@@ -514,7 +514,14 @@
             //view('网络错误')
             this.$message.error('网络错误');
           })
-
+      },
+      reset(){
+        this.form = {
+          nickName: '',
+            sex: '',
+            email: ''
+        }
+        this.searchRole()
       },
       handleSizeChange(val){
         this.pageSize = val
@@ -557,6 +564,8 @@
         return item.label.indexOf(query) > -1;
       },
       handleNodeClick(data) {
+          console.log(data)
+        this.tableData3 = []
         this.privVisitId = data.privVisitId
         this.getPanel()
       },
@@ -569,6 +578,23 @@
         this.$http.post(this.$store.state.domain+'/resPanel/queryVisitPanel',qs.stringify(data)).then((res)=>{
           if(res.data.status == 0){
             this.tableData2 = res.data.result.result
+          }else{
+
+          }
+        },(err)=>{
+
+        })
+      },
+      getElement(){
+        let data = {
+          adoptToken: this.token,
+          userId: this.userId,
+          privVisitId: this.privVisitId,
+          panelId: this.panelId
+        }
+        this.$http.post(this.$store.state.domain+'/element/queryVisitElement',qs.stringify(data)).then((res)=>{
+          if(res.data.status == 0){
+            this.tableData3 = res.data.result.result
           }else{
 
           }
@@ -639,10 +665,10 @@
             this.$message.error('网络错误');
           })
       },
-      getSlectedRole(id){
+      getSlectedRole(){
         let data = {
           adoptToken: this.token,
-          userId: id
+          userId: this.userId
         }
         let transferData = []
         this.$http.post(this.$store.state.domain+'/roleUser/queryBySelected',qs.stringify(data)).then((res)=>{
@@ -659,9 +685,9 @@
         this.transferModel = transferData
       },
       configUser(index,data){
-        this.generateData()
-        this.getSlectedRole(data.userId)
         this.userId = data.userId
+        this.generateData()
+        this.getSlectedRole()
         this.form2 = data
         let arr = []
         arr.push(this.form2.validBegin)
@@ -670,6 +696,9 @@
         this.dialogFormVisible = true
       },
       commitPwd(){
+        if(this.form4.newPw != this.form4.tNewPw){
+            this.$message('新密码不一致，请重新输入')
+        }
         let data = {
           adoptToken: this.token,
           userId: this.userId,
@@ -701,6 +730,31 @@
             this.dialogTreeVisible = true
           }else{
             this.$message(res.data.result.result.message)
+          }
+        },(err)=>{
+
+        })
+      },
+      panelTableClick(row, column, cell, event){
+        if(column.property == 'handle'){
+          return
+        }
+        this.panelId = row.panelId
+        this.getElement()
+      },
+      postTransfer(){
+        let data = {
+          adoptToken: this.token,
+          userId: this.userId,
+          roleId: this.transferModel.join(',')
+        }
+        this.$http.post(this.$store.state.domain+'/roleUser/updateCodeBatch',qs.stringify(data)).then((res)=>{
+          if(res.data.status == 0){
+            this.$message('修改成功！')
+            this.generateData()
+            this.getSlectedRole()
+          }else{
+            this.$message('修改失败')
           }
         },(err)=>{
 

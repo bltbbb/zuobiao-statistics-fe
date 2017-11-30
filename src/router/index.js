@@ -24,6 +24,7 @@ import UserMan from '@/components/MenuList/Manage/UserMan/UserMan'
 import RoleMan from '@/components/MenuList/Manage/RoleMan/RoleMan'
 import SourceMan from '@/components/MenuList/Manage/SourceMan/SourceMan'
 import RoleManDetail from '@/components/MenuList/Manage/RoleMan/RoleManDetail'
+import RoleManConfig from '@/components/MenuList/Manage/RoleMan/RoleManConfig'
 
 //无权限
 import Jurisdiction from '@/components/Jurisdiction/Jurisdiction'
@@ -122,7 +123,6 @@ const router = new Router({
           path: '/Content/AnalysisRegister',
           component: AnalysisRegister,
           name: 'AnalysisRegister'
-
         },
         {
           path: '/Content/Error',
@@ -159,6 +159,11 @@ const router = new Router({
           path: '/Content/SourceMan',
           name: 'SourceMan',
           component: SourceMan
+        },
+        {
+          path: '/Content/RoleManConfig/:menuId/:roleId',
+          name: 'RoleManConfig',
+          component: RoleManConfig
         },
       ]
     },

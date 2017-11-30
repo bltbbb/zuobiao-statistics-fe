@@ -213,6 +213,59 @@
           </span>
         </el-dialog>
       </div>
+      <div class="configSourceDialog">
+        <el-dialog
+          title="提示"
+          :visible.sync="configSourceDialog"
+          size="tiny">
+          <div class="panelSource">
+            <div class="selectWrapper">
+              <el-select
+                v-model="selectPanel"
+                filterable
+                clearable
+                placeholder="请输入关键词"
+                @change="selectPanelHandle">
+                <el-option
+                  v-for="item in PanelData"
+                  :key="item.panelId"
+                  :label="item.panelName"
+                  :value="item.panelId">
+                </el-option>
+              </el-select>
+            </div>
+            <el-table
+                :data="panelSourceData"
+                border
+                ref="urlTable"
+                style="width: 100%"
+                @selection-change="handleSelectionChange"
+                height="500">
+                <el-table-column
+                  type="selection"
+                  width="55">
+                </el-table-column>
+                <el-table-column
+                  prop="urlPath"
+                  label="URL路径">
+                </el-table-column>
+                <el-table-column
+                  prop="method"
+                  label="Method">
+                </el-table-column>
+                <el-table-column
+                  prop="createUser"
+                  label="创建人">
+                </el-table-column>
+              </el-table>
+              <div class="addUrlBtn">
+                <el-button
+                  @click="commitAddPanel"
+                  type="primary">提交</el-button>
+              </div>
+          </div>
+        </el-dialog>
+      </div>
     </div>
 </template>
 
@@ -221,6 +274,9 @@
     export default {
         data(){
             return {
+              panelSourceData:[],
+              selectPanel:'',
+              PanelData: [],
               confirmDialog:false,
               selectUserData: [],
               selectUserModel:'',
@@ -292,7 +348,8 @@
               roleId: 0,
               selectedUser: [],
               selectMenu: [],
-              setData: {}
+              setData: {},
+              configSourceDialog: false
             }
         },
         mounted(){
@@ -325,9 +382,10 @@
             })
           },
           getMenu(){
-            this.$http.get(this.$store.state.domain+'/menu',{
+            this.$http.get(this.$store.state.domain+'/menu/queryByRoleIdAllMenu',{
               params:{
-                adoptToken: this.token
+                adoptToken: this.token,
+                roleId: this.roleId
               }
             }).then((res)=>{
               if(res.data.status == 0){
@@ -377,20 +435,23 @@
             this.getUserByRole()
           },
           getCheckedNodes(data,isChecked){
-              this.tableData = []
               if(!isChecked){
                 this.tableData4.forEach((item)=>{
                     if(item.menuId == data.menuId){
                         this.confirmDialog = true
                         this.setData = item
+                    }else{
+                      this.tableData.forEach((item,index)=>{
+                          if(item.menuId == data.menuId){
+                              this.tableData.splice(index,1)
+                          }
+                      })
                     }
                 })
               }else {
-                this.tableData4.forEach((item)=>{
-                  if(item.menuId != data.menuId){
-                    this.tableData.push(data)
-                  }
-                })
+                if(!data.selected){
+                  this.tableData.push(data)
+                }
               }
 //              this.tableData = this.$refs.tree.getCheckedNodes()
 //              let length = this.tableData4.length
@@ -421,7 +482,6 @@
             }
             this.$http.post(this.$store.state.domain+'/resPanel/query',qs.stringify(data)).then((res)=>{
               if(res.data.status == 0){
-                console.log(res)
               }
             },(err)=>{
 
@@ -435,7 +495,6 @@
                 remark: this.form.remark,
                 roleNameQp: this.form.roleNameQp
               }
-              console.log(data)
               this.$http.put(this.$store.state.domain+'/role',qs.stringify(data)).then((res)=>{
                 if(res.data.status == 0){
                   this.$message('修改成功')
@@ -555,7 +614,34 @@
             })
           },
           checkedMenu(){
-              this.$refs.tree.setCheckedNodes(this.tableData4)
+              let key = []
+              this.tableData4.forEach((item)=>{
+                key.push(item.menuId)
+              })
+              this.$refs.tree.setCheckedKeys(key)
+          },
+          editeMenuHnadle(index,row){
+            this.$router.push('/Content/RoleManConfig/'+row.menuId+'/'+this.roleId)
+          },
+          getNotSelectPanel(row){
+            let data =  {
+              adoptToken: this.token,
+              roleId: this.roleId,
+              menuId: row.menuId
+            }
+            this.$http.post(this.$store.state.domain+'/resPanel/queryByRoleNotSelected',qs.stringify(data)).then((res)=>{
+              if(res.data.status == 0){
+                this.PanelData = res.data.result.result
+              }
+            },(err)=>{
+
+            })
+          },
+          selectPanelHandle(){
+
+          },
+          commitAddPanel(){
+
           }
         }
     }
