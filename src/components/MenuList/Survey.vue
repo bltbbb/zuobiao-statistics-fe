@@ -195,15 +195,12 @@
         //初始化事件段
         start.setTime(start.getTime() - 3600 * 1000 * 24);
         date.setTime(date.getTime() - 3600 * 1000 * 24);
-
-
         this.start = start.Format("yyyy-M-d");
         this.end = date.Format("yyyy-M-d");
         this.token = this.$cookie.get('adoptToken');
       },
       init:function () {
         //参数
-
         this.$http.get(this.$store.state.domain+'/getTotalSurvey',{
           params:{
             adoptToken:this.token
@@ -214,7 +211,9 @@
               this.list[1].number = res.data.result.result[0].weekUserCount;
               this.list[2].number = res.data.result.result[0].monthUserCount;
             }
-            else{
+            else if(res.data.status == 0){
+              this.$message.error(res.data.result.result.message);
+            }else {
               //view(res.data.msg)
               this.$message.error('登录过期，请重新登录');
               lockr.rm("menuInfo");

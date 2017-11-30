@@ -388,7 +388,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="menuDialog-footer">
-          <el-button @click="addMenuDialog = false">取 消</el-button>
+          <el-button @click="addPanelDialog = false">取 消</el-button>
           <el-button type="primary" @click="commitPanelHandle">确 定</el-button>
         </div>
       </el-dialog>
@@ -411,7 +411,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="menuDialog-footer">
-          <el-button @click="addMenuDialog = false">取 消</el-button>
+          <el-button @click="addElementDialog = false">取 消</el-button>
           <el-button type="primary" @click="commitElementHandle">确 定</el-button>
         </div>
       </el-dialog>
