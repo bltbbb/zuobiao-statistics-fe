@@ -25,7 +25,7 @@
               </div>
               <el-tree :data="treeData" :props="defaultProps" node-key="privVisitId"  :highlight-current="highlightModel" :expand-on-click-node="false" @current-change="handleNodeClick"></el-tree>
             </div>
-            <div class="source-right">
+            <div class="source-right" v-if="menuId">
               <el-tabs type="border-card">
                 <el-tab-pane label="信息维护">
                   <div class="s-r-1-wrapper">
@@ -466,7 +466,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="menuDialog-footer">
-          <el-button @click="addElementDialog = false">取 消</el-button>
+          <el-button @click="addDataAuthDialog = false">取 消</el-button>
           <el-button type="primary" @click="commitDataAuthHandle">确 定</el-button>
         </div>
       </el-dialog>

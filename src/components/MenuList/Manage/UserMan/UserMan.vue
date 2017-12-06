@@ -69,6 +69,10 @@
                 label="昵称">
               </el-table-column>
               <el-table-column
+                prop="userName"
+                label="登录名">
+              </el-table-column>
+              <el-table-column
                 width="100"
                 label="性别">
                 <template scope="scope">
@@ -164,7 +168,7 @@
             </el-form-item>
           </el-form>
           <div class="tab-1-btn">
-            <el-button type="primary">保存</el-button>
+            <el-button type="primary" @click="saveUserChange">保存</el-button>
             <el-button type="danger">重置</el-button>
           </div>
         </el-tab-pane>
@@ -206,7 +210,7 @@
       <el-tabs type="border-card">
         <el-tab-pane label="资源权限">
           <div class="dialog-left">
-            <el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick" highlight-current default-expand-all :expand-on-click-node="false"></el-tree>
+            <el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick" highlight-current :expand-on-click-node="false"></el-tree>
           </div>
           <div class="dialog-right">
             <div class="dialog-right-top">
@@ -619,10 +623,11 @@
         console.log(data1,data2)
       },
       dataChange(value){
-        console.log(value)
         let arrTemp = value.split('~')
         this.form8.validBegin = arrTemp[0]
         this.form8.validEnd = arrTemp[1]
+        this.form2.validBegin = arrTemp[0]
+        this.form2.validEnd = arrTemp[1]
       },
       addUserHandle(){
         let data = this.form8;
@@ -785,6 +790,21 @@
         },(err)=>{
 
         })
+      },
+      saveUserChange(){
+        let data = {
+          adoptToken: this.token,
+          ...this.form2
+        }
+        this.$http.put(this.$store.state.domain+'/user',qs.stringify(data)).then((res)=>{
+          if(res.data.status == 0){
+            this.$message('修改成功！')
+          }else{
+
+          }
+        },(err)=>{
+
+        })
       }
     }
   }
@@ -856,7 +876,9 @@
     text-align: left
   .user-man
     .el-transfer-panel
-      width: 45%
+      width: 44%
     .el-transfer__buttons
       width: 6%
+    .el-dialog--small
+      width: 40%
 </style>

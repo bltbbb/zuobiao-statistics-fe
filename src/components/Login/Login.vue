@@ -13,7 +13,7 @@
             <input type="text" id="userName" placeholder="请输入用户名" v-model="userName" :class="{danger:userEmpty}" @focus="userEmpty = false">
           </div>
           <div class="clearfix pwBar">
-            <input type="text" id="password" placeholder="请输入密码" v-model="password" :class="{danger:pwEmpty}" @focus="pwEmpty = false">
+            <input type="text" @keydown.enter="login" id="password" placeholder="请输入密码" v-model="password" :class="{danger:pwEmpty}" @focus="pwEmpty = false">
           </div>
         </div>
         <!--<div :class="loginInfo?'success':'error'" v-show="showMsg">{{errorText}}</div>-->
@@ -136,15 +136,15 @@
           lockr.set("menuArr",arrTemp);
         }
     },
-    created(){
-      let _this = this;
-      document.onkeydown = function(e){
-        let key = e.keyCode;
-        if (key === 13){
-            _this.login();
-        }
-      }
-    },
+//    created(){
+//      let _this = this;
+//      document.onkeydown = function(e){
+//        let key = e.keyCode;
+//        if (key === 13){
+//            _this.login();
+//        }
+//      }
+//    },
     mounted(){
         this.showTable = true;
     }
