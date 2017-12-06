@@ -15,16 +15,13 @@
     </div>
     <div class="role-main">
       <el-form :model="form" label-width="80px" inline="">
-        <el-form-item label="角色编码">
-          <el-input v-model="form.ID"></el-input>
-        </el-form-item>
         <el-form-item label="角色名称">
-          <el-input v-model="form.name"></el-input>
+          <el-input v-model="form.roleName"></el-input>
         </el-form-item>
-        <el-form-item label="系统名称">
-          <el-input v-model="form.type"></el-input>
+        <el-form-item label="描述">
+          <el-input v-model="form.remark"></el-input>
         </el-form-item>
-        <el-button type="primary">查询</el-button>
+        <el-button type="primary" @click="searchRole">查询</el-button>
         <el-button type="success" @click="addRole">新增</el-button>
       </el-form>
       <el-table
@@ -37,7 +34,7 @@
         </el-table-column>
         <el-table-column
           prop="remark"
-          label="备注">
+          label="描述">
         </el-table-column>
         <el-table-column
           prop="validBegin"
@@ -70,7 +67,7 @@
           :page-sizes="[10, 20, 30, 40]"
           :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="totalPages">
+          :total="totalCount">
         </el-pagination>
       </div>
       <div class="addRoleDialog">
@@ -105,10 +102,11 @@
         token:'',
         currentPage:1,
         pageSize: 10,
-        totalPages: 40,
+        totalCount: 40,
         explain: '角色维护',
         form:{
-
+          roleName: '',
+          remark:''
         },
         form2:{
           roleName: '',
@@ -136,10 +134,13 @@
         let data = {
           adoptToken: this.token,
           pageSize: this.pageSize,
-          currentPage: this.currentPage
+          currentPage: this.currentPage,
+          roleName: this.form.roleName,
+          remark: this.form.remark
         }
         this.$http.post(this.$store.state.domain+'/role/page',qs.stringify(data)).then((res)=>{
           if(res.data.status == 0){
+            this.totalCount = res.data.result.totalCount
             this.tableData = res.data.result.result
           }
         },(err)=>{
@@ -190,6 +191,9 @@
         },(err)=>{
 
         })
+      },
+      searchRole(){
+        this.getAllRole()
       }
     }
   }

@@ -23,7 +23,7 @@
                 <el-button
                   type="danger" @click="deleteMenuHandle">删除</el-button>
               </div>
-              <el-tree :data="treeData" :props="defaultProps" node-key="privVisitId"  :highlight-current="highlightModel" default-expand-all :expand-on-click-node="false" @current-change="handleNodeClick"></el-tree>
+              <el-tree :data="treeData" :props="defaultProps" node-key="privVisitId"  :highlight-current="highlightModel" :expand-on-click-node="false" @current-change="handleNodeClick"></el-tree>
             </div>
             <div class="source-right">
               <el-tabs type="border-card">
@@ -42,20 +42,45 @@
                       <el-form-item label="菜单层次">
                         <el-input v-model="form3.menuLevel"></el-input>
                       </el-form-item>
+                      <el-form-item label="菜单类型" label-width="120px">
+                        <el-select v-model="form3.menuType" placeholder="请选择活动区域">
+                          <el-option label="目录" value="1"></el-option>
+                          <el-option label="菜单" value="2"></el-option>
+                          <el-option label="tab页" value="3"></el-option>
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item label="URL路径" label-width="120px">
+                        <el-input v-model="form3.urlPath" auto-complete="off"></el-input>
+                      </el-form-item>
+                      <el-form-item label="排序索引" label-width="120px">
+                        <el-input v-model="form3.sortIndex" auto-complete="off"></el-input>
+                      </el-form-item>
+                      <el-form-item label="菜单加载类型" label-width="120px">
+                        <el-input v-model="form3.loadTarget" auto-complete="off"></el-input>
+                      </el-form-item>
+                      <el-form-item label="面包屑全路径" label-width="120px">
+                        <el-input v-model="form3.fullPath" auto-complete="off"></el-input>
+                      </el-form-item>
+                      <el-form-item label="isShare" label-width="120px">
+                        <el-select v-model="form3.isShare" placeholder="请选择活动区域">
+                          <el-option label="是" value="1"></el-option>
+                          <el-option label="否" value="2"></el-option>
+                        </el-select>
+                      </el-form-item>
                       <!--<el-form-item label="备注" class="mask">-->
                         <!--<el-input type="textarea" :rows="2" v-model="form.mark"></el-input>-->
                       <!--</el-form-item>-->
                     </el-form>
                     <div class="source-right-1-btn">
-                      <el-button type="primary">保存</el-button>
-                      <el-button type="danger">重置</el-button>
+                      <el-button type="primary" @click="postMenu">保存</el-button>
+                      <el-button type="danger" @click="reset">重置</el-button>
                     </div>
                   </div>
                 </el-tab-pane>
                 <el-tab-pane label="Url配置">
                   <div class="s-r-2-wrapper">
                     <div class="top">
-                      <el-form :model="form4" label-width="80px">
+                      <el-form :model="form4" label-width="80px" inline>
                         <el-form-item label="Url地址" class="left">
                           <el-input placeholder="请输入URL地址" v-model="form4.urlPath"></el-input>
                         </el-form-item>
@@ -126,7 +151,7 @@
                             :data="tableData2"
                             border
                             style="width: 100%"
-                            highlight-current-row
+                            :row-class-name="tableRowClassName"
                             @cell-click="panelTableClick">
                             <el-table-column
                               prop="panelName"
@@ -336,6 +361,9 @@
     <div class="addMenuDialog">
       <el-dialog title="新增菜单" :visible.sync="addMenuDialog" size="tiny">
         <el-form :model="form8">
+          <el-form-item label="所属菜单" :label-width="formLabelWidth">
+            <el-input v-model="fatherMenu" readonly auto-complete="off"></el-input>
+          </el-form-item>
           <el-form-item label="菜单名" :label-width="formLabelWidth">
             <el-input v-model="form8.menuName" auto-complete="off"></el-input>
           </el-form-item>
@@ -361,8 +389,11 @@
           <el-form-item label="排序索引" :label-width="formLabelWidth">
             <el-input v-model="form8.sortIndex" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="负荷指标" :label-width="formLabelWidth">
-            <el-input v-model="form8.loadTarget" auto-complete="off"></el-input>
+          <el-form-item label="菜单加载类型" :label-width="formLabelWidth">
+          <el-input v-model="form8.loadTarget" auto-complete="off"></el-input>
+        </el-form-item>
+          <el-form-item label="面包屑全路径" :label-width="formLabelWidth">
+            <el-input v-model="form8.fullPath" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="isShare" :label-width="formLabelWidth">
             <el-select v-model="form8.isShare" placeholder="请选择活动区域">
@@ -384,7 +415,7 @@
             <el-input v-model="form9.panelName" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="描述" :label-width="formLabelWidth">
-            <el-input v-model="form9.remark" auto-complete="off"></el-input>
+            <el-input type="textarea" v-model="form9.remark" auto-complete="off"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="menuDialog-footer">
@@ -395,12 +426,15 @@
     </div>
     <div class="addElementDialog">
       <el-dialog title="新增元素" :visible.sync="addElementDialog" size="tiny">
+        <div v-show="selectPanelName" style="padding-left: 32px;margin-bottom: 20px;">
+          <span>所属面板: </span><el-tag type="gray">{{selectPanelName}}</el-tag>
+        </div>
         <el-form :model="form10">
           <el-form-item label="元素名称" :label-width="formLabelWidth">
             <el-input v-model="form10.elementName" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="描述" :label-width="formLabelWidth">
-            <el-input v-model="form10.remark" auto-complete="off"></el-input>
+            <el-input type="textarea" v-model="form10.remark" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="isShare" :label-width="formLabelWidth">
             <el-select v-model="form10.elementType" placeholder="请选择活动区域">
@@ -482,7 +516,16 @@
             name: ''
           },
           form3:{
-
+            menuName:'',
+            menuNameQp:'',
+            remark:'',
+            menuLevel:'',
+            menuType:'',
+            urlPath:'',
+            loadTarget:'',
+            sortIndex:'',
+            isShare:'',
+            fullPath:''
           },
           form4:{
             urlPath:''
@@ -507,6 +550,7 @@
               loadTarget:'',
               sortIndex:'',
               isShare:'',
+              fullPath:'',
           },
           form9:{
             panelName:'',
@@ -540,7 +584,12 @@
           panelId: '',
           changePanel: false,
           changeElement: false,
-          changeData: false
+          changeData: false,
+          selectPanelName:'',
+          fatherMenu:'root',
+          newId:'',
+          oldId:'',
+          panelIndex: ''
         }
       },
     mounted(){
@@ -645,11 +694,16 @@
             this.newKey = ''
             this.oldKey = ''
             this.form3 = {}
+            this.tableData2 = []
+            this.fatherMenu = 'root'
           }else {
             this.highlightModel = true
             this.privVisitId = data.privVisitId
             this.menuId = data.menuId
             this.form3 = data
+            this.form3.menuType = data.menuType + ''
+            this.form3.isShare = data.isShare + ''
+            this.fatherMenu = data.menuName
             this.getUrlSelected()
             this.getPanel()
           }
@@ -815,8 +869,26 @@
           if(column.property == 'handle'){
             return
           }
-          this.panelId = row.panelId
-          this.getElement()
+          this.newId = row.panelId
+          if(this.newId === this.oldId){
+            this.panelId = ''
+            this.panelIndex = ''
+            this.selectPanelName = ''
+            this.newId = ''
+            this.oldId = ''
+          }else{
+            this.panelIndex = row.index
+            this.panelId = row.panelId
+            this.selectPanelName = row.panelName
+            this.getElement()
+          }
+          this.oldId = this.newId
+      },
+      tableRowClassName(row, index) {
+        if (index === this.panelIndex) {
+          return 'info-row';
+        }
+        return '';
       },
       addPanelHandle(){
           if(this.menuId == ''){
@@ -886,10 +958,6 @@
         this.form10.elementId = data.elementId
       },
       addElementHandle(){
-        if(this.panelId == ''){
-            this.$message('请先选择一个面板！')
-            return
-        }
         this.form10 = {
           elementName:'',
           remark:'',
@@ -1076,6 +1144,45 @@
         },(err)=>{
           this.$message('删除失败')
         })
+      },
+      postMenu(){
+        let data = {
+          adoptToken: this.token,
+          menuId: this.menuId,
+          menuName: this.form3.menuName,
+          menuNameQp:this.form3.menuNameQp,
+          remark:this.form3.remark,
+          menuLevel:this.form3.menuLevel,
+          menuType:this.form3.menuType,
+          urlPath:this.form3.urlPath,
+          loadTarget:this.form3.loadTarget,
+          sortIndex:this.form3.sortIndex,
+          isShare:this.form3.isShare,
+          fullPath:this.form3.fullPath
+        }
+        this.$http.put(this.$store.state.domain+'/menu',qs.stringify(data)).then((res)=>{
+          if(res.data.status == 0){
+            this.$message('修改成功')
+          }else{
+
+          }
+        },(err)=>{
+
+        })
+      },
+      reset(){
+          this.form3 = {
+            menuName:'',
+              menuNameQp:'',
+              remark:'',
+              menuLevel:'',
+              menuType:'',
+              urlPath:'',
+              loadTarget:'',
+              sortIndex:'',
+              isShare:'',
+              fullPath:''
+          }
       }
     }
   }
@@ -1107,7 +1214,6 @@
           .top
             .left
               display: inline-block
-              width: 80%
               margin-right: 15px
               float: left
               margin-bottom: 10px
@@ -1134,4 +1240,6 @@
 <style lang="sass">
   .el-table__body-wrapper
     overflow-x: hidden
+  .el-table .info-row
+    background: #b3beea
 </style>

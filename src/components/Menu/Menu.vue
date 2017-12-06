@@ -87,7 +87,9 @@
             EventAnalysis: 'document',
             LogAnalysis: 'plus',
             Manage: 'setting',
-            LogMan:'date'
+            LogMan:'date',
+            MemberMan: 'sta-neirong',
+            ContentMan: 'sta-huiyuan'
           }
 //        options: {
 //            survey : {

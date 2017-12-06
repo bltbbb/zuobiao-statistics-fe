@@ -19,27 +19,27 @@
           <span>人员信息查询</span>
         </div>
         <div class="form-content">
-          <el-form ref="form" :model="form" label-width="80px">
+          <el-form ref="form" :model="form" label-width="70px" inline>
             <div class="form-input">
               <el-form-item label="用户昵称">
-                <el-input v-model="form.nickName"></el-input>
+                <el-input style="width: 156px;" v-model="form.nickName"></el-input>
               </el-form-item>
               <el-form-item label="用户性别">
-                <el-select v-model="form.sex" placeholder="请选择性别">
+                <el-select style="width: 156px;" v-model="form.sex" placeholder="请选择性别">
                   <el-option label="男" value="1"></el-option>
                   <el-option label="女" value="2"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="邮箱">
-                <el-input v-model="form.email"></el-input>
+                <el-input style="width: 156px;" v-model="form.email"></el-input>
+              </el-form-item>
+              <el-form-item style="margin-left: 30px;">
+                <el-button @click="searchRole">查询</el-button>
+                <el-button @click="reset">重置</el-button>
               </el-form-item>
             </div>
-            <div class="form-btn">
-              <el-button @click="searchRole">查询</el-button>
-              <el-button @click="reset">重置</el-button>
               <!--<el-button>导入</el-button>-->
               <!--<el-button>导出</el-button>-->
-            </div>
           </el-form>
         </div>
       </div>
@@ -133,7 +133,7 @@
         <el-tab-pane label="用户资料">
           <el-form :model="form2" label-width="80px">
             <el-form-item label="用户昵称">
-              <el-input v-model="form2.nickName" auto-complete="off"></el-input>
+              <el-input style="width: 216px" v-model="form2.nickName" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="性别">
               <el-select v-model="form2.sex" placeholder="请选择性别">
@@ -142,18 +142,18 @@
               </el-select>
             </el-form-item>
             <el-form-item label="手机">
-              <el-input v-model="form2.phoneNo" auto-complete="off"></el-input>
+              <el-input style="width: 216px" v-model="form2.phoneNo" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="邮编">
-              <el-input v-model="form2.postcode" auto-complete="off"></el-input>
+              <el-input style="width: 216px" v-model="form2.postcode" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="地址">
               <el-input v-model="form2.address" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="备注">
-              <el-input v-model="form2.remark" auto-complete="off"></el-input>
+              <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 10}" v-model="form2.remark" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="有效时间">
+            <el-form-item label="有效时间" style="width: 300px">
               <el-date-picker
                 v-model="form2.valueTime"
                 type="daterange"
@@ -186,13 +186,13 @@
         <el-tab-pane label="密码修改">
           <el-form :model="form4" label-width="80px">
             <el-form-item label="旧密码">
-              <el-input v-model="form.oldPw"></el-input>
+              <el-input style="width: 216px" v-model="form4.oldPw"></el-input>
             </el-form-item>
             <el-form-item label="新密码">
-              <el-input v-model="form.newPw"></el-input>
+              <el-input style="width: 216px" v-model="form4.newPw"></el-input>
             </el-form-item>
             <el-form-item label="确认密码">
-              <el-input v-model="form.tNewPw"></el-input>
+              <el-input style="width: 216px" v-model="form4.tNewPw"></el-input>
             </el-form-item>
           </el-form>
           <div class="tab-3-btn">
@@ -239,17 +239,17 @@
                     prop="createUser"
                     label="创建人">
                   </el-table-column>
-                  <el-table-column
-                    label="操作"
-                    width="100"
-                    prop="handle">
-                    <template scope="scope">
-                      <el-button
-                        size="small"
-                        @click="handleEdit(scope.$index, scope.row)"
-                        type="primary">查看</el-button>
-                    </template>
-                  </el-table-column>
+                  <!--<el-table-column-->
+                    <!--label="操作"-->
+                    <!--width="100"-->
+                    <!--prop="handle">-->
+                    <!--<template scope="scope">-->
+                      <!--<el-button-->
+                        <!--size="small"-->
+                        <!--@click="handleEdit(scope.$index, scope.row)"-->
+                        <!--type="primary">查看</el-button>-->
+                    <!--</template>-->
+                  <!--</el-table-column>-->
                 </el-table>
               </div>
             </div>
@@ -280,41 +280,75 @@
                     prop="createUser"
                     label="创建人">
                   </el-table-column>
-                  <el-table-column
-                    label="操作"
-                    width="100">
-                    <template scope="scope">
-                      <el-button
-                        size="small"
-                        @click="handleEdit2(scope.$index, scope.row)"
-                        type="primary">查看</el-button>
-                    </template>
-                  </el-table-column>
+                  <!--<el-table-column-->
+                    <!--label="操作"-->
+                    <!--width="100">-->
+                    <!--<template scope="scope">-->
+                      <!--<el-button-->
+                        <!--size="small"-->
+                        <!--@click="handleEdit2(scope.$index, scope.row)"-->
+                        <!--type="primary">查看</el-button>-->
+                    <!--</template>-->
+                  <!--</el-table-column>-->
                 </el-table>
               </div>
             </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="数据权限">配置管理</el-tab-pane>
+        <el-tab-pane label="数据权限">
+          <el-table
+            :data="tableData4"
+            style="width: 100%"
+            border>
+            <el-table-column
+              label="json数据">
+              <template scope="scope">
+                <span v-highlight style="font-size: 12px;">
+                  <pre><code>{{JSON.stringify(JSON.parse(scope.row.jsonInfo.replace( /^\s*/, '')),null,4)}}</code></pre>
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="remark"
+              label="描述">
+            </el-table-column>
+          </el-table>
+          <div class="pagination-wrapper">
+            <el-pagination
+              @size-change="handleSizeChange2"
+              @current-change="handleCurrentChange2"
+              :current-page="currentPage2"
+              :page-sizes="[10, 20, 30, 40]"
+              :page-size="pageSize2"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="totalCount2">
+            </el-pagination>
+          </div>
+        </el-tab-pane>
       </el-tabs>
-
     </el-dialog>
     <el-dialog title="新增用户" :visible.sync="addUserDialog" size="small">
       <el-form :model="form8" label-width="100px" inline>
         <el-form-item label="用户昵称">
           <el-input v-model="form8.nickName" auto-complete="off"></el-input>
         </el-form-item>
+        <el-form-item label="登录名称">
+          <el-input v-model="form8.userName" auto-complete="off"></el-input>
+        </el-form-item>
         <el-form-item label="性别">
-          <el-select v-model="form8.sex" placeholder="请选择性别">
+          <el-select v-model="form8.sex" style="width: 192px;" placeholder="请选择性别">
             <el-option label="男" value="1"></el-option>
             <el-option label="女" value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="密码">
-          <el-input v-model="form8.pwd" auto-complete="off"></el-input>
+          <el-input v-model="form8.passWord" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="手机">
-          <el-input v-model="form8.phone" auto-complete="off"></el-input>
+          <el-input v-model="form8.phoneNo" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="生日">
+          <el-input v-model="form8.birthday" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="邮编">
           <el-input v-model="form8.postcode" auto-complete="off"></el-input>
@@ -322,17 +356,18 @@
         <el-form-item label="地址">
           <el-input v-model="form8.address" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="备注">
-          <el-input v-model="form8.remark" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="有效时间">
+        <el-form-item label="有效时间" >
           <el-date-picker
             v-model="form8.valueTime"
             type="daterange"
             placeholder="选择日期范围"
             range-separator="~"
-            @change="dataChange">
+            @change="dataChange"
+            style="width: 192px;">
           </el-date-picker>
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input type="textarea" style="width: 192px;" v-model="form8.remark" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -348,6 +383,9 @@
   export default {
     data(){
       return {
+        pageSize2:10,
+        currentPage2:1,
+        totalCount2:0,
         valueTime:'',
         addUserDialog:false,
         pageSize: 10,
@@ -391,51 +429,17 @@
         },
         form8:{
           nickName: '',
+          userName:'',
           phone:'',
           sex:'',
           pwd:'',
           postcode:'',
           address:'',
           remark:'',
-          startTime:'',
-          endTime:'',
-          valueTime:''
+          valueTime:'',
+          birthday:''
         },
-        treeData: [{
-          label: '一级 1',
-          children: [{
-            label: '二级 1-1',
-            children: [{
-              label: '三级 1-1-1'
-            }]
-          }]
-        }, {
-          label: '一级 2',
-          children: [{
-            label: '二级 2-1',
-            children: [{
-              label: '三级 2-1-1'
-            }]
-          }, {
-            label: '二级 2-2',
-            children: [{
-              label: '三级 2-2-1'
-            }]
-          }]
-        }, {
-          label: '一级 3',
-          children: [{
-            label: '二级 3-1',
-            children: [{
-              label: '三级 3-1-1'
-            }]
-          }, {
-            label: '二级 3-2',
-            children: [{
-              label: '三级 3-2-1'
-            }]
-          }]
-        }],
+        treeData: [],
         defaultProps:{
           children: 'children',
           label: 'label'
@@ -447,6 +451,7 @@
         tableData: [],
         tableData2: [],
         tableData3: [],
+        tableData4: [],
         dialogFormVisible: false,
         dialogTreeVisible: false,
         token: '',
@@ -531,6 +536,12 @@
         this.currentPage = val
         this.getRoleList()
       },
+      handleSizeChange2(val){
+        this.pageSize2 = val
+      },
+      handleCurrentChange2(val){
+        this.currentPage2 = val
+      },
       handleSelectionChange(data){
         this.selectUserId = []
         data.map((item) => {
@@ -564,7 +575,6 @@
         return item.label.indexOf(query) > -1;
       },
       handleNodeClick(data) {
-          console.log(data)
         this.tableData3 = []
         this.privVisitId = data.privVisitId
         this.getPanel()
@@ -608,14 +618,11 @@
       handleEdit2(data1,data2){
         console.log(data1,data2)
       },
-      addUserHandle(){
-        console.log(this.form8)
-      },
       dataChange(value){
         console.log(value)
         let arrTemp = value.split('~')
-        this.form8.startTime = arrTemp[0]
-        this.form8.endTime = arrTemp[1]
+        this.form8.validBegin = arrTemp[0]
+        this.form8.validEnd = arrTemp[1]
       },
       addUserHandle(){
         let data = this.form8;
@@ -633,9 +640,11 @@
               postcode:'',
               address:'',
               remark:'',
-              startTime:'',
-              endTime:'',
-              valueTime:''
+              validBegin:'',
+              validEnd:'',
+              valueTime:'',
+              userName:'',
+              birthday:''
             }
           }
           else{
@@ -689,6 +698,7 @@
         this.generateData()
         this.getSlectedRole()
         this.form2 = data
+        this.form2.sex = data.sex + ''
         let arr = []
         arr.push(this.form2.validBegin)
         arr.push(this.form2.validEnd)
@@ -730,6 +740,22 @@
             this.dialogTreeVisible = true
           }else{
             this.$message(res.data.result.result.message)
+          }
+        },(err)=>{
+
+        })
+        let postData = {
+          adoptToken: this.token,
+          userId: this.userId,
+          pageSize: this.pageSize2,
+          currentPage: this.currentPage2,
+        }
+        this.$http.post(this.$store.state.domain+'/dataauth/queryByUser',qs.stringify(postData)).then((res)=>{
+          if(res.data.status == 0){
+            this.totalCount2 = res.data.result.totalCount
+            this.tableData4 = res.data.result.result
+          }else{
+
           }
         },(err)=>{
 
@@ -781,10 +807,10 @@
         border: 1px solid #eeeeee
         border-top: none
         padding: 20px 15px
-        .form-input
-          .el-form-item
-            display: inline-block
-            width: 30%
+        /*.form-input*/
+          /*.el-form-item*/
+            /*display: inline-block*/
+            /*width: 30%*/
         .form-btn
           padding-left: 25px
     .list-wrapper
@@ -803,9 +829,6 @@
         .list-table
           margin-top: 20px
           padding: 0 40px
-          .pagination-wrapper
-            margin-top: 20px
-            text-align: center
   .tab-1-btn
     text-align: right
   .transfer-wrapper
@@ -824,8 +847,16 @@
   .dialog-right-top,.dialog-right-bottom
     border: 1px solid #eee
     padding: 15px
+  .pagination-wrapper
+    margin-top: 20px
+    text-align: center
 </style>
 <style lang="sass">
   .el-transfer-panel
     text-align: left
+  .user-man
+    .el-transfer-panel
+      width: 45%
+    .el-transfer__buttons
+      width: 6%
 </style>

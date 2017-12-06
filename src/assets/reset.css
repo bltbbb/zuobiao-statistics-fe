@@ -57,3 +57,17 @@ abbr, acronym {
   padding-top: 40px;
 }
 
+.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+  background-color: #b3beea!important;
+  color: #fff;
+}
+.el-table__body tr.current-row>td {
+  background-color: #b3beea!important;
+  color: #fff;
+}
+
+.user-man .el-dialog .el-dialog--small {
+  width: 400px!important
+}
+
+

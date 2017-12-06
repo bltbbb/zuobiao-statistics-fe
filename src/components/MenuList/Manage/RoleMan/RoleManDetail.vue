@@ -18,13 +18,13 @@
           <el-tab-pane label="信息维护">
             <el-form :model="form" label-width="80px">
               <el-form-item label="角色名称">
-                <el-input v-model="form.roleName"></el-input>
+                <el-input style="width: 216px" v-model="form.roleName"></el-input>
               </el-form-item>
               <el-form-item label="角色拼音">
-                <el-input v-model="form.roleNameQp"></el-input>
+                <el-input style="width: 216px" v-model="form.roleNameQp"></el-input>
               </el-form-item>
               <el-form-item label="描述">
-                <el-input v-model="form.remark"></el-input>
+                <el-input type="textarea" :autoSize="{ minRows: 2, maxRows: 10}" v-model="form.remark"></el-input>
               </el-form-item>
             </el-form>
             <div class="tab1-btn">
@@ -50,12 +50,26 @@
                   :highlight-current-row="true"
                   ref="table">
                   <el-table-column
-                    prop="menuId"
-                    label="菜单编码">
-                  </el-table-column>
-                  <el-table-column
                     prop="menuName"
                     label="菜单名称">
+                  </el-table-column>
+                  <el-table-column
+                    prop="menuNameQp"
+                    label="菜单英文">
+                  </el-table-column>
+                  <el-table-column
+                    prop="remark"
+                    label="描述">
+                  </el-table-column>
+                  <el-table-column
+                    label="是否对外发布">
+                    <template scope="scope">
+                      {{scope.row.isShare ? "是" : "否"}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="urlPath"
+                    label="路径">
                   </el-table-column>
                   <el-table-column
                     label="操作"
@@ -81,12 +95,24 @@
                   :highlight-current-row="true"
                   ref="table">
                   <el-table-column
-                    prop="menuId"
-                    label="菜单编码">
-                  </el-table-column>
-                  <el-table-column
                     prop="menuName"
                     label="菜单名称">
+                  </el-table-column>
+                  <el-table-column
+                    prop="menuNameQp"
+                    label="菜单英文">
+                  </el-table-column>
+                  <el-table-column
+                    prop="remark"
+                    label="描述">
+                  </el-table-column>
+                  <el-table-column
+                    prop="isShare"
+                    label="是否对外发布">
+                  </el-table-column>
+                  <el-table-column
+                    prop="urlPath"
+                    label="路径">
                   </el-table-column>
                 </el-table>
                 <div class="btn-wrapper">
@@ -100,9 +126,9 @@
           <el-tab-pane label="人员分配">
             <el-form :model="form2" label-width="80px" inline="">
               <el-form-item label="角色名称">
-                <el-input v-model="form2.roleName"></el-input>
+                <el-input v-model="form2.nickName"></el-input>
               </el-form-item>
-              <el-button type="primary">查询</el-button>
+              <el-button type="primary" @click="searchUser">查询</el-button>
               <el-button type="success" @click="addRoleUser">新增</el-button>
             </el-form>
             <el-table
@@ -148,8 +174,92 @@
               </el-pagination>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="数据权限">数据权限</el-tab-pane>
+          <el-tab-pane label="数据权限">
+            <el-form :model="form3" label-width="80px" inline="">
+              <el-form-item label="描述">
+                <el-input v-model="form3.remark"></el-input>
+              </el-form-item>
+              <el-button type="primary" @click="searchDataSource">查询</el-button>
+              <el-button type="success" @click="addDataSource">新增</el-button>
+            </el-form>
+            <el-table
+              :data="tableData5"
+              border
+              style="width: 100%">
+              <el-table-column
+                label="json数据">
+                  <template scope="scope">
+                    <span v-highlight style="font-size: 12px;">
+                      <pre><code>{{JSON.stringify(JSON.parse(scope.row.jsonInfo.replace( /^\s*/, '')),null,4)}}</code></pre>
+                    </span>
+                  </template>
+              </el-table-column>
+              <el-table-column
+                prop="remark"
+                label="描述">
+              </el-table-column>
+              <el-table-column
+                label="操作"
+                width="100">
+                <template scope="scope">
+                  <el-button
+                    size="small"
+                    @click="dataSourceDelete(scope.$index, scope.row)"
+                    type="danger">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <div class="pagination-wrapper">
+              <el-pagination
+                @size-change="handleSizeChange2"
+                @current-change="handleCurrentChange2"
+                :current-page="currentPage2"
+                :page-sizes="[10, 20, 30, 40]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="totalCounts2">
+              </el-pagination>
+            </div>
+          </el-tab-pane>
         </el-tabs>
+      </div>
+      <div class="roleAddDialog">
+        <el-dialog title="数据权限" :visible.sync="dialogDataVisible">
+          <div class="selectWrapper">
+            <el-select
+              v-model="selectDataModel"
+              filterable
+              clearable
+              placeholder="请输入关键词"
+              :loading="loading"
+              @change="selectChangeHandle2">
+              <el-option
+                v-for="item in tableData6"
+                :key="item.index"
+                :label="item.remark"
+                :value="item">
+              </el-option>
+            </el-select>
+          </div>
+          <el-table :data="tableData6" @selection-change="selectNotData" max-height="250" ref="dataAddTable">
+            <el-table-column
+              type="selection"
+              width="55">
+            </el-table-column>
+            <el-table-column
+              prop="remark"
+              label="描述">
+            </el-table-column>
+          </el-table>
+          <div class="roleAddBtn">
+            <el-button
+              @click="selectData"
+              type="primary">提交</el-button>
+            <el-button
+              @click="dialogDataVisible = false"
+              type="danger">取消</el-button>
+          </div>
+        </el-dialog>
       </div>
       <div class="roleAddDialog">
         <el-dialog title="人员分配" :visible.sync="dialogTableVisible">
@@ -274,6 +384,8 @@
     export default {
         data(){
             return {
+              dialogDataVisible: false,
+              selectDataModel:'',
               panelSourceData:[],
               selectPanel:'',
               PanelData: [],
@@ -295,61 +407,32 @@
                 name:'',
                 sname:'',
               },
-              treeData: [{
-                label: '一级 1',
-                children: [{
-                  label: '二级 1-1',
-                  children: [{
-                    label: '三级 1-1-1'
-                  }]
-                }]
-              }, {
-                label: '一级 2',
-                children: [{
-                  label: '二级 2-1',
-                  children: [{
-                    label: '三级 2-1-1'
-                  }]
-                }, {
-                  label: '二级 2-2',
-                  children: [{
-                    label: '三级 2-2-1'
-                  }]
-                }]
-              }, {
-                label: '一级 3',
-                children: [{
-                  label: '二级 3-1',
-                  children: [{
-                    label: '三级 3-1-1'
-                  }]
-                }, {
-                  label: '二级 3-2',
-                  children: [{
-                    label: '三级 3-2-1'
-                  }]
-                }]
-              }],
+              form3:{
+                remark:''
+              },
+              treeData: [],
               defaultProps:{
                 children: 'children',
                 label: 'label'
               },
               tableData: [],
               tableData2: [],
-              tableData3: [{
-                loginName:1,
-                name: 1,
-                sname: 2
-              }],
+              tableData3: [],
               tableData4: [],
+              tableData5: [],
+              tableData6:[],
               currentPage: 1,
               totalCounts: 40,
               pageSize: 10,
+              currentPage2: 1,
+              totalCounts2: 40,
+              pageSize2: 10,
               roleId: 0,
               selectedUser: [],
               selectMenu: [],
               setData: {},
-              configSourceDialog: false
+              configSourceDialog: false,
+              selectedData: []
             }
         },
         mounted(){
@@ -362,6 +445,7 @@
             this.getMenu()
             this.getUserByRole()
             this.getRoleAuth()
+            this.getDataByRole()
           },
           initParams(){
             this.token = this.$cookie.get('adoptToken')
@@ -426,6 +510,23 @@
 
             })
           },
+          dataSourceDelete(index,data){
+            let id = data.roldDataauthId
+            this.$http.delete(this.$store.state.domain+'/roleDataauth',{
+                params:{
+                  adoptToken: this.token,
+                  roleId: this.roleId,
+                  id: id
+                }
+            }).then((res)=>{
+              if(res.data.status == 0){
+                this.$message('删除成功')
+                this.getDataByRole()
+              }
+            },(err)=>{
+
+            })
+          },
           handleSizeChange(data){
             this.pageSize = data
             this.getUserByRole()
@@ -433,6 +534,12 @@
           handleCurrentChange(data){
             this.currentPage = data
             this.getUserByRole()
+          },
+          handleSizeChange2(data){
+            this.pageSize2 = data
+          },
+          handleCurrentChange2(data){
+            this.currentPage2 = data
           },
           getCheckedNodes(data,isChecked){
               if(!isChecked){
@@ -511,7 +618,8 @@
                   adoptToken: this.token,
                   roleId: this.roleId,
                   pageSize: this.pageSize,
-                  currentPage: this.currentPage
+                  currentPage: this.currentPage,
+                  nickName: this.form2.nickName
                 }
             }).then((res)=>{
               if(res.data.status == 0){
@@ -521,6 +629,26 @@
             },(err)=>{
 
             })
+          },
+          getDataByRole(){
+            let data = {
+              adoptToken: this.token,
+              roleId: this.roleId,
+              pageSize: this.pageSize2,
+              currentPage: this.currentPage2,
+              remark: this.form2.remark
+            }
+            this.$http.post(this.$store.state.domain+'/dataauth/queryByRole',qs.stringify(data)).then((res)=>{
+              if(res.data.status == 0){
+                this.totalCounts2 = res.data.result.totalCount
+                this.tableData5 = res.data.result.result
+              }
+            },(err)=>{
+
+            })
+          },
+          searchUser(){
+            this.getUserByRole()
           },
           addRoleUser(){
             this.dialogTableVisible = true
@@ -537,11 +665,32 @@
 
             })
           },
+          addDataSource(){
+            this.dialogDataVisible = true
+            let data = {
+              adoptToken: this.token,
+              roleId: this.roleId
+            }
+            this.$http.post(this.$store.state.domain+'/dataauth/queryByRoleNotSelected',qs.stringify(data)).then((res)=>{
+              if(res.data.status == 0){
+                this.getDataByRole()
+                this.tableData6 = res.data.result.result
+              }
+            },(err)=>{
+
+            })
+          },
           selectNotUser(selection){
               this.selectedUser = []
               selection.forEach((item)=>{
                   this.selectedUser.push(item.userId)
               })
+          },
+          selectNotData(selection){
+            this.selectedData = []
+            selection.forEach((item)=>{
+              this.selectedData.push(item.id)
+            })
           },
           selectUser(){
             let data =  {
@@ -559,9 +708,30 @@
 
             })
           },
+          selectData(){
+            let data =  {
+              adoptToken: this.token,
+              dimauthId: this.selectedData.join(','),
+              roleId: this.roleId
+            }
+            this.$http.post(this.$store.state.domain+'/roleDataauth/insertCodeBatch',qs.stringify(data)).then((res)=>{
+              if(res.data.status == 0){
+                this.$message('提交成功')
+                this.getDataByRole()
+                this.dialogDataVisible = false
+              }
+            },(err)=>{
+
+            })
+          },
           selectChangeHandle(data){
             if (this.tableData3[data.index]) {
               this.$refs.roleAddTable.toggleRowSelection(this.tableData3[data.index]);
+            }
+          },
+          selectChangeHandle2(data){
+            if (this.tableData6[data.index]) {
+              this.$refs.dataAddTable.toggleRowSelection(this.tableData6[data.index]);
             }
           },
           commitMenuSelect(){
@@ -593,6 +763,7 @@
             }).then((res)=>{
               if(res.data.status == 0){
                 this.tableData4 = res.data.result.result
+                console.log(this.tableData4)
                 this.checkedMenu()
               }
             },(err)=>{
@@ -642,7 +813,10 @@
           },
           commitAddPanel(){
 
-          }
+          },
+          searchDataSource(){
+
+          },
         }
     }
 </script>

@@ -124,6 +124,7 @@
   require('echarts/lib/component/tooltip');
   require('echarts/lib/component/title');
   require('echarts/lib/component/legend');
+  import lockr from 'lockr'
   import Calendar from '@/components/calendar/Calendar'
   export default {
     data() {

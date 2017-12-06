@@ -12,10 +12,14 @@
       </h1>
     </div>
     <div class="roleConfigPanel">
+        <div class="roleAndMenu">
+          <span>所属角色：</span><el-tag>{{roleName}}</el-tag>
+          <span style="padding-left: 15px;">所属菜单：</span><el-tag type="primary">{{menuName}}</el-tag>
+        </div>
         <div class="top">
           <el-form :model="form" label-width="80px">
             <el-form-item label="面板名称" class="left">
-              <el-input placeholder="请输入面板名称" v-model="form.panelName"></el-input>
+              <el-input style="width: 216px" placeholder="请输入面板名称" v-model="form.panelName"></el-input>
             </el-form-item>
             <div class="right">
               <el-button type="primary" @click="getSelectedPanel">查询</el-button>
@@ -71,7 +75,7 @@
       <div class="top">
         <el-form :model="form" label-width="80px">
           <el-form-item label="元素名称" class="left">
-            <el-input placeholder="请输入元素名称" v-model="form.elementName"></el-input>
+            <el-input style="width: 216px" placeholder="请输入元素名称" v-model="form.elementName"></el-input>
           </el-form-item>
           <div class="right">
             <el-button type="primary" @click="getSelectedElement">查询</el-button>
@@ -236,10 +240,10 @@
             menuId:'',
             currentPage: 1,
             pageSize: 10,
-            totalCount: 40,
+            totalCount: 0,
             currentPage2: 1,
             pageSize2: 10,
-            totalCount2: 40,
+            totalCount2: 0,
             addPanelDialog:false,
             addElementDialog:false,
             form:{
@@ -257,7 +261,9 @@
             addElementData:{},
             elementData:[],
             selectElement:'',
-            selectElementData:[]
+            selectElementData:[],
+            roleName: '',
+            menuName:''
           }
       },
       mounted(){
@@ -272,6 +278,8 @@
           this.token = this.$cookie.get('adoptToken');
           this.menuId = this.$route.params.menuId
           this.roleId = this.$route.params.roleId
+          this.getRoleById()
+          this.getMenuById()
         },
         handleSizeChange (data){
           this.pageSize = data
@@ -288,6 +296,38 @@
         handleCurrentChange2(data){
           this.currentPage2 = data
           this.getSelectedElement()
+        },
+        getRoleById(){
+          this.$http.get(this.$store.state.domain+'/role/getRole',{
+              params:{
+                adoptToken: this.token,
+                roleId:this.roleId
+              }
+          }).then((res)=>{
+            if(res.data.status == 0){
+              this.roleName = res.data.result.roleName
+            }else{
+
+            }
+          },(err)=>{
+
+          })
+        },
+        getMenuById(){
+          this.$http.get(this.$store.state.domain+'/menu/queryMenu',{
+            params:{
+              adoptToken: this.token,
+              menuId:this.menuId
+            }
+          }).then((res)=>{
+            if(res.data.status == 0){
+              this.menuName = res.data.result.result.resName
+            }else{
+
+            }
+          },(err)=>{
+
+          })
         },
         queryPanelData(){
           let data = {
@@ -486,20 +526,18 @@
       text-align: center
       margin-top: 15px
     .roleConfigPanel
-      padding: 20px
+      padding: 10px 20px
       .top
         .left
           display: inline-block
-          width: 80%
           margin-right: 15px
           float: left
           margin-bottom: 10px
     .roleConfigElement
-      padding: 20px
+      padding: 10px 20px
       .top
         .left
           display: inline-block
-          width: 80%
           margin-right: 15px
           float: left
           margin-bottom: 10px
@@ -510,4 +548,10 @@
     .addPanelBtn
       text-align: center
       margin-top: 10px
+  .roleAndMenu
+    font-size: 16px
+    margin-left: 10px
+    margin-bottom: 10px
+    padding-bottom: 10px
+    border-bottom: 1px solid #ccc
 </style>

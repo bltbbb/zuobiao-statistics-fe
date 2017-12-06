@@ -26,6 +26,13 @@ import SourceMan from '@/components/MenuList/Manage/SourceMan/SourceMan'
 import RoleManDetail from '@/components/MenuList/Manage/RoleMan/RoleManDetail'
 import RoleManConfig from '@/components/MenuList/Manage/RoleMan/RoleManConfig'
 
+//日志审计
+import LogLogin from '@/components/Log/LogLogin'
+import AccessLog from '@/components/Log/AccessLog'
+import InterfaceLog from '@/components/Log/InterfaceLog'
+import MessagePush from '@/components/Log/MessagePush'
+import OperationLog from '@/components/Log/OperationLog'
+
 //无权限
 import Jurisdiction from '@/components/Jurisdiction/Jurisdiction'
 
@@ -164,6 +171,31 @@ const router = new Router({
           path: '/Content/RoleManConfig/:menuId/:roleId',
           name: 'RoleManConfig',
           component: RoleManConfig
+        },
+        {
+          path: '/Content/LogLogin',
+          name: 'LogLogin',
+          component: LogLogin
+        },
+        {
+          path: '/Content/AccessLog',
+          name: 'AccessLog',
+          component: AccessLog
+        },
+        {
+          path: '/Content/InterfaceLog',
+          name: 'InterfaceLog',
+          component: InterfaceLog
+        },
+        {
+          path: '/Content/MessagePush',
+          name: 'MessagePush',
+          component: MessagePush
+        },
+        {
+          path: '/Content/OperationLog',
+          name: 'OperationLog',
+          component: OperationLog
         },
       ]
     },
