@@ -33,7 +33,7 @@
                       <el-form-item label="菜单名称">
                         <el-input v-model="form3.menuName"></el-input>
                       </el-form-item>
-                      <el-form-item label="菜单名称拼音">
+                      <el-form-item label="菜单拼音">
                         <el-input v-model="form3.menuNameQp"></el-input>
                       </el-form-item>
                       <el-form-item label="描述">
@@ -43,7 +43,7 @@
                         <el-input v-model="form3.menuLevel"></el-input>
                       </el-form-item>
                       <el-form-item label="菜单类型" label-width="120px">
-                        <el-select v-model="form3.menuType" placeholder="请选择活动区域">
+                        <el-select v-model="form3.menuType" placeholder="请选择菜单类型">
                           <el-option
                             v-for="item in menuTypeData"
                             :key="item.id"
@@ -58,7 +58,7 @@
                       <el-form-item label="排序索引" label-width="120px">
                         <el-input v-model="form3.sortIndex" auto-complete="off"></el-input>
                       </el-form-item>
-                      <el-form-item label="菜单加载类型" label-width="120px">
+                      <el-form-item label="加载类型" label-width="120px">
                         <el-select v-model="form3.loadTarget">
                           <el-option
                             v-for="item in loadTargetData"
@@ -68,11 +68,11 @@
                           </el-option>
                         </el-select>
                       </el-form-item>
-                      <el-form-item label="面包屑全路径" label-width="120px">
+                      <el-form-item label="全路径" label-width="120px">
                         <el-input v-model="form3.fullPath" auto-complete="off"></el-input>
                       </el-form-item>
                       <el-form-item label="isShare" label-width="120px">
-                        <el-select v-model="form3.isShare" placeholder="请选择活动区域">
+                        <el-select v-model="form3.isShare" placeholder="请选择">
                           <el-option label="是" value="1"></el-option>
                           <el-option label="否" value="2"></el-option>
                         </el-select>
@@ -385,7 +385,7 @@
           <el-form-item label="菜单名" :label-width="formLabelWidth">
             <el-input v-model="form8.menuName" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="菜单名拼音" :label-width="formLabelWidth">
+          <el-form-item label="菜单拼音" :label-width="formLabelWidth">
             <el-input v-model="form8.menuNameQp" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="描述" :label-width="formLabelWidth">
@@ -395,7 +395,7 @@
             <el-input v-model="form8.menuLeval" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="菜单类型" :label-width="formLabelWidth">
-            <el-select v-model="form8.menuType" placeholder="请选择活动区域">
+            <el-select v-model="form8.menuType" placeholder="请选择菜单类型">
               <el-option
                 v-for="item in menuTypeData"
                 :key="item.id"
@@ -410,10 +410,17 @@
           <el-form-item label="排序索引" :label-width="formLabelWidth">
             <el-input v-model="form8.sortIndex" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="菜单加载类型" :label-width="formLabelWidth">
-          <el-input v-model="form8.loadTarget" auto-complete="off"></el-input>
-        </el-form-item>
-          <el-form-item label="面包屑全路径" :label-width="formLabelWidth">
+          <el-form-item label="加载类型" :label-width="formLabelWidth">
+            <el-select v-model="form8.loadTarget">
+              <el-option
+                v-for="item in loadTargetData"
+                :key="item.id"
+                :label="item.enumTxt"
+                :value="item.enumValue">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="全路径" :label-width="formLabelWidth">
             <el-input v-model="form8.fullPath" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="isShare" :label-width="formLabelWidth">

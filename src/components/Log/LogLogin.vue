@@ -51,6 +51,11 @@
         style="width: 100%"
         border>
         <el-table-column
+          prop="logId"
+          label="日志Id"
+          width="150">
+        </el-table-column>
+        <el-table-column
           prop="clientIp"
           label="客户端Id"
           width="120">
@@ -61,28 +66,19 @@
           width="150">
         </el-table-column>
         <el-table-column
-          prop="logId"
-          label="日志Id"
-          width="150">
-        </el-table-column>
-        <el-table-column
           prop="loginTime"
           label="登陆时间"
           width="180">
         </el-table-column>
         <el-table-column
           prop="serverIp"
-          label="服务Id"
+          label="服务IP"
           width="150">
         </el-table-column>
         <el-table-column
           prop="mainAccount"
           label="登录名"
           width="120">
-        </el-table-column>
-        <el-table-column
-          prop="sessionId"
-          label="sessionId">
         </el-table-column>
         <el-table-column
           prop="userAgent"

@@ -51,6 +51,10 @@
         style="width: 100%"
         border>
         <el-table-column
+          prop="logId"
+          label="日志ID">
+        </el-table-column>
+        <el-table-column
           prop="filePath"
           label="附件">
         </el-table-column>

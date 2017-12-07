@@ -54,6 +54,10 @@
         style="width: 100%"
         border>
         <el-table-column
+          prop="logId"
+          label="日志ID">
+        </el-table-column>
+        <el-table-column
           prop="errMsg"
           label="错误消息">
         </el-table-column>
@@ -76,10 +80,6 @@
         <el-table-column
           prop="mainAccount"
           label="登陆名">
-        </el-table-column>
-        <el-table-column
-          prop="logId"
-          label="日志ID">
         </el-table-column>
         <el-table-column
           prop="serverIp"

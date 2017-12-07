@@ -71,7 +71,7 @@
         </el-pagination>
       </div>
       <div class="addRoleDialog">
-        <el-dialog title="新增角色" :visible.sync="dialogFormVisible">
+        <el-dialog title="新增角色" :visible.sync="dialogFormVisible" size="tiny">
           <el-form :model="form2">
             <el-form-item label="角色名称" :label-width="formLabelWidth">
               <el-input v-model="form2.roleName" auto-complete="off"></el-input>
@@ -80,7 +80,7 @@
               <el-input v-model="form2.roleNameQp" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="描述" :label-width="formLabelWidth">
-              <el-input v-model="form2.remark" auto-complete="off"></el-input>
+              <el-input type="textarea" v-model="form2.remark" auto-complete="off"></el-input>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -207,4 +207,9 @@
       .pagination-wrapper
         margin-top: 15px
         text-align: center
+</style>
+<style lang="sass">
+  .role-man
+    .el-dialog--tiny
+      width: 20%
 </style>

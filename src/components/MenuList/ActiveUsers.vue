@@ -270,16 +270,22 @@
           if(res.data.status == 0){
             this.editions = res.data.result.result;
           }
-          else{
+          else if(res.data.status == 1){
+            this.$message.error('请求错误！');
+          }
+          else if(res.data.status == 2){
             //view(res.data.msg)
-            this.$message.error('登录过期，请重新登录');
+            this.$message.error('登录过期，请重新登录！');
             lockr.rm("menuInfo");
             this.$cookie.delete('adoptToken');
             this.$router.push('/login');
           }
+          else if(res.data.status == 3){
+            this.$message.error('没有权限！');
+          }
         },(err)=>{
           //view('网络错误')
-          this.$message.error('网络错误');
+          this.$message.error('接口异常！请联系管理员！');
         })
       },
       getActiveUser: function () {
@@ -305,16 +311,21 @@
               }]
             })
           }
-          else{
-            //view(res.data.msg)
-            this.$message.error('登录过期，请重新登录');
+          else if(res.data.status == 1){
+            this.$message.error('请求错误！');
+          }
+          else if(res.data.status == 2){
+            this.$message.error('登录过期，请重新登录！');
             lockr.rm("menuInfo");
             this.$cookie.delete('adoptToken');
             this.$router.push('/login');
           }
+          else if(res.data.status == 3){
+            this.$message.error('没有权限！');
+          }
         },(err)=>{
           //view('网络错误')
-          this.$message.error('网络错误');
+          this.$message.error('接口异常！请联系管理员！');
         })
       },
       getActiveUserPages:function () {
@@ -334,16 +345,21 @@
             this.totalCount = res.data.result.totalCount;
             this.tableData = data;
           }
-          else{
-            //view(res.data.msg)
-            this.$message.error('登录过期，请重新登录');
+          else if(res.data.status == 1){
+            this.$message.error('请求错误！');
+          }
+          else if(res.data.status == 2){
+            this.$message.error('登录过期，请重新登录！');
             lockr.rm("menuInfo");
             this.$cookie.delete('adoptToken');
             this.$router.push('/login');
           }
+          else if(res.data.status == 3){
+            this.$message.error('没有权限！');
+          }
         },(err)=>{
           //view('网络错误')
-          this.$message.error('网络错误');
+          this.$message.error('接口异常！请联系管理员！');
         })
       }
     },

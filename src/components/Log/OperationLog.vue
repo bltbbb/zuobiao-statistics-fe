@@ -54,6 +54,10 @@
         style="width: 100%"
         border>
         <el-table-column
+          prop="logId"
+          label="日志ID">
+        </el-table-column>
+        <el-table-column
           prop="browserType"
           label="浏览器类型"
           width="120">

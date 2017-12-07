@@ -54,6 +54,10 @@
         style="width: 100%"
         border>
         <el-table-column
+          prop="logId"
+          label="日志ID">
+        </el-table-column>
+        <el-table-column
           prop="browserType"
           label="客户端浏览器类型"
           width="150">
@@ -79,10 +83,6 @@
           prop="mainAccount"
           label="登陆名"
           width="100">
-        </el-table-column>
-        <el-table-column
-          prop="logId"
-          label="日志ID">
         </el-table-column>
         <el-table-column
           prop="serverIp"
