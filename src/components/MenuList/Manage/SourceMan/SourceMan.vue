@@ -23,7 +23,7 @@
                 <el-button
                   type="danger" @click="deleteMenuHandle">删除</el-button>
               </div>
-              <el-tree :data="treeData" :props="defaultProps" node-key="privVisitId"  :highlight-current="highlightModel" :expand-on-click-node="false" @current-change="handleNodeClick"></el-tree>
+              <el-tree :data="treeData" :props="defaultProps" node-key="privVisitId"  :highlight-current="highlightModel" expand-on-click-node @current-change="handleNodeClick"></el-tree>
             </div>
             <div class="source-right" v-if="menuId">
               <el-tabs type="border-card">
@@ -44,9 +44,12 @@
                       </el-form-item>
                       <el-form-item label="菜单类型" label-width="120px">
                         <el-select v-model="form3.menuType" placeholder="请选择活动区域">
-                          <el-option label="目录" value="1"></el-option>
-                          <el-option label="菜单" value="2"></el-option>
-                          <el-option label="tab页" value="3"></el-option>
+                          <el-option
+                            v-for="item in menuTypeData"
+                            :key="item.id"
+                            :label="item.enumTxt"
+                            :value="item.enumValue">
+                          </el-option>
                         </el-select>
                       </el-form-item>
                       <el-form-item label="URL路径" label-width="120px">
@@ -56,7 +59,14 @@
                         <el-input v-model="form3.sortIndex" auto-complete="off"></el-input>
                       </el-form-item>
                       <el-form-item label="菜单加载类型" label-width="120px">
-                        <el-input v-model="form3.loadTarget" auto-complete="off"></el-input>
+                        <el-select v-model="form3.loadTarget">
+                          <el-option
+                            v-for="item in loadTargetData"
+                            :key="item.id"
+                            :label="item.enumTxt"
+                            :value="item.enumValue">
+                          </el-option>
+                        </el-select>
                       </el-form-item>
                       <el-form-item label="面包屑全路径" label-width="120px">
                         <el-input v-model="form3.fullPath" auto-complete="off"></el-input>
@@ -589,7 +599,9 @@
           fatherMenu:'root',
           newId:'',
           oldId:'',
-          panelIndex: ''
+          panelIndex: '',
+          menuTypeData:[],
+          loadTargetData: []
         }
       },
     mounted(){
@@ -600,6 +612,8 @@
       init(){
         this.getTreeData()
         this.getDataAuth()
+        this.getMenuType()
+        this.getTargetType()
       },
       initParams(){
         this.token = this.$cookie.get('adoptToken');
@@ -1181,8 +1195,40 @@
               loadTarget:'',
               sortIndex:'',
               isShare:'',
-              fullPath:''
+              fullPath:'',
           }
+      },
+      getMenuType(){
+          this.$http.get(this.$store.state.domain+'/dicenum',{
+              params:{
+                adoptToken: this.token,
+                type: 1
+              }
+          }).then((res)=>{
+            if(res.data.status == 0){
+              this.menuTypeData = res.data.result.result
+            }else{
+
+            }
+          },(err)=>{
+
+          })
+      },
+      getTargetType(){
+        this.$http.get(this.$store.state.domain+'/dicenum',{
+          params:{
+            adoptToken: this.token,
+            type: 2
+          }
+        }).then((res)=>{
+          if(res.data.status == 0){
+            this.loadTargetData = res.data.result.result
+          }else{
+
+          }
+        },(err)=>{
+
+        })
       }
     }
   }

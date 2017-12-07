@@ -34,7 +34,7 @@
           </el-tab-pane>
           <el-tab-pane label="资源分配">
             <div class="tab2-left">
-              <el-tree :data="treeData" ref="tree" node-key="menuId" :props="defaultProps" default-expand-all show-checkbox
+              <el-tree :data="treeData" ref="tree" node-key="menuId" :props="defaultProps" show-checkbox
                        @check-change="getCheckedNodes" :check-strictly="true"></el-tree>
             </div>
             <div class="tab2-right">

@@ -11,6 +11,40 @@
         </el-popover>
       </h1>
     </div>
+    <div class="log-form">
+      <el-form ref="form" :model="form" inline>
+        <div class="form-input">
+          <el-form-item label="登陆开始时间">
+            <el-date-picker
+              v-model="form.startDate"
+              type="date"
+              placeholder="选择日期"
+              @change="dateStart"
+              style="width: 146px;">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="登陆结束时间">
+            <el-date-picker
+              v-model="form.stopDate"
+              type="date"
+              placeholder="选择日期"
+              @change="dateEnd"
+              style="width: 146px;">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="操作用户">
+            <el-input style="width: 146px;" v-model="form.mainAccount"></el-input>
+          </el-form-item>
+          <el-form-item label="浏览器">
+            <el-input style="width: 146px;" v-model="form.browserType"></el-input>
+          </el-form-item>
+          <el-form-item style="margin-left: 30px;">
+            <el-button @click="searchHandle">查询</el-button>
+            <el-button @click="reset">重置</el-button>
+          </el-form-item>
+        </div>
+      </el-form>
+    </div>
     <div class="log-table">
       <el-table
         :data="tableData"
@@ -78,7 +112,13 @@
         tableData: [],
         totalCount: 0,
         currentPage: 1,
-        pageSize: 10
+        pageSize: 10,
+        form:{
+          startDate:'',
+          stopDate:'',
+          mainAccount:'',
+          browserType:''
+        }
       }
     },
     mounted(){
@@ -96,7 +136,11 @@
           let data = {
             adoptToken: this.token,
             currentPage: this.currentPage,
-            pageSize: this.pageSize
+            pageSize: this.pageSize,
+            startDate: this.form.startDate,
+            stopDate: this.form.stopDate,
+            mainAccount: this.form.mainAccount,
+            browserType: this.form.browserType,
           }
           this.$http.post(this.$store.state.domain+'/logLogin/page',qs.stringify(data)).then((res)=>{
             if(res.data.status == 0){
@@ -119,6 +163,24 @@
       handleCurrentChange(data){
         this.currentPage = data
         this.getAllLog()
+      },
+      searchHandle(){
+        this.getAllLog()
+      },
+      reset(){
+        this.form = {
+          startDate:'',
+            stopDate:'',
+            mainAccount:'',
+            browserType:''
+        }
+        this.getAllLog()
+      },
+      dateStart(data){
+        this.form.startDate = data
+      },
+      dateEnd(data){
+        this.form.stopDate = data
       }
     }
   }
@@ -132,4 +194,6 @@
       .pagination-wrapper
         text-align: center
         margin-top: 10px
+    .log-form
+      padding: 10px 20px 0
 </style>

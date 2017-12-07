@@ -2,7 +2,7 @@
   <div class="OperationLog">
     <div class="header-wrapper">
       <h1>
-        登陆日志
+        操作日志
         <el-popover
           placement="right"
           width="200"
@@ -10,6 +10,43 @@
           popper-class="popover-class">
         </el-popover>
       </h1>
+    </div>
+    <div class="log-form">
+      <el-form ref="form" :model="form" inline>
+        <div class="form-input">
+          <el-form-item label="开始时间">
+            <el-date-picker
+              v-model="form.oprBeginTimeStart"
+              type="date"
+              placeholder="选择日期"
+              @change="dateStart"
+              style="width: 146px;">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="结束时间">
+            <el-date-picker
+              v-model="form.oprBeginTimeStop"
+              type="date"
+              placeholder="选择日期"
+              @change="dateEnd"
+              style="width: 146px;">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="操作用户">
+            <el-input style="width: 146px;" v-model="form.mainAccount"></el-input>
+          </el-form-item>
+          <el-form-item label="是否报错">
+            <el-select v-model="form.isError" style="width: 146px;">
+              <el-option label="是" value="0"></el-option>
+              <el-option label="否" value="-1"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item style="margin-left: 30px;">
+            <el-button @click="searchHandle">查询</el-button>
+            <el-button @click="reset">重置</el-button>
+          </el-form-item>
+        </div>
+      </el-form>
     </div>
     <div class="log-table">
       <el-table
@@ -32,7 +69,7 @@
           width="100">
         </el-table-column>
         <el-table-column
-          label="消息类型"
+          label="是否报错"
           width="100">
           <template scope="scope">
             <span v-if="scope.row.isError == 0" style="margin-left: 10px">是</span>
@@ -91,7 +128,13 @@
         tableData: [],
         totalCount: 0,
         currentPage: 1,
-        pageSize: 10
+        pageSize: 10,
+        form: {
+          oprBeginTimeStart:'',
+          oprBeginTimeStop:'',
+          mainAccount:'',
+          isError:''
+        }
       }
     },
     mounted(){
@@ -109,7 +152,8 @@
         let data = {
           adoptToken: this.token,
           currentPage: this.currentPage,
-          pageSize: this.pageSize
+          pageSize: this.pageSize,
+          ...this.form
         }
         this.$http.post(this.$store.state.domain+'/logOperate/page',qs.stringify(data)).then((res)=>{
           if(res.data.status == 0){
@@ -132,6 +176,24 @@
       handleCurrentChange(data){
         this.currentPage = data
         this.getAllLog()
+      },
+      searchHandle(){
+        this.getAllLog()
+      },
+      reset(){
+        this.form = {
+          oprBeginTimeStart:'',
+          oprBeginTimeStop:'',
+          mainAccount:'',
+          isError:''
+        }
+        this.getAllLog()
+      },
+      dateStart(data){
+        this.form.oprBeginTimeStart = data
+      },
+      dateEnd(data){
+        this.form.oprBeginTimeStop = data
       }
     }
   }
@@ -145,4 +207,6 @@
       .pagination-wrapper
         text-align: center
         margin-top: 10px
+    .log-form
+      padding: 10px 20px 0
 </style>

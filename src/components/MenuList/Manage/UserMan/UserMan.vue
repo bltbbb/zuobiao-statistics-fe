@@ -159,11 +159,11 @@
             </el-form-item>
             <el-form-item label="有效时间" style="width: 300px">
               <el-date-picker
-                v-model="form2.valueTime"
+                v-model="form2.modelTime"
                 type="daterange"
                 placeholder="选择日期范围"
                 range-separator="~"
-                @change="dataChange">
+                @change="dataChange2">
               </el-date-picker>
             </el-form-item>
           </el-form>
@@ -334,31 +334,31 @@
     <el-dialog title="新增用户" :visible.sync="addUserDialog" size="small">
       <el-form :model="form8" label-width="100px" inline>
         <el-form-item label="用户昵称">
-          <el-input v-model="form8.nickName" auto-complete="off"></el-input>
+          <el-input v-model="form8.nickName" style="width: 220px;"  auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="登录名称">
-          <el-input v-model="form8.userName" auto-complete="off"></el-input>
+          <el-input v-model="form8.userName" style="width: 220px;"  auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="性别">
-          <el-select v-model="form8.sex" style="width: 192px;" placeholder="请选择性别">
+          <el-select v-model="form8.sex" style="width: 220px;" placeholder="请选择性别">
             <el-option label="男" value="1"></el-option>
             <el-option label="女" value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="密码">
-          <el-input v-model="form8.passWord" auto-complete="off"></el-input>
+          <el-input v-model="form8.passWord" style="width: 220px;"  auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="手机">
-          <el-input v-model="form8.phoneNo" auto-complete="off"></el-input>
+          <el-input v-model="form8.phoneNo" style="width: 220px;"  auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="生日">
-          <el-input v-model="form8.birthday" auto-complete="off"></el-input>
+          <el-input v-model="form8.birthday" style="width: 220px;"  auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="邮编">
-          <el-input v-model="form8.postcode" auto-complete="off"></el-input>
+          <el-input v-model="form8.postcode" style="width: 220px;"  auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="地址">
-          <el-input v-model="form8.address" auto-complete="off"></el-input>
+          <el-input v-model="form8.address" style="width: 220px;"  auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="有效时间" >
           <el-date-picker
@@ -367,11 +367,11 @@
             placeholder="选择日期范围"
             range-separator="~"
             @change="dataChange"
-            style="width: 192px;">
+            style="width: 220px;" >
           </el-date-picker>
         </el-form-item>
         <el-form-item label="备注">
-          <el-input type="textarea" style="width: 192px;" v-model="form8.remark" auto-complete="off"></el-input>
+          <el-input type="textarea" style="width: 220px;"  v-model="form8.remark" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -390,7 +390,6 @@
         pageSize2:10,
         currentPage2:1,
         totalCount2:0,
-        valueTime:'',
         addUserDialog:false,
         pageSize: 10,
         explain: 'bar',
@@ -409,7 +408,7 @@
             remark:'',
             startTime:'',
             endTime:'',
-            valueTime:''
+            modelTime:'',
         },
         form3: {
             name: ''
@@ -626,6 +625,9 @@
         let arrTemp = value.split('~')
         this.form8.validBegin = arrTemp[0]
         this.form8.validEnd = arrTemp[1]
+      },
+      dataChange2(value){
+        let arrTemp = value.split('~')
         this.form2.validBegin = arrTemp[0]
         this.form2.validEnd = arrTemp[1]
       },
@@ -702,12 +704,19 @@
         this.userId = data.userId
         this.generateData()
         this.getSlectedRole()
-        this.form2 = data
+        this.form2.nickName = data.nickName
+        this.form2.phoneNo = data.phoneNo
+        this.form2.postcode = data.postcode
+        this.form2.address = data.address
+        this.form2.remark = data.remark
+        this.form2.validBegin = data.validBegin
+        this.form2.validEnd = data.validEnd
         this.form2.sex = data.sex + ''
         let arr = []
         arr.push(this.form2.validBegin)
         arr.push(this.form2.validEnd)
-        this.form2.valueTime = arr
+        this.form2.modelTime = arr
+
         this.dialogFormVisible = true
       },
       commitPwd(){
