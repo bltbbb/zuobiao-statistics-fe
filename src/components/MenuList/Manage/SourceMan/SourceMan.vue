@@ -225,8 +225,16 @@
                               label="描述">
                             </el-table-column>
                             <el-table-column
-                              prop="elementType"
+                              prop="panelName"
+                              label="所属面板">
+                            </el-table-column>
+                            <el-table-column
                               label="元素类型">
+                              <template scope="scope">
+                                  <span v-if="scope.row.elementType == 1">图表chart</span>
+                                  <span v-if="scope.row.elementType == 2">按钮</span>
+                                  <span v-if="scope.row.elementType == 3">表格</span>
+                              </template>
                             </el-table-column>
                             <el-table-column
                               label="操作"
@@ -388,9 +396,12 @@
           </el-form-item>
           <el-form-item label="菜单类型" :label-width="formLabelWidth">
             <el-select v-model="form8.menuType" placeholder="请选择活动区域">
-              <el-option label="目录" value="1"></el-option>
-              <el-option label="菜单" value="2"></el-option>
-              <el-option label="tab页" value="3"></el-option>
+              <el-option
+                v-for="item in menuTypeData"
+                :key="item.id"
+                :label="item.enumTxt"
+                :value="item.enumValue">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="URL路径" :label-width="formLabelWidth">
@@ -446,11 +457,14 @@
           <el-form-item label="描述" :label-width="formLabelWidth">
             <el-input type="textarea" v-model="form10.remark" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="isShare" :label-width="formLabelWidth">
-            <el-select v-model="form10.elementType" placeholder="请选择活动区域">
-              <el-option label="图表chart" value="1"></el-option>
-              <el-option label="按钮" value="2"></el-option>
-              <el-option label="表格" value="3"></el-option>
+          <el-form-item label="元素类型" :label-width="formLabelWidth">
+            <el-select v-model="form10.elementType">
+              <el-option
+                v-for="item in elementTypeData"
+                :key="item.id"
+                :label="item.enumTxt"
+                :value="item.enumValue">
+              </el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -569,7 +583,7 @@
           form10:{
             elementName:'',
             remark:'',
-            elementType:''
+            elementType:2
           },
           form11:{
             jsonInfo:'',
@@ -601,7 +615,8 @@
           oldId:'',
           panelIndex: '',
           menuTypeData:[],
-          loadTargetData: []
+          loadTargetData: [],
+          elementTypeData: []
         }
       },
     mounted(){
@@ -614,6 +629,7 @@
         this.getDataAuth()
         this.getMenuType()
         this.getTargetType()
+        this.getElementType()
       },
       initParams(){
         this.token = this.$cookie.get('adoptToken');
@@ -700,6 +716,12 @@
         })
       },
       handleNodeClick(data,node){
+          this.tableData3 = []
+          this.panelId = ''
+          this.panelIndex = ''
+          this.selectPanelName = ''
+          this.newId = ''
+          this.oldId = ''
           this.newKey = data.privVisitId
           if(this.newKey == this.oldKey){
             this.privVisitId = ''
@@ -721,6 +743,7 @@
             this.getUrlSelected()
             this.getPanel()
           }
+          this.getElement()
           this.oldKey = this.newKey
       },
       getUrlSelected(){
@@ -968,7 +991,7 @@
         this.form10.elementName = data.elementName
         this.form10.remark = data.remark
         this.form10.panelId = data.panelId
-        this.form10.elementType = data.elementType
+        this.form10.elementType = data.elementType +''
         this.form10.elementId = data.elementId
       },
       addElementHandle(){
@@ -1055,6 +1078,7 @@
           if(res.data.status == 0){
             this.$message('删除成功')
             this.getPanel()
+            this.getElement()
           }else{
 
           }
@@ -1218,11 +1242,27 @@
         this.$http.get(this.$store.state.domain+'/dicenum',{
           params:{
             adoptToken: this.token,
-            type: 2
+            type: 3
           }
         }).then((res)=>{
           if(res.data.status == 0){
             this.loadTargetData = res.data.result.result
+          }else{
+
+          }
+        },(err)=>{
+
+        })
+      },
+      getElementType(){
+        this.$http.get(this.$store.state.domain+'/dicenum',{
+          params:{
+            adoptToken: this.token,
+            type: 4
+          }
+        }).then((res)=>{
+          if(res.data.status == 0){
+            this.elementTypeData = res.data.result.result
           }else{
 
           }

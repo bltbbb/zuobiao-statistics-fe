@@ -104,6 +104,14 @@
           prop="userAgent"
           label="用户UA">
         </el-table-column>
+        <el-table-column
+          prop="oprBeginTime"
+          label="开始时间">
+        </el-table-column>
+        <el-table-column
+          prop="oprEndTime"
+          label="结束时间">
+        </el-table-column>
       </el-table>
       <div class="pagination-wrapper">
         <el-pagination
