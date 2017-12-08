@@ -278,7 +278,7 @@
         //  按版本分布
         tableData2: [],
 
-        crashMessageId: '',
+        errorMessageId: '',
         errorType: '',
         startDate: '',
         stopDate: '',
@@ -313,7 +313,7 @@
         this.activeName = gameName
       },
       initParams () {
-        this.crashMessageId = this.$route.query.crashMessageId;
+        this.errorMessageId = this.$route.query.errorMessageId;
         this.errorType = this.$route.query.errorType;
         this.startDate = this.$route.query.startDate;
         this.stopDate = this.$route.query.stopDate;
@@ -455,7 +455,7 @@
         Params.append('versionId',this.evalVal);
         Params.append('channelId',this.canalVal);
         Params.append('errorType',this.errorType);
-        Params.append('crashMessageId',this.crashMessageId);
+        Params.append('errorMessageId',this.errorMessageId);
         this.$http.post(this.port + '/errorDetailed',Params)
           .then( (res) => {
             if (res.status == 200) {
@@ -467,7 +467,7 @@
                   this.list[2].number = data.errDetail.errorCount;
                   this.list[3].number = data.errDetail.userCount;
                   this.list[4].number = '未修复';
-                  this.login = data.crashMessage.replace(/\r\n/g,"<br>").replace(/ /g,"&nbsp;&nbsp;");
+                  this.login = data.errorMessage.replace(/\r\n/g,"<br>").replace(/ /g,"&nbsp;&nbsp;");
                   this.tableData = data.model;
                   this.tableData1 = data.os;
                   this.tableData2 = data.version;
@@ -508,7 +508,7 @@
         Params.append('versionId',this.evalVal);
         Params.append('channelId',this.canalVal);
         Params.append('errorType',this.errorType);
-        Params.append('crashMessageId',this.crashMessageId);
+        Params.append('errorMessageId',this.errorMessageId);
         this.$http.post(this.port + '/errorDetailedChart',Params)
           .then((res)=>{
             if(res.status == 200){
@@ -604,7 +604,7 @@
     watch: {
       $route (to) {
         if (to.name == 'DetailMore') {
-          this.crashMessageId = to.query.crashMessageId;
+          this.errorMessageId = to.query.errorMessageId;
           this.errorType = to.query.errorType;
           this.startDate = to.query.startDate;
           this.stopDate = to.query.stopDate;

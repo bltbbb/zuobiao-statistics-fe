@@ -68,7 +68,7 @@
           <template scope="scope">
             <div class="detail">
               <div >
-                <div class="detail-title detail-box" :class="{active: type == scope.row.id}"  v-html="scope.row.crashMessage"></div>
+                <div class="detail-title detail-box" :class="{active: type == scope.row.id}"  v-html="scope.row.errorMessage"></div>
               </div>
               <div class="detail-text">
                 <div @click="more(scope.$index,scope.row)" >{{ type == scope.row.id ? '收起':'展开' }}</div>
@@ -147,7 +147,7 @@
         end: '',
         size: 20,
         errorType: '',
-        crashMessageId: '',
+        errorMessageId: '',
 
         name: 'calendar',
         radio2: '',
@@ -329,7 +329,7 @@
                 this.tableData = data;
                 this.totalCount = res.data.result.totalCount;
                 for (let i in data){
-                  this.tableData[i].crashMessage = data[i].crashMessage.replace(/\r\n/g,"<br>").replace(/ /g,"&nbsp;&nbsp;");
+                  this.tableData[i].errorMessage = data[i].errorMessage.replace(/\r\n/g,"<br>").replace(/ /g,"&nbsp;&nbsp;");
                 }
               }
               else if (res.data.status == 1) {
@@ -392,7 +392,7 @@
       handleEdit(index, row) {
         this.$router.push({name: 'DetailMore',query:{
           errorType: this.errorType,
-          crashMessageId: row.crashMessageId,
+          errorMessageId: row.errorMessageId,
           startDate: this.start,
           stopDate: this.end,
           evalVal: this.evalVal,
@@ -414,7 +414,7 @@
         console.log(row)
         this.$router.push({name: 'DetailMore',query:{
           errorType: this.errorType,
-          crashMessageId: row.crashMessageId,
+          errorMessageId: row.errorMessageId,
           startDate: this.start,
           stopDate: this.end,
 //          value2: this.value2,
