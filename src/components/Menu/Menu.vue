@@ -4,7 +4,7 @@
 <!--      <li class="logo"><img src="../../assets/img/logo.png"></li>-->
       <div class="menu-div" v-for="(item,key1,index1) in menuList" :key="index1">
         <el-menu-item :index="key1+''" v-if="!item.children">
-          <router-link :to="'/Content/'+item.menuNameQp" style="text-align: left"><i :class="'el-icon-'+iconFont[item.menuNameQp]"></i>概况</router-link>
+          <router-link :to="'/Content/'+item.menuNameQp" style="text-align: left"><i :class="'el-icon-'+iconFont[item.menuNameQp]"></i>{{item.menuName}}</router-link>
         </el-menu-item>
         <el-submenu :index="key1+''" v-if="item.children && !item.emptyFolder">
           <template slot="title"><i :class="'el-icon-'+iconFont[item.menuNameQp]"></i>{{item.menuName}}</template>

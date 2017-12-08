@@ -25,6 +25,7 @@ import RoleMan from '@/components/MenuList/Manage/RoleMan/RoleMan'
 import SourceMan from '@/components/MenuList/Manage/SourceMan/SourceMan'
 import RoleManDetail from '@/components/MenuList/Manage/RoleMan/RoleManDetail'
 import RoleManConfig from '@/components/MenuList/Manage/RoleMan/RoleManConfig'
+import EnumerationMan from '@/components/MenuList/Manage/EnumerationMan/EnumerationMan'
 
 //日志审计
 import LogLogin from '@/components/Log/LogLogin'
@@ -196,6 +197,11 @@ const router = new Router({
           path: '/Content/OperationLog',
           name: 'OperationLog',
           component: OperationLog
+        },
+        {
+          path: '/Content/EnumerationMan',
+          name: 'EnumerationMan',
+          component: EnumerationMan
         },
       ]
     },

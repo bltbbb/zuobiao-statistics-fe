@@ -608,7 +608,6 @@
           this.errorType = to.query.errorType;
           this.startDate = to.query.startDate;
           this.stopDate = to.query.stopDate;
-//          console.log(to.query.vaule2)
           this.evalVal = to.query.evalVal * 1;
           this.platVal = to.query.platVal * 1;
           this.canalVal = to.query.canalVal * 1;

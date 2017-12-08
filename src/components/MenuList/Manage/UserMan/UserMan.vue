@@ -825,7 +825,7 @@
     margin-top: 40px
     background: #fff
     .form-wrap
-      padding: 0 20px
+      padding: 0 15px
       .title-header
         margin-top: 25px
         background: #EFF2F7
@@ -854,10 +854,10 @@
           line-height: 45px
           padding-left: 15px
         .list-btn
-          padding: 20px 40px 0
+          padding: 20px 5px 0
         .list-table
           margin-top: 20px
-          padding: 0 40px
+          padding: 0 5px
   .tab-1-btn
     text-align: right
   .transfer-wrapper

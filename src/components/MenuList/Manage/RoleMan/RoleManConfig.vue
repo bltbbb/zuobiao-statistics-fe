@@ -32,7 +32,7 @@
             :data="tableData"
             border
             style="width: 100%"
-            highlight-current-row
+            :row-class-name="tableRowClassName"
             @cell-click="panelTableClick">
             <el-table-column
               prop="panelName"
@@ -95,6 +95,10 @@
           <el-table-column
             prop="remark"
             label="描述">
+          </el-table-column>
+          <el-table-column
+            prop="panelName"
+            label="所属面板">
           </el-table-column>
           <el-table-column
             prop="createUser"
@@ -263,7 +267,10 @@
             selectElement:'',
             selectElementData:[],
             roleName: '',
-            menuName:''
+            menuName:'',
+            newId:'',
+            oldId:'',
+            panelIndex:''
           }
       },
       mounted(){
@@ -273,6 +280,7 @@
         init(){
           this.initParams()
           this.getSelectedPanel()
+          this.getSelectedElement()
         },
         initParams(){
           this.token = this.$cookie.get('adoptToken');
@@ -495,14 +503,30 @@
           if(column.property == 'handle'){
             return
           }
-          this.panelId = row.panelId
-          this.getSelectedElement()
+          this.newId = row.panelId
+          if(this.newId === this.oldId){
+            this.panelId = ''
+            this.panelIndex = ''
+            this.newId = ''
+            this.oldId = ''
+          }else{
+            this.panelIndex = row.index
+            this.panelId = row.panelId
+            this.getSelectedElement()
+          }
+          this.oldId = this.newId
+        },
+        tableRowClassName(row, index) {
+          if (index === this.panelIndex) {
+            return 'info-row';
+          }
+          return '';
         },
         panelDelete(index,row){
-          this.$http.delete(this.$store.state.domain+'/resPanel',{
+          this.$http.delete(this.$store.state.domain+'/rolePanel',{
               params:{
                 adoptToken: this.token,
-                panelId: row.panelId
+                id: row.rolePanelId
               }
           }).then((res)=>{
             if(res.data.status == 0){
@@ -554,4 +578,8 @@
     margin-bottom: 10px
     padding-bottom: 10px
     border-bottom: 1px solid #ccc
+</style>
+<style lang="sass">
+  .el-table .info-row
+    background: #b3beea
 </style>
