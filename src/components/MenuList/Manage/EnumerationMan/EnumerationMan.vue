@@ -2,7 +2,7 @@
   <div class="EnumerationMan">
     <div class="header-wrapper">
       <h1>
-        操作日志
+        枚举管理
         <el-popover
           placement="right"
           width="200"
@@ -75,31 +75,31 @@
         </el-pagination>
       </div>
     </div>
-    <el-dialog title="新增" :visible.sync="addDialog" size="tiny">
+    <el-dialog title="新增" :visible.sync="addDialog" size="small">
       <el-form :model="form2" label-width="100px" inline>
         <el-form-item label="CODE">
-          <el-input v-model="form2.enumCode" style="width: 160px;"  auto-complete="off"></el-input>
+          <el-input v-model="form2.enumCode" style="width: 192px;"  auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="分组">
-          <el-input v-model="form2.enumGroup" style="width: 160px;"  auto-complete="off"></el-input>
+          <el-input v-model="form2.enumGroup" style="width: 192px;"  auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="是否缓存">
-          <el-select v-model="form2.isCache" style="width: 160px;" placeholder="请选择">
+          <el-select v-model="form2.isCache" style="width: 192px;" placeholder="请选择">
             <el-option label="是" value="1"></el-option>
             <el-option label="否" value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="值">
-          <el-input v-model="form2.enumValue" style="width: 160px;"  auto-complete="off"></el-input>
+          <el-input v-model="form2.enumValue" style="width: 192px;"  auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="排序">
-          <el-input v-model="form2.sortIndex" style="width: 160px;"  auto-complete="off"></el-input>
+          <el-input v-model="form2.sortIndex" style="width: 192px;"  auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="名称">
-          <el-input v-model="form2.enumTxt" style="width: 160px;"  auto-complete="off"></el-input>
+          <el-input v-model="form2.enumTxt" style="width: 192px;"  auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="备注">
-          <el-input type="textarea"  v-model="form2.remark" style="width: 160px;"  auto-complete="off"></el-input>
+          <el-input type="textarea"  v-model="form2.remark" style="width: 192px;"  auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

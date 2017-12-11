@@ -36,9 +36,9 @@
         <el-select v-model="evalVal" placeholder="版本">
           <el-option
             v-for="edition in editions"
-            :key="edition.id+''"
-            :label="edition.name"
-            :value="edition.id+''">
+            :key="edition.appVersionId+''"
+            :label="edition.appVersion"
+            :value="edition.appVersionId+''">
           </el-option>
         </el-select>
       </div>
@@ -103,7 +103,7 @@
           <tr>
             <th></th>
             <th style="text-align: left;">
-              设备型号
+              {{tableName}}
               <el-popover
                 placement="right"
                 trigger="hover"
@@ -181,6 +181,7 @@
       return {
         explain: '这是菜单的说明文字',
         equipTooltip: '安装应用程序的手机型号和浏览器',
+        equipTooltipOption:['安装应用程序设备的型号和浏览器','安装应用程序设备的操作系统','安装应用程序设备的运营商','安装应用程序设备的联网方式'],
         loginTooltip: '累计登录过的次数',
         myChart: null,
         radioVal: '1',
@@ -273,7 +274,9 @@
         },
         tableData: [],
         titleArr: ['登录次数','新用户注册数','登录用户数'],
-        titleSingle: '累计登录次数'
+        titleSingle: '累计登录次数',
+        tableName: '设备型号',
+        tableNameOption:['设备型号','操作系统','运营商','联网方式']
       }
     },
     components:{
@@ -435,6 +438,8 @@
         this.getTerminalPages();
       },
       radioVal: function (val) {
+        this.tableName = this.tableNameOption[val--];
+        this.equipTooltip = this.equipTooltipOption[val--];
         this.getTerminal();
         this.getTerminalPages();
       },

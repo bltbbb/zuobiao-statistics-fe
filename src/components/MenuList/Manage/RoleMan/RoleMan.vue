@@ -76,7 +76,7 @@
             <el-form-item label="角色名称" :label-width="formLabelWidth">
               <el-input v-model="form2.roleName" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="角色名称拼音" :label-width="formLabelWidth">
+            <el-form-item label="角色拼音" :label-width="formLabelWidth">
               <el-input v-model="form2.roleNameQp" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="描述" :label-width="formLabelWidth">
@@ -211,5 +211,6 @@
 <style lang="sass">
   .role-man
     .el-dialog--tiny
-      width: 20%
+      width: 25%
+      padding-right: 20px
 </style>

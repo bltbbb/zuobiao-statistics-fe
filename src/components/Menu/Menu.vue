@@ -3,13 +3,13 @@
     <el-menu unique-opened default-active="2" class="el-menu-vertical-demo menu" @open="handleOpen" @close="handleClose" theme="dark">
 <!--      <li class="logo"><img src="../../assets/img/logo.png"></li>-->
       <div class="menu-div" v-for="(item,key1,index1) in menuList" :key="index1">
-        <el-menu-item :index="key1+''" v-if="!item.children">
+        <el-menu-item :index="key1+''" v-if="!item.children && !item.emptyFolder && !(item.isShare == 2)">
           <router-link :to="'/Content/'+item.menuNameQp" style="text-align: left"><i :class="'el-icon-'+iconFont[item.menuNameQp]"></i>{{item.menuName}}</router-link>
         </el-menu-item>
-        <el-submenu :index="key1+''" v-if="item.children && !item.emptyFolder">
+        <el-submenu :index="key1+''" v-if="item.children && !item.emptyFolder && !(item.isShare == 2)">
           <template slot="title"><i :class="'el-icon-'+iconFont[item.menuNameQp]"></i>{{item.menuName}}</template>
-          <el-menu-item-group v-if="item.children && !item.emptyFolder" >
-            <el-menu-item v-for="(list,key2,index2) in item.children"  :index="key1+'-'+key2"  :key="index2" v-if="list.menuType != 3">
+          <el-menu-item-group v-if="item.children && !item.emptyFolder && !(item.isShare == 2)" >
+            <el-menu-item v-for="(list,key2,index2) in item.children"  :index="key1+'-'+key2"  :key="index2" v-if="list.menuType != 3 && list.isShare != 2">
               <router-link :to="'/Content/'+list.menuNameQp">{{list.menuName}}</router-link>
             </el-menu-item>
           </el-menu-item-group>

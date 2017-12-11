@@ -21,9 +21,9 @@
         <el-select v-model="platVal" placeholder="平台">
           <el-option
             v-for="plat in plats"
-            :key="plat.value"
-            :label="plat.label"
-            :value="plat.value">
+            :key="plat.id"
+            :label="plat.name"
+            :value="plat.id">
           </el-option>
         </el-select>
         <el-select v-model="canalVal" placeholder="渠道">
@@ -37,9 +37,9 @@
         <el-select v-model="evalVal" placeholder="版本">
           <el-option
             v-for="edition in editions"
-            :key="edition.Eval"
-            :label="edition.label"
-            :value="edition.Eval">
+            :key="edition.appVersionId"
+            :label="edition.appVersion"
+            :value="edition.appVersionId">
           </el-option>
         </el-select>
       </div>
@@ -142,9 +142,9 @@
         myChart: null,
         charData: [],
         radioVal: 'total',
-        platVal: '-1',
+        platVal: -1,
         canalVal: '-1',
-        evalVal: "-1",
+        evalVal: -1,
         userId: 1,
         start: '',
         end: '',
@@ -158,26 +158,7 @@
         size: 20,
         currentPage: 1,
         totalCount: 100,
-        plats: [{
-          value: '-1',
-          label: '全平台'
-        }, {
-          value: '2',
-          label: 'iOS'
-        },
-          {
-            value: '3',
-            label: 'Android'
-          },
-          {
-            value: '4',
-            label: 'PC'
-          },
-          {
-            value: '5',
-            label: 'web'
-          }
-        ],
+        plats: [],
         canals: [{
           val: '-1',
           label: '全部渠道'
@@ -331,6 +312,35 @@
         this.getFlowAnalyzeTopten();
         this.getUserFlow();
         this.getFlowAnalyzePages();
+        //获取平台
+        this.$http.get(this.$store.state.domain+'/getPlatform',{
+          params:{
+            adoptToken:this.token
+          }
+        }).then((res)=>{
+          this.plats = res.data.result.result;
+        });
+
+        this.getEditions();
+      },
+      getEditions: function () {
+        let Params = new URLSearchParams();
+        Params.append('adoptToken', this.token);
+        Params.append('appPlatId', this.platVal);
+
+        //获取版本
+        this.$http.post(this.$store.state.domain+'/getEdition',Params).then((res)=>{
+          if(res.data.status == 0){
+            this.editions = res.data.result.result;
+          }
+          else{
+            //view(res.data.msg)
+            this.$message.error('登录过期，请重新登录');
+            lockr.rm("menuInfo");
+            this.$cookie.delete('adoptToken');
+            this.$router.push('/login');
+          }
+        })
       },
       getFlowAnalyzeTopten: function () {
         let Params = new URLSearchParams();
@@ -432,13 +442,18 @@
     watch:{
       // 异步请求待用
       platVal: function (val) {
-        console.log(val)
+        this.getEditions();
+        this.getFlowAnalyzeTopten();
+        this.getUserFlow();
+        this.getFlowAnalyzePages();
       },
       canalVal: function (val) {
         console.log(val)
       },
       evalVal: function (val) {
-        console.log(val)
+        this.getFlowAnalyzeTopten();
+        this.getUserFlow();
+        this.getFlowAnalyzePages();
       },
       radio2: function (val) {
         console.log(val)

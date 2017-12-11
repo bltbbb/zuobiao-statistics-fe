@@ -23,27 +23,27 @@
                 <el-button
                   type="danger" @click="deleteMenuHandle">删除</el-button>
               </div>
-              <el-tree :data="treeData" :props="defaultProps" node-key="privVisitId"  :highlight-current="highlightModel" expand-on-click-node @current-change="handleNodeClick"></el-tree>
+              <el-tree :data="treeData" :props="defaultProps" :accordion="true" node-key="privVisitId"  :highlight-current="highlightModel" expand-on-click-node @current-change="handleNodeClick"></el-tree>
             </div>
             <div class="source-right" v-if="menuId">
               <el-tabs type="border-card">
                 <el-tab-pane label="信息维护">
                   <div class="s-r-1-wrapper">
-                    <el-form ref="form" :model="form3" label-width="120px">
+                    <el-form ref="form" :model="form3" label-width="120px" class="from_1">
                       <el-form-item label="菜单名称">
                         <el-input v-model="form3.menuName"></el-input>
                       </el-form-item>
                       <el-form-item label="菜单拼音">
                         <el-input v-model="form3.menuNameQp"></el-input>
                       </el-form-item>
-                      <el-form-item label="描述">
-                        <el-input v-model="form3.remark"></el-input>
+                      <el-form-item label="菜单别名">
+                        <el-input v-model="form3.alias"></el-input>
                       </el-form-item>
                       <el-form-item label="菜单层次">
                         <el-input v-model="form3.menuLevel"></el-input>
                       </el-form-item>
                       <el-form-item label="菜单类型" label-width="120px">
-                        <el-select v-model="form3.menuType" placeholder="请选择菜单类型">
+                        <el-select style="width: 264px" v-model="form3.menuType" placeholder="请选择菜单类型">
                           <el-option
                             v-for="item in menuTypeData"
                             :key="item.id"
@@ -59,7 +59,7 @@
                         <el-input v-model="form3.sortIndex" auto-complete="off"></el-input>
                       </el-form-item>
                       <el-form-item label="加载类型" label-width="120px">
-                        <el-select v-model="form3.loadTarget">
+                        <el-select style="width: 264px" v-model="form3.loadTarget">
                           <el-option
                             v-for="item in loadTargetData"
                             :key="item.id"
@@ -71,11 +71,14 @@
                       <el-form-item label="全路径" label-width="120px">
                         <el-input v-model="form3.fullPath" auto-complete="off"></el-input>
                       </el-form-item>
-                      <el-form-item label="isShare" label-width="120px">
-                        <el-select v-model="form3.isShare" placeholder="请选择">
+                      <el-form-item class="isShare" label="isShare" label-width="120px">
+                        <el-select style="width: 264px" v-model="form3.isShare" placeholder="请选择">
                           <el-option label="是" value="1"></el-option>
                           <el-option label="否" value="2"></el-option>
                         </el-select>
+                      </el-form-item>
+                      <el-form-item label="描述">
+                        <el-input type="textarea" v-model="form3.remark"></el-input>
                       </el-form-item>
                       <!--<el-form-item label="备注" class="mask">-->
                         <!--<el-input type="textarea" :rows="2" v-model="form.mark"></el-input>-->
@@ -377,25 +380,25 @@
       </el-dialog>
     </div>
     <div class="addMenuDialog">
-      <el-dialog title="新增菜单" :visible.sync="addMenuDialog" size="tiny">
-        <el-form :model="form8">
+      <el-dialog title="新增菜单" :visible.sync="addMenuDialog" size="small">
+        <el-form :model="form8" inline>
           <el-form-item label="所属菜单" :label-width="formLabelWidth">
-            <el-input v-model="fatherMenu" readonly auto-complete="off"></el-input>
+            <el-input v-model="fatherMenu" style="width: 220px;" readonly auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="菜单名" :label-width="formLabelWidth">
-            <el-input v-model="form8.menuName" auto-complete="off"></el-input>
+            <el-input v-model="form8.menuName" style="width: 220px;" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="菜单拼音" :label-width="formLabelWidth">
-            <el-input v-model="form8.menuNameQp" auto-complete="off"></el-input>
+            <el-input v-model="form8.menuNameQp" style="width: 220px;" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="描述" :label-width="formLabelWidth">
-            <el-input v-model="form8.remark" auto-complete="off"></el-input>
+          <el-form-item label="菜单别名" :label-width="formLabelWidth">
+            <el-input v-model="form8.alias" style="width: 220px;" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="菜单层次" :label-width="formLabelWidth">
-            <el-input v-model="form8.menuLeval" auto-complete="off"></el-input>
+            <el-input v-model="form8.menuLeval" style="width: 220px;" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="菜单类型" :label-width="formLabelWidth">
-            <el-select v-model="form8.menuType" placeholder="请选择菜单类型">
+            <el-select v-model="form8.menuType" style="width: 220px;" placeholder="请选择菜单类型">
               <el-option
                 v-for="item in menuTypeData"
                 :key="item.id"
@@ -405,13 +408,13 @@
             </el-select>
           </el-form-item>
           <el-form-item label="URL路径" :label-width="formLabelWidth">
-            <el-input v-model="form8.urlPath" auto-complete="off"></el-input>
+            <el-input v-model="form8.urlPath" style="width: 220px;" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="排序索引" :label-width="formLabelWidth">
-            <el-input v-model="form8.sortIndex" auto-complete="off"></el-input>
+            <el-input v-model="form8.sortIndex" style="width: 220px;" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="加载类型" :label-width="formLabelWidth">
-            <el-select v-model="form8.loadTarget">
+            <el-select style="width: 220px;" v-model="form8.loadTarget">
               <el-option
                 v-for="item in loadTargetData"
                 :key="item.id"
@@ -421,13 +424,16 @@
             </el-select>
           </el-form-item>
           <el-form-item label="全路径" :label-width="formLabelWidth">
-            <el-input v-model="form8.fullPath" auto-complete="off"></el-input>
+            <el-input v-model="form8.fullPath" style="width: 220px;" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="isShare" :label-width="formLabelWidth">
-            <el-select v-model="form8.isShare" placeholder="请选择活动区域">
+            <el-select style="width: 220px;" v-model="form8.isShare" placeholder="请选择活动区域">
               <el-option label="是" value="1"></el-option>
               <el-option label="否" value="2"></el-option>
             </el-select>
+          </el-form-item>
+          <el-form-item label="描述" :label-width="formLabelWidth" >
+            <el-input style="width: 220px;" type="textarea" v-model="form8.remark" auto-complete="off"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="menuDialog-footer">
@@ -556,7 +562,8 @@
             loadTarget:'',
             sortIndex:'',
             isShare:'',
-            fullPath:''
+            fullPath:'',
+            alias:''
           },
           form4:{
             urlPath:''
@@ -582,6 +589,7 @@
               sortIndex:'',
               isShare:'',
               fullPath:'',
+              alias:''
           },
           form9:{
             panelName:'',
@@ -678,7 +686,7 @@
         this.getUrlSelected()
       },
       handleCurrentChange(data){
-        this.pageSize = data
+        this.currentPage = data
         this.getUrlSelected()
       },
       handleSizeChange2(data){
@@ -1203,7 +1211,8 @@
           loadTarget:this.form3.loadTarget,
           sortIndex:this.form3.sortIndex,
           isShare:this.form3.isShare,
-          fullPath:this.form3.fullPath
+          fullPath:this.form3.fullPath,
+          alias:this.form3.alias
         }
         this.$http.put(this.$store.state.domain+'/menu',qs.stringify(data)).then((res)=>{
           if(res.data.status == 0){
@@ -1329,10 +1338,20 @@
     margin-bottom: 10px
     .el-select
       display: block
+  .isShare
+    position: relative
+    .from_1
+    vertical-align: top
 </style>
 <style lang="sass">
   .el-table__body-wrapper
     overflow-x: hidden
   .el-table .info-row
     background: #b3beea
+  .source-man
+    .el-dialog--tiny
+      width: 25%
+      padding-right: 10px
+    .el-dialog--small
+      width: 40%
 </style>

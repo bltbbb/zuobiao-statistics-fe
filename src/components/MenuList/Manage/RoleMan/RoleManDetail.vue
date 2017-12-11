@@ -58,6 +58,10 @@
                     label="菜单英文">
                   </el-table-column>
                   <el-table-column
+                    prop="alias"
+                    label="菜单别名">
+                  </el-table-column>
+                  <el-table-column
                     prop="remark"
                     label="描述">
                   </el-table-column>
@@ -101,6 +105,10 @@
                   <el-table-column
                     prop="menuNameQp"
                     label="菜单英文">
+                  </el-table-column>
+                  <el-table-column
+                    prop="alias"
+                    label="菜单别名">
                   </el-table-column>
                   <el-table-column
                     prop="remark"

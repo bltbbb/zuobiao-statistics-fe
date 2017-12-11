@@ -68,7 +68,7 @@
           <template scope="scope">
             <div class="detail">
               <div >
-                <div class="detail-title detail-box" :class="{active: type == scope.row.id}"  v-html="scope.row.errorMessage"></div>
+                <div class="detail-title detail-box" :class="{active: type == scope.row.id}"  v-html="scope.row.crashMessage"></div>
               </div>
               <div class="detail-text">
                 <div @click="more(scope.$index,scope.row)" >{{ type == scope.row.id ? '收起':'展开' }}</div>

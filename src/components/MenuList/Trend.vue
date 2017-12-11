@@ -36,9 +36,9 @@
         <el-select v-model="evalVal" placeholder="版本">
           <el-option
             v-for="edition in editions"
-            :key="edition.id+''"
-            :label="edition.name"
-            :value="edition.id+''">
+            :key="edition.appVersionId+''"
+            :label="edition.appVersion"
+            :value="edition.appVersionId+''">
           </el-option>
         </el-select>
       </div>
