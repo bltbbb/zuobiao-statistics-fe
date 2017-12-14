@@ -2,7 +2,7 @@
   <div class="role-man">
     <div class="header-wrapper">
       <h1>
-        角色维护
+        角色管理
         <el-popover
           placement="right"
           width="200"

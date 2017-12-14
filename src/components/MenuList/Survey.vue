@@ -131,7 +131,7 @@
         // 绘制图表
         this.myChart.setOption({
           title: {
-              text: '注册用户',
+              text: '新增用户',
               x: 'center',
               top: '0'
           },
@@ -148,7 +148,7 @@
             type: 'value'
           },
           series: [{
-            name: '注册用户',
+            name: '新增用户',
             type: 'line',
             data: [],
             areaStyle: {
