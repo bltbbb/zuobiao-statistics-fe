@@ -438,8 +438,9 @@
         this.getTerminalPages();
       },
       radioVal: function (val) {
-        this.tableName = this.tableNameOption[val--];
-        this.equipTooltip = this.equipTooltipOption[val--];
+        let value = --val
+        this.tableName = this.tableNameOption[value];
+        this.equipTooltip = this.equipTooltipOption[value];
         this.getTerminal();
         this.getTerminalPages();
       },

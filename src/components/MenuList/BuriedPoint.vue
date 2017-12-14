@@ -17,7 +17,7 @@
     </div>
     <div class="title-box">
       <!--导航-->
-      <Calendar @timeValue="getTime" :showToday="false"></Calendar>
+      <!--<Calendar @timeValue="getTime" :showToday="false"></Calendar>-->
       <versiongetdata
         @Platform="childgetPlatform"
         @getEdition1="childgetEdition1"
@@ -37,25 +37,27 @@
           <tr >
             <th class="table-thead-th-1" :style="{width: '200px'}">事件名称</th>
             <th :style="{width: '180px'}">事件Id</th>
-            <th >事件数量（日均）
+            <th >昨日消息数
               <el-tooltip class="item" effect="light" content="Right Center 提示文字" placement="right" popper-class="hint">
-                <i class="el-icon-information"></i>
+                <!--<i class="el-icon-information"></i>-->
               </el-tooltip>
             </th>
 
-            <th >触发用户数（日均）
+            <th >昨日独立用户数
               <el-tooltip class="item" effect="light" content="Right Center 提示文字" placement="right" popper-class="hint">
-                <i class="el-icon-information"></i>
+                <!--<i class="el-icon-information"></i>-->
               </el-tooltip>
             </th>
+            <th :style="{width: '180px'}">详情</th>
           </tr>
         </thead>
         <tbody >
-          <tr v-for="(vaule,index) in tableData" >
-            <td class="table-thead-th-1 table-thead-th-2" @click="handleRowHandle(index, $event)" >{{ vaule.name }}</td>
-            <td>{{ vaule.interactionViewId }}</td>
-            <td>{{ vaule.visitCount }}</td>
-            <td>{{ vaule.deviceCount }}</td>
+          <tr v-for="(value,index) in tableData" >
+            <td class="table-thead-th-1 table-thead-th-2">{{ value.name }}</td>
+            <td>{{ value.interactionViewId }}</td>
+            <td>{{ value.visitCount }}</td>
+            <td>{{ value.deviceCount }}</td>
+            <td><el-button size="small" @click="handleRowHandle(index, $event)">查看</el-button></td>
           </tr>
         </tbody>
       </table>
@@ -80,7 +82,12 @@
         canalVal: '',
 
         //  页面列表
-        tableData: [],
+        tableData: [{
+          name:'1',
+          interactionViewId:'1',
+          visitCount:'1',
+          deviceCount:'1',
+        }],
         activeIndex: '1',
         activeIndex2: '1',
         radio3: '今天',
@@ -148,7 +155,6 @@
                   else if (res.data.status == 1) {
                     this.tableData = [];
                     this.$message.warning('暂无数据');
-                    console.log('事件信息请求数据为空');
                   }
                 }
                 else {
@@ -205,7 +211,7 @@
   }
 
   .title-select-box {
-    float: right;
+    float: left;
   }
 
   .table-wrapper {
@@ -225,19 +231,11 @@
     line-height: 40px;
     background-color: #dfe6ec;
     border: solid 1px #DFE6EC;
+    font-size: 14px;
   }
 
   .table-thead-th-1 {
     padding-left: 20px;
-  }
-
-  .table-thead-th-2 {
-    color: #7A8FE4;
-  }
-
-  .table-thead-th-2:hover{
-    text-decoration: underline;
-    cursor: pointer;
   }
 
   .table-title tbody {

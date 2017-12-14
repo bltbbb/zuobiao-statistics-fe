@@ -15,7 +15,7 @@
       </h1>
     </div>
     <div class="select-wrapper">
-      <el-select v-model="pageVal" placeholder="页面" class="page-select">
+      <el-select v-model="pageVal" style="width: 130px;" placeholder="页面" class="page-select">
         <el-option
           v-for="page in pages"
           :key="page.id"
@@ -40,7 +40,7 @@
       </div>
       <div id="TendChart" class="chart" :style="{width: '100%', height: '400px'}"></div>
       <el-radio-group v-model="radio2" class="radio-box">
-        <el-radio :label="1">事件数量</el-radio>
+        <el-radio :label="1">消息数量</el-radio>
         <el-radio :label="2">触发用户数</el-radio>
       </el-radio-group>
       <!--表格-->
@@ -90,7 +90,7 @@
         port: this.$store.state.domain,
         explain: '这是菜单的说明文字',
         getEditionId: '',
-        eventName: '',
+        eventName: '事件统计',
         //  页面
         pages: [],
         pageVal: '',
@@ -191,6 +191,7 @@
               if (res.data.status == 0) {
                 let data = res.data.result.result;
                 this.pages = data;
+                console.log(this.pages)
               }
               else if (res.data.result == 1) {
                 console.log('页面信息请求数据为空')
@@ -284,7 +285,6 @@
         this.myChart = echarts.init(document.getElementById('TendChart'));
         // 绘制图表
         this.myChart.setOption({
-          title: {text: '趋势图'},
           tooltip: {
             trigger: 'axis'
           },

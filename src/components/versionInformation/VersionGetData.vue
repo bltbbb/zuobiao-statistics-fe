@@ -1,6 +1,6 @@
 <template>
       <div class="title-select-box">
-        <el-select v-model="platVal" placeholder="平台" @change="changeVal">
+        <el-select v-model="platVal" placeholder="平台" style="width: 150px" @change="changeVal">
           <el-option
             v-for="plat in plats"
             :key="plat.name"
@@ -8,7 +8,7 @@
             :value="plat.id">
           </el-option>
         </el-select>
-        <el-select v-model="canalVal" placeholder="渠道">
+        <el-select v-model="canalVal" style="width: 150px" placeholder="渠道">
           <el-option
             v-for="canal in canals"
             :key="canal.val"
@@ -16,7 +16,7 @@
             :value="canal.val">
           </el-option>
         </el-select>
-        <el-select v-model="evalVal" placeholder="版本" @change="changeEvalVal">
+        <el-select v-model="evalVal" style="width: 150px" placeholder="版本" @change="changeEvalVal">
           <el-option
             v-for="edition in editions"
             :key="edition.appVersion"

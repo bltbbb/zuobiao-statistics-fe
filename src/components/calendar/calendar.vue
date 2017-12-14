@@ -9,7 +9,7 @@
       <el-radio-button name="3" label="最近30天"></el-radio-button>
       <el-radio-button name="4" label="最近60天"></el-radio-button>
       <el-radio-button name="5" label="自定义" class="time-box" ref="custom">
-        <el-date-picker v-model="value1" type="date" placeholder=""
+        <el-date-picker style="width: 130px" v-model="value1" type="date" placeholder=""
                         class="data-piker" @change="change" @focus="focusPiker"
                         :picker-options="pickerOptions1" @click="this.date = true">
         </el-date-picker>
