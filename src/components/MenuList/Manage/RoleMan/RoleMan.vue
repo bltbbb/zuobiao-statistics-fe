@@ -72,12 +72,21 @@
       </div>
       <div class="addRoleDialog">
         <el-dialog title="新增角色" :visible.sync="dialogFormVisible" size="tiny">
-          <el-form :model="form2">
-            <el-form-item label="角色名称" :label-width="formLabelWidth">
+          <el-form :model="form2" :rules="rules" ref="addRoleForm">
+            <el-form-item label="角色名称" :label-width="formLabelWidth" prop="roleName">
               <el-input v-model="form2.roleName" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="角色拼音" :label-width="formLabelWidth">
+            <el-form-item label="角色拼音" :label-width="formLabelWidth" prop="roleNameQp">
               <el-input v-model="form2.roleNameQp" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="有效时间" :label-width="formLabelWidth" prop="valueTime">
+              <el-date-picker
+                v-model="form2.valueTime"
+                type="daterange"
+                placeholder="选择日期范围"
+                range-separator="~"
+                @change="dataChange">
+              </el-date-picker>
             </el-form-item>
             <el-form-item label="描述" :label-width="formLabelWidth">
               <el-input type="textarea" v-model="form2.remark" auto-complete="off"></el-input>
@@ -106,17 +115,32 @@
         explain: '角色维护',
         form:{
           roleName: '',
+          roleNameQp: '',
           remark:''
         },
         form2:{
           roleName: '',
           roleNameQp: '',
-          remark: ''
+          remark: '',
+          valueTime:'',
+          validBegin:'',
+          validEnd:''
         },
         tableData: [{
           name: 1,
           address: 2
         }],
+        rules: {
+          roleName: [
+            { required: true, message: '请输入角色名称', trigger: 'blur' }
+          ],
+          roleNameQp: [
+            { required: true, message: '请输入角色拼音', trigger: 'blur' }
+          ],
+          valueTime: [
+            { type:'array', required: true, message: '请选择有效期', trigger: 'blur' }
+          ]
+        },
       }
     },
     mounted(){
@@ -163,19 +187,25 @@
         this.dialogFormVisible = true
       },
       postAddRole(){
-        let data = {
-          adoptToken: this.token,
-          ...this.form2
-        }
-        this.$http.post(this.$store.state.domain+'/role',qs.stringify(data)).then((res)=>{
-          if(res.data.status == 0){
-            this.$message('提交成功')
-            this.dialogFormVisible = false
-            this.getAllRole()
-          }
-        },(err)=>{
+        this.$refs.addRoleForm.validate((valid) => {
+          if (!valid) {
+            return;
+          }else {
+            let data = {
+              adoptToken: this.token,
+              ...this.form2
+            }
+            this.$http.post(this.$store.state.domain+'/role',qs.stringify(data)).then((res)=>{
+              if(res.data.status == 0){
+                this.$message('提交成功')
+                this.dialogFormVisible = false
+                this.getAllRole()
+              }
+            },(err)=>{
 
-        })
+            })
+          }
+        });
       },
       deleteRole(index,row){
         this.$http.delete(this.$store.state.domain+'/role',{
@@ -194,7 +224,12 @@
       },
       searchRole(){
         this.getAllRole()
-      }
+      },
+      dataChange(value){
+        let arrTemp = value.split('~')
+        this.form2.validBegin = arrTemp[0]
+        this.form2.validEnd = arrTemp[1]
+      },
     }
   }
 </script>

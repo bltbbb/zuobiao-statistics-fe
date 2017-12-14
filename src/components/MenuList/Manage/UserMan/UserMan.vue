@@ -135,18 +135,33 @@
     <el-dialog title="用户维护" :visible.sync="dialogFormVisible">
       <el-tabs type="border-card">
         <el-tab-pane label="用户资料">
-          <el-form :model="form2" label-width="80px">
-            <el-form-item label="用户昵称">
+          <el-form :model="form2" label-width="80px" :rules="rules" ref="editeUserForm">
+            <el-form-item label="用户昵称" prop="nickName">
               <el-input style="width: 216px" v-model="form2.nickName" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="性别">
+            <el-form-item label="登陆名称" prop="userName">
+              <el-input style="width: 216px" v-model="form2.userName" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="性别" prop="sex">
               <el-select v-model="form2.sex" placeholder="请选择性别">
                 <el-option label="男" value="1"></el-option>
                 <el-option label="女" value="2"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="手机">
+            <el-form-item label="手机" prop="phoneNo">
               <el-input style="width: 216px" v-model="form2.phoneNo" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱" prop="email">
+              <el-input style="width: 216px" v-model="form2.email" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="生日" prop="birthday">
+              <el-date-picker
+                v-model="form2.birthday"
+                type="date"
+                placeholder="选择生日"
+                style="width: 220px;"
+                @change="birthChange2">
+              </el-date-picker>
             </el-form-item>
             <el-form-item label="邮编">
               <el-input style="width: 216px" v-model="form2.postcode" auto-complete="off"></el-input>
@@ -157,9 +172,9 @@
             <el-form-item label="备注">
               <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 10}" v-model="form2.remark" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="有效时间" style="width: 300px">
+            <el-form-item label="有效时间" style="width: 300px" prop="valueTime">
               <el-date-picker
-                v-model="form2.modelTime"
+                v-model="form2.valueTime"
                 type="daterange"
                 placeholder="选择日期范围"
                 range-separator="~"
@@ -188,14 +203,14 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="密码修改">
-          <el-form :model="form4" label-width="80px">
-            <el-form-item label="旧密码">
+          <el-form :model="form4" label-width="80px" :rules="pwdRules" ref="changeFrom">
+            <el-form-item label="旧密码" prop="oldPw">
               <el-input style="width: 216px" v-model="form4.oldPw"></el-input>
             </el-form-item>
-            <el-form-item label="新密码">
+            <el-form-item label="新密码" prop="newPw">
               <el-input style="width: 216px" v-model="form4.newPw"></el-input>
             </el-form-item>
-            <el-form-item label="确认密码">
+            <el-form-item label="确认密码" prop="tNewPw">
               <el-input style="width: 216px" v-model="form4.tNewPw"></el-input>
             </el-form-item>
           </el-form>
@@ -331,28 +346,37 @@
         </el-tab-pane>
       </el-tabs>
     </el-dialog>
-    <el-dialog title="新增用户" :visible.sync="addUserDialog" size="small">
-      <el-form :model="form8" label-width="100px" inline>
-        <el-form-item label="用户昵称">
+    <el-dialog title="新增用户"  :visible.sync="addUserDialog" size="small">
+      <el-form :model="form8" :rules="rules" ref="addUserForm" label-width="100px" inline>
+        <el-form-item label="用户昵称" prop="nickName">
           <el-input v-model="form8.nickName" style="width: 220px;"  auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="登录名称">
+        <el-form-item label="登录名称" prop="userName">
           <el-input v-model="form8.userName" style="width: 220px;"  auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="性别">
+        <el-form-item label="性别" prop="sex">
           <el-select v-model="form8.sex" style="width: 220px;" placeholder="请选择性别">
             <el-option label="男" value="1"></el-option>
             <el-option label="女" value="2"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密码" prop="passWord">
           <el-input v-model="form8.passWord" style="width: 220px;"  auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="手机">
+        <el-form-item label="手机" prop="phoneNo">
           <el-input v-model="form8.phoneNo" style="width: 220px;"  auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="生日">
-          <el-input v-model="form8.birthday" style="width: 220px;"  auto-complete="off"></el-input>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="form8.email" style="width: 220px;"  auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="生日" prop="birthday">
+          <el-date-picker
+            v-model="form8.birthday"
+            type="date"
+            placeholder="选择生日"
+            style="width: 220px;"
+            @change="birthChange">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="邮编">
           <el-input v-model="form8.postcode" style="width: 220px;"  auto-complete="off"></el-input>
@@ -360,7 +384,7 @@
         <el-form-item label="地址">
           <el-input v-model="form8.address" style="width: 220px;"  auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="有效时间" >
+        <el-form-item label="有效时间" prop="valueTime">
           <el-date-picker
             v-model="form8.valueTime"
             type="daterange"
@@ -400,7 +424,7 @@
         },
         form2: {
             nickName: '',
-            phone:'',
+            phoneNo:'',
             sex:'',
             pwd:'',
             postcode:'',
@@ -408,7 +432,11 @@
             remark:'',
             startTime:'',
             endTime:'',
-            modelTime:'',
+            valueTime:'',
+            email:'',
+            userName:'',
+            birthday:''
+
         },
         form3: {
             name: ''
@@ -433,14 +461,56 @@
         form8:{
           nickName: '',
           userName:'',
-          phone:'',
+          phoneNo:'',
           sex:'',
           pwd:'',
+          email:'',
           postcode:'',
           address:'',
           remark:'',
           valueTime:'',
           birthday:''
+        },
+        rules: {
+          nickName: [
+            { required: true, message: '请输入用户昵称', trigger: 'blur' }
+          ],
+          userName: [
+            { required: true, message: '请输入登录名称', trigger: 'change' }
+          ],
+          phoneNo: [
+            { required: true, message: '请输入手机号', trigger: 'blur'},
+            { message: '请输入正确的手机号', trigger: 'blur,change', pattern: /^[1][3,4,5,7,8][0-9]{9}$/},
+          ],
+          sex: [
+            { required: true, message: '请选择性别', trigger: 'change' }
+          ],
+          birthday: [
+            { required: true, message: '请选择生日', trigger: 'change' }
+          ],
+          passWord: [
+            { required: true, message: '请输入密码', trigger: 'change',  },
+            { pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{10,}$/, message: '请包含字母和数字，且不低于10位', trigger: 'blur'}
+          ],
+          email: [
+            { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+            { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur,change' }
+          ],
+          valueTime: [
+            { type: 'array', required: true, message: '请选择有效时间', trigger: 'blur' }
+          ]
+        },
+        pwdRules: {
+          oldPw: [
+            { required: true, message: '请输入旧密码', trigger: 'blur',  },
+          ],
+          newPw: [
+            { required: true, message: '请输入新密码', trigger: 'blur',  },
+          ],
+          tNewPw: [
+            { required: true, message: '请输入新密码', trigger: 'blur',  },
+            { pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{10,}$/, message: '请包含字母和数字，且不低于10位', trigger: 'change'}
+          ],
         },
         treeData: [],
         defaultProps:{
@@ -625,6 +695,7 @@
         let arrTemp = value.split('~')
         this.form8.validBegin = arrTemp[0]
         this.form8.validEnd = arrTemp[1]
+        console.log(this.form8.valueTime)
       },
       dataChange2(value){
         let arrTemp = value.split('~')
@@ -632,35 +703,42 @@
         this.form2.validEnd = arrTemp[1]
       },
       addUserHandle(){
-        let data = this.form8;
-        data.adoptToken = this.token
-        this.$http.post(this.$store.state.domain+'/user',qs.stringify(this.form8)).then((res)=>{
-          if(res.data.status == 0){
-            this.$message('提交成功')
-            this.addUserDialog = false
-            this.getRoleList()
-            this.form8 = {
-              nickName: '',
-              phoneNo:'',
-              sex:'',
-              pwd:'',
-              postcode:'',
-              address:'',
-              remark:'',
-              validBegin:'',
-              validEnd:'',
-              valueTime:'',
-              userName:'',
-              birthday:''
-            }
-          }
-          else{
+        this.$refs.addUserForm.validate((valid) => {
+          if (valid) {
+            let data = this.form8;
+            data.adoptToken = this.token
+            this.$http.post(this.$store.state.domain+'/user',qs.stringify(this.form8)).then((res)=>{
+              if(res.data.status == 0){
+                this.$message('提交成功')
+                this.addUserDialog = false
+                this.getRoleList()
+                this.form8 = {
+                  nickName: '',
+                  phoneNo:'',
+                  sex:'',
+                  pwd:'',
+                  postcode:'',
+                  address:'',
+                  remark:'',
+                  validBegin:'',
+                  validEnd:'',
+                  valueTime:'',
+                  userName:'',
+                  birthday:''
+                }
+              }
+              else{
 
+              }
+            },(err)=>{
+              //view('网络错误')
+              this.$message.error('网络错误');
+            })
+          } else {
+            return false;
           }
-        },(err)=>{
-          //view('网络错误')
-          this.$message.error('网络错误');
-        })
+        });
+
       },
       deleteUser(){
           this.$http.delete(this.$store.state.domain+'/user',{
@@ -712,10 +790,11 @@
         this.form2.validBegin = data.validBegin
         this.form2.validEnd = data.validEnd
         this.form2.sex = data.sex + ''
+        this.form2.birthday = data.birthday
         let arr = []
         arr.push(this.form2.validBegin)
         arr.push(this.form2.validEnd)
-        this.form2.modelTime = arr
+        this.form2.valueTime = arr
 
         this.dialogFormVisible = true
       },
@@ -723,23 +802,29 @@
         if(this.form4.newPw != this.form4.tNewPw){
             this.$message('新密码不一致，请重新输入')
         }
-        let data = {
-          adoptToken: this.token,
-          userId: this.userId,
-          passWord: this.form4.oldPw,
-          newPassword: this.form4.newPw,
-          repeatPassword: this.form4.tNewPw,
-        }
-        this.$http.post(this.$store.state.domain+'/user/updatePwd',qs.stringify(data)).then((res)=>{
-          if(res.data.status == 0){
-            this.$message('修改成功！')
-            this.dialogFormVisible = true
-          }else{
-            this.$message(res.data.result.result.message)
-          }
-        },(err)=>{
+        this.$refs.changeFrom.validate((valid) => {
+          if (valid) {
+            let data = {
+              adoptToken: this.token,
+              userId: this.userId,
+              passWord: this.form4.oldPw,
+              newPassword: this.form4.newPw,
+              repeatPassword: this.form4.tNewPw,
+            }
+            this.$http.post(this.$store.state.domain+'/user/updatePwd',qs.stringify(data)).then((res)=>{
+              if(res.data.status == 0){
+                this.$message('修改成功！')
+                this.dialogFormVisible = true
+              }else{
+                this.$message(res.data.result.result.message)
+              }
+            },(err)=>{
 
-        })
+            })
+          } else {
+            return false;
+          }
+        });
       },
       jurisdiction(index,data){
         this.userId = data.userId
@@ -801,19 +886,32 @@
         })
       },
       saveUserChange(){
-        let data = {
-          adoptToken: this.token,
-          ...this.form2
-        }
-        this.$http.put(this.$store.state.domain+'/user',qs.stringify(data)).then((res)=>{
-          if(res.data.status == 0){
-            this.$message('修改成功！')
-          }else{
+        this.$refs.editeUserForm.validate((valid) => {
+          if (valid) {
+            let data = {
+              adoptToken: this.token,
+              ...this.form2
+            }
+            this.$http.put(this.$store.state.domain+'/user',qs.stringify(data)).then((res)=>{
+              if(res.data.status == 0){
+                this.$message('修改成功！')
+              }else{
 
+              }
+            },(err)=>{
+
+            })
+          } else {
+            return false;
           }
-        },(err)=>{
+        });
 
-        })
+      },
+      birthChange(value){
+          this.form8.birthday = value
+      },
+      birthChange2(value){
+        this.form2.birthday = value
       }
     }
   }

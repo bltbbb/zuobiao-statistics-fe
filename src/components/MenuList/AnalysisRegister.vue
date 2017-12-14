@@ -15,23 +15,24 @@
       </h1>
     </div>
     <div class="select-wrapper">
-      <el-select v-model="pageVal" style="width: 130px;" placeholder="页面" class="page-select">
+      <el-select v-model="pageVal" style="width: 160px;"  class="page-select">
         <el-option
           v-for="page in pages"
-          :key="page.id"
-          :label="page.name"
-          :value="page.id">
+          :key="page.eventId"
+          :label="page.eventName"
+          :value="page.eventId">
         </el-option>
       </el-select>
     </div>
     <div class="title-box">
-      <Calendar @timeValue="getTime" :showToday="false"></Calendar>
+      <Calendar @timeValue="getTime"></Calendar>
       <versiongetdata
         @Platform="childgetPlatform"
-        @getEdition1="childgetEdition1"
         @changeVal="childplatVal1"
-        @changeEvalVal="childchangeEvalVal"
         @canalVal1="childcanalVal1"
+        @getEdition1="getEdition"
+        @changeEvalVal="getPlat"
+        :allPlat="false"
       >
       </versiongetdata>
     </div>
@@ -49,16 +50,14 @@
         style="width: 100%">
         <el-table-column
           prop="statisDate"
-          label="日期"
-          width="180">
+          label="日期">
         </el-table-column>
         <el-table-column
-          prop="visitCount"
-          label="事件数量"
-          width="180">
+          prop="yesMessageCount"
+          label="事件数量">
         </el-table-column>
         <el-table-column
-          prop="deviceCount"
+          prop="yesUserCount"
           label="触发用户数">
         </el-table-column>
       </el-table>
@@ -95,8 +94,8 @@
         pages: [],
         pageVal: '',
 
-        platVal: '',
-        evalVal: '',
+        platVal: 3,
+        evalVal: -1,
         canalVal: '',
 
         // 第一部分
@@ -112,7 +111,11 @@
         curtext: null,
         totalCount: null,
         eventData: '',
-        triggerUserData: ''
+        triggerUserData: '',
+        startDate: '',
+        stopDate: '',
+        messageChartData: [],
+        userChartData: [],
       }
     },
 
@@ -134,28 +137,28 @@
       selected: function (gameName) {
         this.activeName = gameName
       },
-
       initParams () {
-//        this.eventName = this.$route.query.eventName;
-        this.pageVal = this.$route.query.eventId * 1;
+        this.token = this.$cookie.get('adoptToken');
+        this.pageVal = this.$route.params.id
         let date = new Date();
         let start = new Date();
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-        this.start = start.Format("yyyy-MM-dd");
-        this.end = date.Format("yyyy-MM-dd");
-        this.token = this.$cookie.get('adoptToken');
+        let stop = new Date();
+        start.setTime(start.getTime() - 3600 * 1000 * 24);
+        stop.setTime(stop.getTime() - 3600 * 1000 * 24);
+        this.startDate = start.Format("yyyy-MM-dd");
+        this.stopDate = stop.Format("yyyy-MM-dd");
       },
 
       init () {
         this.getInteractionView();
-        this.getAnalyzeChart();
+        //this.getAnalyzeChart();
         this.getAnalyzePages();
-
       },
 
       //  平台信息
       childgetPlatform (plats) {
         this.platVal = plats;
+        this.getInteractionView()
       },
 
       childplatVal1 (childplatVal1) {
@@ -165,44 +168,38 @@
       },
 
       //  版本信息
-      childgetEdition1 (childgetEdition1) {
-        this.evalVal = childgetEdition1;
-      },
-
-      childchangeEvalVal (childchangeEvalVal) {
-        this.evalVal = childchangeEvalVal;
+      getPlat(val){
+        this.evalVal = val;
         this.getAnalyzeChart();
         this.getAnalyzePages();
+        this.getInteractionView()
       },
-
       //  渠道信息
       childcanalVal1 (canalVal) {
         this.canalVal = canalVal * 1;
       },
 
-      //  查询页面
+      //  查询事件
       getInteractionView () {
-        this.$http.get(this.port + '/getInteractionView',{
+        this.$http.get(this.port + '/getDimEvent',{
           params:{
-            adoptToken: this.$cookie.get('adoptToken')
+            adoptToken: this.$cookie.get('adoptToken'),
+            appPlatId: this.platVal,
+            versionId: this.evalVal
           }
         }).then( (res) => {
             if (res.status == 200) {
               if (res.data.status == 0) {
                 let data = res.data.result.result;
                 this.pages = data;
-                console.log(this.pages)
               }
               else if (res.data.result == 1) {
-                console.log('页面信息请求数据为空')
               }
             }
             else {
-              console.log('请求失败')
             }
           }, (err) => {
-            console.log('获取失败')
-            console.log('err',err)
+
           })
       },
 
@@ -210,38 +207,35 @@
       getAnalyzeChart () {
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
-        ((this.curtext) ? Params.append('date', this.currentDate) : Params.append('dateType', this.dateType));
+        Params.append('startDate', this.startDate)
+        Params.append('stopDate', this.stopDate)
         Params.append('platformId', this.platVal);
         Params.append('versionId', this.evalVal);
         Params.append('channelId', this.canalVal);
         Params.append('eventId', this.pageVal);
-        this.$http.post(this.port + '/EventAnalyzeChart',Params)
+        this.$http.post(this.port + '/EventAnalyzeReport',Params)
           .then( (res) => {
           if (res.status == 200) {
             if (res.data.status == 0) {
-              this.eventData = res.data.result.result.event;
-              this.triggerUserData = res.data.result.result.triggerUser;
+              this.messageChartData = res.data.result.result.yesMessage;
+              this.userChartData = res.data.result.result.yesUser;
               this.myChart.setOption({
                 xAxis: {
-                  data: this.eventData.x
+                  data: this.messageChartData.x
                 },
                 series: [{
-                  data: this.eventData.y
+                  data: this.messageChartData.y
                 }]
               });
             }
             else if (res.data.status == 1) {
               this.$message.warning('数据为空');
-              console.log('图表信息请求数据为空')
             }
         }
       else {
-          console.log('请求失败')
         }
 
       }, (err) => {
-          console.log('获取失败')
-          console.log('err',err)
         });
       },
 
@@ -249,14 +243,15 @@
       getAnalyzePages () {
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
-        ((this.curtext) ? Params.append('date', this.currentDate) : Params.append('dateType', this.dateType));
+        Params.append('startDate', this.startDate)
+        Params.append('stopDate', this.stopDate)
         Params.append('platformId', this.platVal);
         Params.append('versionId', this.evalVal);
         Params.append('channelId', this.canalVal);
         Params.append('eventId', this.pageVal);
         Params.append('pageSize', this.size);
         Params.append('currentPage', this.currentPage4);
-        this.$http.post(this.port + '/EventAnalyzePages',Params)
+        this.$http.post(this.port + '/EventAnalyzeDetailed',Params)
           .then( (res) => {
             if (res.status == 200) {
               if (res.data.status == 0) {
@@ -266,16 +261,11 @@
               }
               else if (res.data.status == 1) {
                 this.tableData = [];
-                this.$message.warning('数据为空');
-                console.log('表格信息请求数据为空')
               }
             }
             else {
-              console.log('请求失败')
             }
           }, (err) => {
-            console.log('获取失败')
-            console.log('err',err)
           });
       },
 
@@ -328,9 +318,8 @@
 
       //获取日历时间
       getTime(msg,dateType,curtext){
-        this.currentDate = msg.Format("yyyy-MM-dd");
-        this.dateType = dateType;
-        this.curtext = curtext;
+        this.startDate = msg[0].Format("yyyy-M-d");
+        this.stopDate = msg[1].Format("yyyy-M-d");
         this.getAnalyzeChart();
         this.getAnalyzePages();
       }
@@ -343,24 +332,6 @@
       //  监听页面栏
       pageVal (vaule) {
         this.pageVal = vaule;
-        if (vaule == '56') {
-          this.eventName = '注册页面'
-        }
-        else if (vaule == '57'){
-          this.eventName = '登录页面'
-        }
-        else if (vaule == '58'){
-          this.eventName = '重置密码页面'
-        }
-        else if (vaule == '59'){
-          this.eventName = '登录成功'
-        }
-        else if (vaule == '60'){
-          this.eventName = '重置密码成功'
-        }
-        else if (vaule == '61'){
-          this.eventName = '注册成功'
-        }
         this.getAnalyzeChart();
         this.getAnalyzePages();
       },
@@ -379,10 +350,10 @@
         if (trigger == 2) {
           this.myChart.setOption({
             xAxis: {
-              data: this.triggerUserData.x
+              data: this.userChartData.x
             },
             series: [{
-              data: this.triggerUserData.y,
+              data: this.userChartData.y,
               name: '用户数触发数'
             }]
           });
@@ -390,10 +361,10 @@
         else if (trigger == 1) {
           this.myChart.setOption({
             xAxis: {
-              data: this.eventData.x
+              data: this.messageChartData.x
             },
             series: [{
-              data: this.eventData.y,
+              data: this.messageChartData.y,
               name: '事件数'
             }]
           });

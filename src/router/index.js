@@ -37,6 +37,9 @@ import OperationLog from '@/components/Log/OperationLog'
 //无权限
 import Jurisdiction from '@/components/Jurisdiction/Jurisdiction'
 
+//修改密码
+import ChangePwd from '@/components/ChangePwd/ChangePwd'
+
 //404
 import notFound from '@/components/404/404'
 
@@ -128,7 +131,7 @@ const router = new Router({
           name:'BuriedPoint'
         },
         {
-          path: '/Content/AnalysisRegister',
+          path: '/Content/AnalysisRegister/:id',
           component: AnalysisRegister,
           name: 'AnalysisRegister'
         },
@@ -202,6 +205,11 @@ const router = new Router({
           path: '/Content/EnumerationMan',
           name: 'EnumerationMan',
           component: EnumerationMan
+        },
+        {
+          path: '/Content/ChangePwd',
+          name: 'ChangePwd',
+          component: ChangePwd
         },
       ]
     },

@@ -16,12 +16,21 @@
       <div class="role-detail-main">
         <el-tabs type="border-card">
           <el-tab-pane label="信息维护">
-            <el-form :model="form" label-width="80px">
-              <el-form-item label="角色名称">
+            <el-form :model="form" label-width="80px" :rules="rules" ref="editeRoleForm">
+              <el-form-item label="角色名称" prop="roleName">
                 <el-input style="width: 216px" v-model="form.roleName"></el-input>
               </el-form-item>
-              <el-form-item label="角色拼音">
+              <el-form-item label="角色拼音" prop="roleNameQp">
                 <el-input style="width: 216px" v-model="form.roleNameQp"></el-input>
+              </el-form-item>
+              <el-form-item label="有效时间" prop="valueTime" style="width: 296px">
+                <el-date-picker
+                  v-model="form.valueTime"
+                  type="daterange"
+                  placeholder="选择日期范围"
+                  range-separator="~"
+                  @change="dataChange">
+                </el-date-picker>
               </el-form-item>
               <el-form-item label="描述">
                 <el-input type="textarea" :autoSize="{ minRows: 2, maxRows: 10}" v-model="form.remark"></el-input>
@@ -405,10 +414,12 @@
               dialogTableVisible: false,
               explain:'角色维护',
               form:{
-                  ID:'',
-                  name:'',
-                  sname:'',
-                  mark:''
+                roleName:'',
+                roleNameQp:'',
+                remark:'',
+                valueTime:[],
+                validBegin:'',
+                validEnd:''
               },
               form2:{
                 ID:'',
@@ -440,7 +451,18 @@
               selectMenu: [],
               setData: {},
               configSourceDialog: false,
-              selectedData: []
+              selectedData: [],
+              rules: {
+                roleName: [
+                  { required: true, message: '请输入角色名称', trigger: 'blur' }
+                ],
+                roleNameQp: [
+                  { required: true, message: '请输入角色拼音', trigger: 'blur' }
+                ],
+                valueTime: [
+                  { type:'array', required: true, message: '请选择有效期', trigger: 'blur' }
+                ]
+              },
             }
         },
         mounted(){
@@ -467,7 +489,14 @@
                 }
             }).then((res)=>{
               if(res.data.status == 0){
-                this.form = res.data.result
+                let data = res.data.result
+                this.form.roleName = data.roleName
+                this.form.roleNameQp = data.roleNameQp
+                this.form.remark = data.remark
+                this.form.validBegin = data.validBegin
+                this.form.validEnd = data.validEnd
+                this.form.valueTime.push(data.validBegin)
+                this.form.valueTime.push(data.validEnd)
               }
             },(err)=>{
 
@@ -603,22 +632,30 @@
             })
           },
           changeRole(){
-              let data = {
-                adoptToken: this.token,
-                roleId: this.roleId,
-                roleName: this.form.roleName,
-                remark: this.form.remark,
-                roleNameQp: this.form.roleNameQp
-              }
-              this.$http.put(this.$store.state.domain+'/role',qs.stringify(data)).then((res)=>{
-                if(res.data.status == 0){
-                  this.$message('修改成功')
-                }else {
-                  this.$message('修改失败')
+            this.$refs.editeRoleForm.validate((valid) => {
+              if (!valid) {
+                return;
+              }else {
+                let data = {
+                  adoptToken: this.token,
+                  roleId: this.roleId,
+                  roleName: this.form.roleName,
+                  remark: this.form.remark,
+                  roleNameQp: this.form.roleNameQp,
+                  validBegin: this.form.validBegin,
+                  validEnd: this.form.validEnd
                 }
-              },(err)=>{
-                this.$message('修改失败')
-              })
+                this.$http.put(this.$store.state.domain+'/role',qs.stringify(data)).then((res)=>{
+                  if(res.data.status == 0){
+                    this.$message('修改成功')
+                  }else {
+                    this.$message('修改失败')
+                  }
+                },(err)=>{
+                  this.$message('修改失败')
+                })
+              }
+            });
           },
           getUserByRole(){
             this.$http.get(this.$store.state.domain+'/user/queryByRoleIdSelected',{
@@ -771,7 +808,6 @@
             }).then((res)=>{
               if(res.data.status == 0){
                 this.tableData4 = res.data.result.result
-                console.log(this.tableData4)
                 this.checkedMenu()
               }
             },(err)=>{
@@ -824,6 +860,11 @@
           },
           searchDataSource(){
 
+          },
+          dataChange(value){
+            let arrTemp = value.split('~')
+            this.form.validBegin = arrTemp[0]
+            this.form.validEnd = arrTemp[1]
           },
         }
     }

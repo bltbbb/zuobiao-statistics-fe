@@ -29,20 +29,20 @@
               <el-tabs type="border-card">
                 <el-tab-pane label="信息维护">
                   <div class="s-r-1-wrapper">
-                    <el-form ref="form" :model="form3" label-width="120px" class="from_1">
-                      <el-form-item label="菜单名称">
+                    <el-form ref="form" :model="form3" label-width="120px" class="from_1" :rules="rules">
+                      <el-form-item label="菜单名称" prop="menuName">
                         <el-input v-model="form3.menuName"></el-input>
                       </el-form-item>
-                      <el-form-item label="菜单拼音">
+                      <el-form-item label="菜单拼音" prop="menuNameQp">
                         <el-input v-model="form3.menuNameQp"></el-input>
                       </el-form-item>
-                      <el-form-item label="菜单别名">
+                      <el-form-item label="菜单别名" prop="alias">
                         <el-input v-model="form3.alias"></el-input>
                       </el-form-item>
-                      <el-form-item label="菜单层次">
+                      <el-form-item label="菜单层次" prop="menuLevel">
                         <el-input v-model="form3.menuLevel"></el-input>
                       </el-form-item>
-                      <el-form-item label="菜单类型" label-width="120px">
+                      <el-form-item label="菜单类型" label-width="120px" prop="menuType">
                         <el-select style="width: 264px" v-model="form3.menuType" placeholder="请选择菜单类型">
                           <el-option
                             v-for="item in menuTypeData"
@@ -52,13 +52,13 @@
                           </el-option>
                         </el-select>
                       </el-form-item>
-                      <el-form-item label="URL路径" label-width="120px">
+                      <el-form-item label="URL路径" label-width="120px" prop="urlPath">
                         <el-input v-model="form3.urlPath" auto-complete="off"></el-input>
                       </el-form-item>
-                      <el-form-item label="排序索引" label-width="120px">
+                      <el-form-item label="排序索引" label-width="120px" prop="sortIndex">
                         <el-input v-model="form3.sortIndex" auto-complete="off"></el-input>
                       </el-form-item>
-                      <el-form-item label="加载类型" label-width="120px">
+                      <el-form-item label="加载类型" label-width="120px" prop="loadTarget">
                         <el-select style="width: 264px" v-model="form3.loadTarget">
                           <el-option
                             v-for="item in loadTargetData"
@@ -68,16 +68,16 @@
                           </el-option>
                         </el-select>
                       </el-form-item>
-                      <el-form-item label="全路径" label-width="120px">
+                      <el-form-item label="全路径" label-width="120px" prop="fullPath">
                         <el-input v-model="form3.fullPath" auto-complete="off"></el-input>
                       </el-form-item>
-                      <el-form-item class="isShare" label="isShare" label-width="120px">
+                      <el-form-item class="isShare" label="isShare" label-width="120px" prop="isShare">
                         <el-select style="width: 264px" v-model="form3.isShare" placeholder="请选择">
                           <el-option label="是" value="1"></el-option>
                           <el-option label="否" value="2"></el-option>
                         </el-select>
                       </el-form-item>
-                      <el-form-item label="描述">
+                      <el-form-item label="描述" prop="remark">
                         <el-input type="textarea" v-model="form3.remark"></el-input>
                       </el-form-item>
                       <!--<el-form-item label="备注" class="mask">-->
@@ -381,23 +381,23 @@
     </div>
     <div class="addMenuDialog">
       <el-dialog title="新增菜单" :visible.sync="addMenuDialog" size="small">
-        <el-form :model="form8" inline>
+        <el-form :model="form8" inline :rules="rules" ref="addMenuForm">
           <el-form-item label="所属菜单" :label-width="formLabelWidth">
             <el-input v-model="fatherMenu" style="width: 220px;" readonly auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="菜单名" :label-width="formLabelWidth">
+          <el-form-item label="菜单名" :label-width="formLabelWidth" prop="menuName">
             <el-input v-model="form8.menuName" style="width: 220px;" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="菜单拼音" :label-width="formLabelWidth">
+          <el-form-item label="菜单拼音" :label-width="formLabelWidth" prop="menuNameQp">
             <el-input v-model="form8.menuNameQp" style="width: 220px;" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="菜单别名" :label-width="formLabelWidth">
+          <el-form-item label="菜单别名" :label-width="formLabelWidth" prop="alias">
             <el-input v-model="form8.alias" style="width: 220px;" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="菜单层次" :label-width="formLabelWidth">
-            <el-input v-model="form8.menuLeval" style="width: 220px;" auto-complete="off"></el-input>
+          <el-form-item label="菜单层次" :label-width="formLabelWidth" prop="menuLevel">
+            <el-input v-model="form8.menuLevel" style="width: 220px;" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="菜单类型" :label-width="formLabelWidth">
+          <el-form-item label="菜单类型" :label-width="formLabelWidth" prop="menuType">
             <el-select v-model="form8.menuType" style="width: 220px;" placeholder="请选择菜单类型">
               <el-option
                 v-for="item in menuTypeData"
@@ -407,13 +407,13 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="URL路径" :label-width="formLabelWidth">
+          <el-form-item label="URL路径" :label-width="formLabelWidth" prop="urlPath">
             <el-input v-model="form8.urlPath" style="width: 220px;" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="排序索引" :label-width="formLabelWidth">
+          <el-form-item label="排序索引" :label-width="formLabelWidth" prop="sortIndex">
             <el-input v-model="form8.sortIndex" style="width: 220px;" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="加载类型" :label-width="formLabelWidth">
+          <el-form-item label="加载类型" :label-width="formLabelWidth" prop="loadTarget">
             <el-select style="width: 220px;" v-model="form8.loadTarget">
               <el-option
                 v-for="item in loadTargetData"
@@ -423,16 +423,16 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="全路径" :label-width="formLabelWidth">
+          <el-form-item label="全路径" :label-width="formLabelWidth" prop="fullPath">
             <el-input v-model="form8.fullPath" style="width: 220px;" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="isShare" :label-width="formLabelWidth">
-            <el-select style="width: 220px;" v-model="form8.isShare" placeholder="请选择活动区域">
+          <el-form-item label="isShare" :label-width="formLabelWidth" prop="isShare">
+            <el-select style="width: 220px;" v-model="form8.isShare" placeholder="请选择">
               <el-option label="是" value="1"></el-option>
               <el-option label="否" value="2"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="描述" :label-width="formLabelWidth" >
+          <el-form-item label="描述" :label-width="formLabelWidth" prop="remark">
             <el-input style="width: 220px;" type="textarea" v-model="form8.remark" auto-complete="off"></el-input>
           </el-form-item>
         </el-form>
@@ -631,7 +631,44 @@
           panelIndex: '',
           menuTypeData:[],
           loadTargetData: [],
-          elementTypeData: []
+          elementTypeData: [],
+          rules: {
+            menuName: [
+              { required: true, message: '请输入菜单名', trigger: 'blur' }
+            ],
+            menuNameQp: [
+              { required: true, message: '请输入菜单拼音', trigger: 'blur' },
+              { pattern: /^[A-Za-z]+$/, message: '请输入正确的菜单拼音', trigger: 'blur' },
+            ],
+            alias: [
+              { required: true, message: '请输入菜单别名', trigger: 'blur'},
+              { pattern: /^[A-Za-z]+$/, message: '请输入正确的菜单拼音', trigger: 'blur' },
+            ],
+            menuLevel: [
+              {  required: true, message: '请输入菜单层次', trigger: 'blur' }
+            ],
+            menuType: [
+              {  required: true, message: '请选择菜单类型', trigger: 'change' }
+            ],
+            urlPath: [
+              { required: true, message: '请输入路径', trigger: 'blur',  },
+            ],
+            loadTarget: [
+              { required: true, message: '请选择加载类型', trigger: 'change' },
+            ],
+            fullPath: [
+              { required: true, message: '请输入全路径', trigger: 'blur' },
+            ],
+            isShare: [
+              { required: true, message: '请选择', trigger: 'change' },
+            ],
+            remark: [
+              { required: true, message: '请输入描述', trigger: 'blur' },
+            ],
+            sortIndex: [
+              {   required: true, message: '请输入排序索引', trigger: 'blur' }
+            ]
+          },
         }
       },
     mounted(){
@@ -754,6 +791,9 @@
             this.form3 = data
             this.form3.menuType = data.menuType + ''
             this.form3.isShare = data.isShare + ''
+            this.form3.menuLevel = data.menuLevel + ''
+            this.form3.sortIndex = data.sortIndex + ''
+            this.form3.loadTarget = data.loadTarget + ''
             this.fatherMenu = data.menuName
             this.getUrlSelected()
             this.getPanel()
@@ -863,22 +903,29 @@
         })
       },
       commitMenuHandle(){
-        let data = {
-          adoptToken: this.token,
-          menuPid: this.menuId || '-1' ,
-          ...this.form8
-        }
-        this.$http.post(this.$store.state.domain+'/menu',qs.stringify(data)).then((res)=>{
-          if(res.data.status == 0){
-            this.getTreeData()
-            this.$message('提交成功')
-            this.addMenuDialog = false
-          }else{
-            this.$message('提交失败')
-          }
-        },(err)=>{
+        this.$refs.addMenuForm.validate((valid) => {
+          if (valid) {
+            let data = {
+              adoptToken: this.token,
+              menuPid: this.menuId || '-1' ,
+              ...this.form8
+            }
+            this.$http.post(this.$store.state.domain+'/menu',qs.stringify(data)).then((res)=>{
+              if(res.data.status == 0){
+                this.getTreeData()
+                this.$message('提交成功')
+                this.addMenuDialog = false
+              }else{
+                this.$message('提交失败')
+              }
+            },(err)=>{
 
-        })
+            })
+          } else {
+            return false;
+          }
+        });
+
       },
       getPanel(){
         let data = {
@@ -1199,30 +1246,36 @@
         })
       },
       postMenu(){
-        let data = {
-          adoptToken: this.token,
-          menuId: this.menuId,
-          menuName: this.form3.menuName,
-          menuNameQp:this.form3.menuNameQp,
-          remark:this.form3.remark,
-          menuLevel:this.form3.menuLevel,
-          menuType:this.form3.menuType,
-          urlPath:this.form3.urlPath,
-          loadTarget:this.form3.loadTarget,
-          sortIndex:this.form3.sortIndex,
-          isShare:this.form3.isShare,
-          fullPath:this.form3.fullPath,
-          alias:this.form3.alias
-        }
-        this.$http.put(this.$store.state.domain+'/menu',qs.stringify(data)).then((res)=>{
-          if(res.data.status == 0){
-            this.$message('修改成功')
-          }else{
+        this.$refs.form.validate((valid) => {
+          if (valid) {
+            let data = {
+              adoptToken: this.token,
+              menuId: this.menuId,
+              menuName: this.form3.menuName,
+              menuNameQp:this.form3.menuNameQp,
+              remark:this.form3.remark,
+              menuLevel:this.form3.menuLevel,
+              menuType:this.form3.menuType,
+              urlPath:this.form3.urlPath,
+              loadTarget:this.form3.loadTarget,
+              sortIndex:this.form3.sortIndex,
+              isShare:this.form3.isShare,
+              fullPath:this.form3.fullPath,
+              alias:this.form3.alias
+            }
+            this.$http.put(this.$store.state.domain+'/menu',qs.stringify(data)).then((res)=>{
+              if(res.data.status == 0){
+                this.$message('修改成功')
+              }else{
 
+              }
+            },(err)=>{
+
+            })
+          } else {
+            return false;
           }
-        },(err)=>{
-
-        })
+        });
       },
       reset(){
           this.form3 = {

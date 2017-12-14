@@ -14,24 +14,7 @@
     <div class="log-form">
       <el-form ref="form" :model="form" inline>
         <div class="form-input">
-          <el-form-item label="开始时间">
-            <el-date-picker
-              v-model="form.sendBeginTimeStart"
-              type="date"
-              placeholder="选择日期"
-              @change="dateStart"
-              style="width: 146px;">
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item label="结束时间">
-            <el-date-picker
-              v-model="form.sendBeginTimeStop"
-              type="date"
-              placeholder="选择日期"
-              @change="dateEnd"
-              style="width: 146px;">
-            </el-date-picker>
-          </el-form-item>
+          <Calendar @timeValue="getTime"></Calendar>
           <el-form-item label="接收人">
             <el-input style="width: 146px;" v-model="form.receiver"></el-input>
           </el-form-item>
@@ -108,6 +91,7 @@
 </template>
 <script>
   import qs from 'qs'
+  import Calendar from '@/components/calendar/Calendar'
   export default {
     data() {
       return {
@@ -127,6 +111,9 @@
     mounted(){
       this.initParams()
       this.init()
+    },
+    components: {
+      Calendar
     },
     methods:{
       init(){
@@ -176,12 +163,16 @@
         }
         this.getAllLog()
       },
-      dateStart(data){
-        this.form.sendBeginTimeStart = data
+//      dateStart(data){
+//        this.form.sendBeginTimeStart = data
+//      },
+//      dateEnd(data){
+//        this.form.sendBeginTimeStop = data
+//      }
+      getTime(msg){
+        this.form.sendBeginTimeStart = msg[0].Format("yyyy-M-d");
+        this.form.sendBeginTimeStop = msg[1].Format("yyyy-M-d");
       },
-      dateEnd(data){
-        this.form.sendBeginTimeStop = data
-      }
     }
   }
 </script>
@@ -196,4 +187,6 @@
         margin-top: 10px
     .log-form
       padding: 10px 20px 0
+    .calendar
+      margin-right: 15px
 </style>

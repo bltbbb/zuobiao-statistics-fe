@@ -13,25 +13,28 @@
     </div>
     <div class="log-form">
       <el-form ref="form" :model="form" inline>
+        <div class="time-wrapper">
+          <Calendar @timeValue="getTime"></Calendar>
+        </div>
         <div class="form-input">
-          <el-form-item label="开始时间">
-            <el-date-picker
-              v-model="form.visitBeginTimeStart"
-              type="date"
-              placeholder="选择日期"
-              @change="dateStart"
-              style="width: 146px;">
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item label="结束时间">
-            <el-date-picker
-              v-model="form.visitBeginTimeStop"
-              type="date"
-              placeholder="选择日期"
-              @change="dateEnd"
-              style="width: 146px;">
-            </el-date-picker>
-          </el-form-item>
+          <!--<el-form-item label="开始时间">-->
+            <!--<el-date-picker-->
+              <!--v-model="form.visitBeginTimeStart"-->
+              <!--type="date"-->
+              <!--placeholder="选择日期"-->
+              <!--@change="dateStart"-->
+              <!--style="width: 146px;">-->
+            <!--</el-date-picker>-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="结束时间">-->
+            <!--<el-date-picker-->
+              <!--v-model="form.visitBeginTimeStop"-->
+              <!--type="date"-->
+              <!--placeholder="选择日期"-->
+              <!--@change="dateEnd"-->
+              <!--style="width: 146px;">-->
+            <!--</el-date-picker>-->
+          <!--</el-form-item>-->
           <el-form-item label="操作用户">
             <el-input style="width: 146px;" v-model="form.mainAccount"></el-input>
           </el-form-item>
@@ -94,11 +97,12 @@
         </el-table-column>
         <el-table-column
           prop="visitBeginTime"
-          label="调用开始时间">
-        </el-table-column>
-        <el-table-column
-          prop="visitEndTime"
-          label="调用结束时间">
+          label="调用时间">
+          <template scope="scope">
+            <span>{{scope.row.visitBeginTime}}</span><br>
+            <span>-</span><br>
+            <span>{{ scope.row.visitEndTime}}</span>
+          </template>
         </el-table-column>
       </el-table>
       <div class="pagination-wrapper">
@@ -116,6 +120,7 @@
   </div>
 </template>
 <script>
+  import Calendar from '@/components/calendar/Calendar'
   import qs from 'qs'
   export default {
     data() {
@@ -136,6 +141,9 @@
     mounted(){
       this.initParams()
       this.init()
+    },
+    components: {
+      Calendar
     },
     methods:{
       init(){
@@ -185,12 +193,16 @@
         }
         this.getAllLog()
       },
-      dateStart(data){
-        this.form.oprBeginTimeStart = data
+//      dateStart(data){
+//        this.form.oprBeginTimeStart = data
+//      },
+//      dateEnd(data){
+//        this.form.oprBeginTimeStop = data
+//      },
+      getTime(msg){
+        this.form.visitBeginTimeStart = msg[0].Format("yyyy-M-d");
+        this.form.visitBeginTimeStop = msg[1].Format("yyyy-M-d");
       },
-      dateEnd(data){
-        this.form.oprBeginTimeStop = data
-      }
     }
   }
 </script>
@@ -205,4 +217,6 @@
         margin-top: 10px
     .log-form
       padding: 10px 20px 0
+    .calendar
+      margin-right: 15px
 </style>

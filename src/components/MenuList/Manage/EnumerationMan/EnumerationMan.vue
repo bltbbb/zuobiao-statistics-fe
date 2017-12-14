@@ -76,26 +76,26 @@
       </div>
     </div>
     <el-dialog title="新增" :visible.sync="addDialog" size="small">
-      <el-form :model="form2" label-width="100px" inline>
-        <el-form-item label="CODE">
+      <el-form :model="form2" label-width="100px" inline :rules="rules" ref="addFrom">
+        <el-form-item label="CODE" prop="enumCode">
           <el-input v-model="form2.enumCode" style="width: 192px;"  auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="分组">
+        <el-form-item label="分组" prop="enumGroup">
           <el-input v-model="form2.enumGroup" style="width: 192px;"  auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="是否缓存">
+        <el-form-item label="是否缓存" prop="isCache">
           <el-select v-model="form2.isCache" style="width: 192px;" placeholder="请选择">
             <el-option label="是" value="1"></el-option>
             <el-option label="否" value="2"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="值">
+        <el-form-item label="值" prop="enumValue">
           <el-input v-model="form2.enumValue" style="width: 192px;"  auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="排序">
+        <el-form-item label="排序" prop="sortIndex">
           <el-input v-model="form2.sortIndex" style="width: 192px;"  auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="名称">
+        <el-form-item label="名称" prop="enumTxt">
           <el-input v-model="form2.enumTxt" style="width: 192px;"  auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="备注">
@@ -135,6 +135,27 @@
           enumTxt: '',
           remark:'',
           sortIndex:''
+        },
+        rules: {
+          enumCode: [
+            { required: true, message: '请输入CODE', trigger: 'blur' }
+          ],
+          enumGroup: [
+            { required: true, message: '请输入分组', trigger: 'blur' },
+          ],
+          isCache: [
+            { required: true, message: '请选择是否缓存', trigger: 'change'},
+          ],
+          enumValue: [
+            { required: true, message: '请输入值', trigger: 'blur' }
+          ],
+          enumTxt: [
+            {  required: true, message: '请输入名称', trigger: 'change' }
+          ],
+          sortIndex: [
+            { required: true, message: '请输入序号', trigger: 'blur',  },
+            { pattern: /^[0-9]+$/, message: '请输入正确的序号', trigger: 'blur' },
+          ]
         },
       }
     },
@@ -190,6 +211,17 @@
           this.addDialog = true
       },
       addHandle(){
+        let canCommit = true
+        this.$refs.addFrom.validate((valid) => {
+          if (valid) {
+            canCommit = true
+          } else {
+            canCommit = false
+          }
+        });
+        if(!canCommit){
+            return
+        }
         let data = {
           adoptToken: this.token,
           ...this.form2

@@ -29,7 +29,12 @@
 
 <script type="text/ecmascript-6">
     export default {
-        name: 'hello',
+        props: {
+          allPlat:{
+            type: Boolean,
+            default: true
+          }
+        },
         data () {
             return {
               port: this.$store.state.domain,
@@ -72,7 +77,13 @@
               if (res.status == 200) {
                 if (res.data.status == 0) {
                   let data = res.data.result.result;
+                  this.getEdition()
                   this.plats = data;
+                  if(!this.allPlat){
+                    this.plats.shift()
+                  }
+                  this.platVal = this.plats[0].id
+                  this.$emit('Platform',this.platVal)
                 }
                 else if (res.data.status == 1) {
                   console.log('平台信息请求数据为空');
@@ -86,7 +97,7 @@
               console.log('获取失败');
               console.log('err',err);
             });
-            this.$emit('Platform',this.platVal)
+
           },
 
           //  获取版本信息
@@ -94,7 +105,7 @@
             let Params = new URLSearchParams();
             Params.append('adoptToken', this.token);
             Params.append('appPlatId', this.platVal)
-            this.$http.post(this.port + '/getLogOrEventEdition',Params).then( (res) => {
+            this.$http.post(this.port + '/getEdition',Params).then( (res) => {
               if (res.status == 200) {
                 if (res.data.status == 0) {
                   let data = res.data.result.result;

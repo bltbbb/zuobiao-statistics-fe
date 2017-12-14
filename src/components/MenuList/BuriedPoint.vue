@@ -19,10 +19,10 @@
       <!--导航-->
       <!--<Calendar @timeValue="getTime" :showToday="false"></Calendar>-->
       <versiongetdata
+        :allPlat="false"
         @Platform="childgetPlatform"
-        @getEdition1="childgetEdition1"
+        @getEdition1="getEdition"
         @changeVal="childplatVal1"
-        @changeEvalVal="childchangeEvalVal"
         @canalVal1="childcanalVal1"
       >
       </versiongetdata>
@@ -30,39 +30,65 @@
 
     <!--页面名称列表-->
 
-    <div class="title-box" >
+    <div class="title-box" style="padding-top: 0;">
       <div style="border: solid 1px #DFE6EC; border-bottom: 0">
-      <table class="table-title" width="100%" >
-        <thead >
-          <tr >
-            <th class="table-thead-th-1" :style="{width: '200px'}">事件名称</th>
-            <th :style="{width: '180px'}">事件Id</th>
-            <th >昨日消息数
-              <el-tooltip class="item" effect="light" content="Right Center 提示文字" placement="right" popper-class="hint">
-                <!--<i class="el-icon-information"></i>-->
-              </el-tooltip>
-            </th>
+        <table class="table-title" width="100%" >
+          <thead >
+            <tr >
+              <th class="table-thead-th-1" :style="{width: '200px'}">事件名称</th>
+              <th :style="{width: '260px'}">事件Id</th>
+              <th >昨日消息数
+                <el-tooltip class="item" effect="light" content="Right Center 提示文字" placement="right" popper-class="hint">
+                  <!--<i class="el-icon-information"></i>-->
+                </el-tooltip>
+              </th>
 
-            <th >昨日独立用户数
-              <el-tooltip class="item" effect="light" content="Right Center 提示文字" placement="right" popper-class="hint">
-                <!--<i class="el-icon-information"></i>-->
-              </el-tooltip>
-            </th>
-            <th :style="{width: '180px'}">详情</th>
-          </tr>
-        </thead>
-        <tbody >
-          <tr v-for="(value,index) in tableData" >
-            <td class="table-thead-th-1 table-thead-th-2">{{ value.name }}</td>
-            <td>{{ value.interactionViewId }}</td>
-            <td>{{ value.visitCount }}</td>
-            <td>{{ value.deviceCount }}</td>
-            <td><el-button size="small" @click="handleRowHandle(index, $event)">查看</el-button></td>
-          </tr>
-        </tbody>
-      </table>
+              <th >昨日独立用户数
+                <el-tooltip class="item" effect="light" content="Right Center 提示文字" placement="right" popper-class="hint">
+                  <!--<i class="el-icon-information"></i>-->
+                </el-tooltip>
+              </th>
+              <th >前日消息数
+                <el-tooltip class="item" effect="light" content="Right Center 提示文字" placement="right" popper-class="hint">
+                  <!--<i class="el-icon-information"></i>-->
+                </el-tooltip>
+              </th>
+
+              <th >前日独立用户数
+                <el-tooltip class="item" effect="light" content="Right Center 提示文字" placement="right" popper-class="hint">
+                  <!--<i class="el-icon-information"></i>-->
+                </el-tooltip>
+              </th>
+              <th :style="{width: '100px'}">详情</th>
+            </tr>
+          </thead>
+          <tbody >
+            <tr v-for="(value,index) in tableData" >
+              <td class="table-thead-th-1 table-thead-th-2">{{ value.eventName }}</td>
+              <td>{{ value.eventId }}</td>
+              <td>{{ value.yesMessageCount }}</td>
+              <td>{{ value.yesUserCount }}</td>
+              <td>{{ value.lastyesMessageCount }}</td>
+              <td>{{ value.lastyesUserCount }}</td>
+              <td><el-button size="small" @click="handleRowHandle(index, $event)">查看</el-button></td>
+            </tr>
+            <tr v-if="tableData.length == 0">
+              <td colspan="7" style="text-align: center;font-size: 12px;">暂无数据</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-
+      <div class="pagination-wrapper">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount">
+        </el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -70,24 +96,22 @@
 <script type="text/ecmascript-6">
   import Calendar from '@/components/calendar/Calendar'
   import versiongetdata from '../versionInformation/VersionGetData'
+  import qs from 'qs'
 
   export default {
     data() {
       return {
+        totalCount:0,
+        currentPage:1,
+        pageSize:10,
         port: this.$store.state.domain,
         explain: '这是菜单的说明文字',
-
-        platVal: '',
-        evalVal: '',
+        token:'',
+        platVal: '3',
+        evalVal: -1,
         canalVal: '',
-
         //  页面列表
-        tableData: [{
-          name:'1',
-          interactionViewId:'1',
-          visitCount:'1',
-          deviceCount:'1',
-        }],
+        tableData: [],
         activeIndex: '1',
         activeIndex2: '1',
         radio3: '今天',
@@ -99,10 +123,10 @@
       }
     },
     mounted () {
+      this.initParams();
       this.init();
     },
     methods: {
-
       initParams () {
         this.token = this.$cookie.get('adoptToken');
       },
@@ -122,13 +146,9 @@
       },
 
       //  版本信息
-      childgetEdition1 (childgetEdition1) {
-        this.evalVal = childgetEdition1;
-      },
 
-      childchangeEvalVal (childchangeEvalVal) {
-        this.evalVal = childchangeEvalVal;
-        this.getAnalysis();
+      getEdition(val){
+        this.evalVal = val;
       },
 
       //  渠道信息
@@ -139,18 +159,20 @@
 
       //  获取事件
       getAnalysis () {
-          let Params = new URLSearchParams();
-          Params.append('adoptToken', this.token);
-         ((this.curtext) ? Params.append('date', this.currentDate) : Params.append('dateType', this.dateType));
-          Params.append('platformId', this.platVal);
-          Params.append('versionId', this.evalVal);
-          Params.append('channelId', this.canalVal);
-          this.$http.post(this.port + '/eventAnalysis',Params)
+          let data = {
+            adoptToken : this.token,
+            platformId : this.platVal,
+            versionId : this.evalVal,
+            pageSize: this.pageSize,
+            currentPage: this.currentPage
+          }
+          this.$http.post(this.port + '/EventAnalyzePages',qs.stringify(data))
               .then( (res) => {
                 if (res.status == 200) {
                   if (res.data.status == 0) {
                     let data = res.data.result.result;
                     this.tableData = data
+                    this.totalCount = res.data.result.totalCount
                   }
                   else if (res.data.status == 1) {
                     this.tableData = [];
@@ -168,7 +190,8 @@
       },
 
       handleRowHandle (index, evnet) {
-          this.$router.push({name: 'AnalysisRegister', query:{eventId: this.tableData[index].interactionViewId}});
+          let id = this.tableData[index].eventId
+          this.$router.push('/Content/AnalysisRegister/'+id);
       },
       //获取日历时间
       getTime(msg,dateType,curtext){
@@ -176,6 +199,14 @@
         this.dateType = dateType;
         this.curtext = curtext;
         this.init();
+      },
+      handleSizeChange(data){
+        this.pageSize = data
+        this.getAnalysis()
+      },
+      handleCurrentChange(data){
+        this.currentPage = data
+        this.getAnalysis()
       }
     },
     components: {
@@ -240,6 +271,8 @@
 
   .table-title tbody {
     background: #ffffff;
+    font-size: 14px;
+    color: #1f2d3d;
   }
 
   tr {
@@ -254,6 +287,10 @@
   .el-icon-information {
     vertical-align: middle;
     color: #9d9d9d;
+  }
+  .pagination-wrapper {
+    text-align: center;
+    margin-top: 10px;
   }
 
 </style>

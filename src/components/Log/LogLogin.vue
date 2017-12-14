@@ -14,24 +14,7 @@
     <div class="log-form">
       <el-form ref="form" :model="form" inline>
         <div class="form-input">
-          <el-form-item label="登陆开始时间">
-            <el-date-picker
-              v-model="form.startDate"
-              type="date"
-              placeholder="选择日期"
-              @change="dateStart"
-              style="width: 146px;">
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item label="登陆结束时间">
-            <el-date-picker
-              v-model="form.stopDate"
-              type="date"
-              placeholder="选择日期"
-              @change="dateEnd"
-              style="width: 146px;">
-            </el-date-picker>
-          </el-form-item>
+          <Calendar @timeValue="getTime"></Calendar>
           <el-form-item label="操作用户">
             <el-input style="width: 146px;" v-model="form.mainAccount"></el-input>
           </el-form-item>
@@ -101,6 +84,7 @@
 </template>
 <script>
   import qs from 'qs'
+  import Calendar from '@/components/calendar/Calendar'
   export default {
     data() {
       return {
@@ -120,6 +104,9 @@
     mounted(){
       this.initParams()
       this.init()
+    },
+    components: {
+      Calendar
     },
     methods:{
       init(){
@@ -165,19 +152,23 @@
       },
       reset(){
         this.form = {
-          startDate:'',
+            startDate:'',
             stopDate:'',
             mainAccount:'',
             browserType:''
         }
         this.getAllLog()
       },
-      dateStart(data){
-        this.form.startDate = data
+//      dateStart(data){
+//        this.form.startDate = data
+//      },
+//      dateEnd(data){
+//        this.form.stopDate = data
+//      },
+      getTime(msg){
+        this.form.startDate = msg[0].Format("yyyy-M-d");
+        this.form.stopDate = msg[1].Format("yyyy-M-d");
       },
-      dateEnd(data){
-        this.form.stopDate = data
-      }
     }
   }
 </script>
@@ -192,4 +183,6 @@
         margin-top: 10px
     .log-form
       padding: 10px 20px 0
+    .calendar
+      margin-right: 15px
 </style>
