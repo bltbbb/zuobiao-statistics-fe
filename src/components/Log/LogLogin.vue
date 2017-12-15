@@ -114,6 +114,12 @@
       },
       initParams(){
         this.token = this.$cookie.get('adoptToken');
+        let date = new Date();
+        let start = new Date();
+        date.setTime(date.getTime() - 3600 * 1000 * 24);
+        start.setTime(start.getTime() - 3600 * 1000 * 24);
+        this.form.startDate = start.Format("yyyy-MM-dd");
+        this.form.stopDate = date.Format("yyyy-MM-dd");
       },
       getAllLog(){
           let data = {
@@ -172,7 +178,7 @@
     }
   }
 </script>
-<style lang="sass">
+<style lang="sass" scoped>
   .LogLogin
     margin-top: 40px
     background: #fff

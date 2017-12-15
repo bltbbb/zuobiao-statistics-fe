@@ -143,6 +143,12 @@
       },
       initParams(){
         this.token = this.$cookie.get('adoptToken');
+        let date = new Date();
+        let start = new Date();
+        date.setTime(date.getTime() - 3600 * 1000 * 24);
+        start.setTime(start.getTime() - 3600 * 1000 * 24);
+        this.form.invokeBeginTimeStart = start.Format("yyyy-MM-dd");
+        this.form.invokeBeginTimeStop = date.Format("yyyy-MM-dd");
       },
       getAllLog(){
         let data = {

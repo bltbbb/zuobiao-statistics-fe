@@ -19,11 +19,12 @@
       <!--导航-->
       <!--<Calendar @timeValue="getTime" :showToday="false"></Calendar>-->
       <versiongetdata
-        :allPlat="false"
         @Platform="childgetPlatform"
-        @getEdition1="getEdition"
-        @changeVal="childplatVal1"
+        @changeVal="changeplatVal1"
         @canalVal1="childcanalVal1"
+        @getEdition1="getEdition1"
+        @changeEvalVal="changeEdition"
+        :allPlat="false"
       >
       </versiongetdata>
     </div>
@@ -135,25 +136,29 @@
         this.getAnalysis();
       },
 
-      //  平台信息
+      //  默认平台
       childgetPlatform (plats) {
         this.platVal = plats;
       },
 
-      childplatVal1 (childplatVal1) {
-        this.platVal = childplatVal1;
-        this.getAnalysis()
+      // 改变平台
+      changeplatVal1 (val) {
+        this.platVal = val;
+        this.getAnalysis();
       },
 
-      //  版本信息
-
-      getEdition(val){
+      //  改变版本
+      changeEdition(val){
         this.evalVal = val;
+        this.getAnalysis();
       },
-
       //  渠道信息
       childcanalVal1 (canalVal) {
         this.canalVal = canalVal * 1;
+      },
+      // 默认版本
+      getEdition1(val){
+        this.evalVal = val;
       },
 
 

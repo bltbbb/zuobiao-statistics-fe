@@ -28,10 +28,10 @@
       <Calendar @timeValue="getTime"></Calendar>
       <versiongetdata
         @Platform="childgetPlatform"
-        @changeVal="childplatVal1"
+        @changeVal="changeplatVal1"
         @canalVal1="childcanalVal1"
-        @getEdition1="getEdition"
-        @changeEvalVal="getPlat"
+        @getEdition1="getEdition1"
+        @changeEvalVal="changeEdition"
         :allPlat="false"
       >
       </versiongetdata>
@@ -155,28 +155,31 @@
         this.getAnalyzePages();
       },
 
-      //  平台信息
+      //  默认平台
       childgetPlatform (plats) {
         this.platVal = plats;
-        this.getInteractionView()
       },
 
-      childplatVal1 (childplatVal1) {
-        this.platVal = childplatVal1;
+      // 改变平台
+      changeplatVal1 (val) {
+        this.platVal = val;
         this.getAnalyzeChart();
         this.getAnalyzePages();
       },
 
-      //  版本信息
-      getPlat(val){
+      //  改变版本
+      changeEdition(val){
         this.evalVal = val;
         this.getAnalyzeChart();
         this.getAnalyzePages();
-        this.getInteractionView()
       },
       //  渠道信息
       childcanalVal1 (canalVal) {
         this.canalVal = canalVal * 1;
+      },
+      // 默认版本
+      getEdition1(val){
+        this.evalVal = val;
       },
 
       //  查询事件

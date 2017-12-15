@@ -161,11 +161,11 @@
                 label="手机">
               </el-table-column>
               <el-table-column
-                prop="validBegin"
+                prop="validBeginDate"
                 label="开始有效时间">
               </el-table-column>
               <el-table-column
-                prop="validEnd"
+                prop="validEndDate"
                 label="结束有效时间">
               </el-table-column>
               <el-table-column

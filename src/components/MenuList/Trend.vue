@@ -86,7 +86,7 @@
         </el-table-column>
         <el-table-column
           prop="newUserShare"
-          label="新增用户占比">
+          label="新增用户占比(%)">
         </el-table-column>
         <el-table-column
           prop="signinUserCount"

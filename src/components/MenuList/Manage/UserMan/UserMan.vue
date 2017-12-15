@@ -490,7 +490,7 @@
           ],
           passWord: [
             { required: true, message: '请输入密码', trigger: 'change',  },
-            { pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{10,}$/, message: '请包含字母和数字，且不低于10位', trigger: 'blur'}
+            { pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{10,}$/, message: '请包含字母、数字、符号，且不低于10位', trigger: 'blur'}
           ],
           email: [
             { required: true, message: '请输入邮箱地址', trigger: 'blur' },
@@ -509,7 +509,7 @@
           ],
           tNewPw: [
             { required: true, message: '请输入新密码', trigger: 'blur',  },
-            { pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{10,}$/, message: '请包含字母和数字，且不低于10位', trigger: 'change'}
+            { pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{10,}$/, message: '请包含字母、数字、符号，且不低于10位', trigger: 'change'}
           ],
         },
         treeData: [],
@@ -783,6 +783,8 @@
         this.generateData()
         this.getSlectedRole()
         this.form2.nickName = data.nickName
+        this.form2.userName = data.userName
+        this.form2.email = data.email
         this.form2.phoneNo = data.phoneNo
         this.form2.postcode = data.postcode
         this.form2.address = data.address

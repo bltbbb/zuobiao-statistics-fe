@@ -110,7 +110,7 @@
                 if (res.data.status == 0) {
                   let data = res.data.result.result;
                   this.editions = data;
-                  this.getEditionId = data[0].appVersionId;
+                  this.evalVal = data[0].appVersionId;
                 }
                 else if (res.data.status == 1) {
                   console.log('版本信息请求数据为空');
