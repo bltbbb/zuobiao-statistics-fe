@@ -126,10 +126,10 @@
         toMenuArr(arr){
           let arrTemp = [];
           arr.forEach((item)=>{
-            if(!item.children){arrTemp.push(item.menuNameQp)}
+            if(!item.children){arrTemp.push(item.alias)}
             if(item.children){
               item.children.forEach((list)=>{
-                arrTemp.push(list.menuNameQp)
+                arrTemp.push(list.alias)
               })
             }
           })

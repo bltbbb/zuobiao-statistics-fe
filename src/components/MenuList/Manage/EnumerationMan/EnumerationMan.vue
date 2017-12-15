@@ -75,7 +75,7 @@
         </el-pagination>
       </div>
     </div>
-    <el-dialog title="新增" :visible.sync="addDialog" size="small">
+    <el-dialog :title="title" :visible.sync="addDialog" size="small">
       <el-form :model="form2" label-width="100px" inline :rules="rules" ref="addFrom">
         <el-form-item label="CODE" prop="enumCode">
           <el-input v-model="form2.enumCode" style="width: 192px;"  auto-complete="off"></el-input>
@@ -114,6 +114,7 @@
   export default {
     data() {
       return {
+        title:'新增',
         editeFlag: false,
         addDialog: false,
         token:'',
@@ -199,6 +200,7 @@
         this.getAllPage()
       },
       addEnu(){
+          this.title = '新增'
           this.form2 = {
             enumCode:'',
             enumGroup:'',
@@ -295,6 +297,7 @@
         })
       },
       editeHandle(index,data){
+        this.title = '修改'
         this.addDialog = true
         this.form2 = data
         this.form2.isCache = data.isCache + ''

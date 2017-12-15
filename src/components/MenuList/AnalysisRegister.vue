@@ -33,6 +33,7 @@
         @getEdition1="getEdition1"
         @changeEvalVal="changeEdition"
         :allPlat="false"
+        :platId="this.$route.params.platId"
       >
       </versiongetdata>
     </div>
@@ -116,6 +117,7 @@
         stopDate: '',
         messageChartData: [],
         userChartData: [],
+        platId:''
       }
     },
 
@@ -140,6 +142,8 @@
       initParams () {
         this.token = this.$cookie.get('adoptToken');
         this.pageVal = this.$route.params.id
+        this.platId = this.$route.params.platId
+        this.platVal = this.platId
         let date = new Date();
         let start = new Date();
         let stop = new Date();

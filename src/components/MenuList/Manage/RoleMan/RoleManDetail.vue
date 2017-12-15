@@ -20,9 +20,9 @@
               <el-form-item label="角色名称" prop="roleName">
                 <el-input style="width: 216px" v-model="form.roleName"></el-input>
               </el-form-item>
-              <el-form-item label="角色拼音" prop="roleNameQp">
-                <el-input style="width: 216px" v-model="form.roleNameQp"></el-input>
-              </el-form-item>
+              <!--<el-form-item label="角色拼音" prop="roleNameQp">-->
+                <!--<el-input style="width: 216px" v-model="form.roleNameQp"></el-input>-->
+              <!--</el-form-item>-->
               <el-form-item label="有效时间" prop="valueTime" style="width: 296px">
                 <el-date-picker
                   v-model="form.valueTime"
@@ -61,10 +61,6 @@
                   <el-table-column
                     prop="menuName"
                     label="菜单名称">
-                  </el-table-column>
-                  <el-table-column
-                    prop="menuNameQp"
-                    label="菜单英文">
                   </el-table-column>
                   <el-table-column
                     prop="alias"
@@ -110,10 +106,6 @@
                   <el-table-column
                     prop="menuName"
                     label="菜单名称">
-                  </el-table-column>
-                  <el-table-column
-                    prop="menuNameQp"
-                    label="菜单英文">
                   </el-table-column>
                   <el-table-column
                     prop="alias"
@@ -456,9 +448,9 @@
                 roleName: [
                   { required: true, message: '请输入角色名称', trigger: 'blur' }
                 ],
-                roleNameQp: [
-                  { required: true, message: '请输入角色拼音', trigger: 'blur' }
-                ],
+//                roleNameQp: [
+//                  { required: true, message: '请输入角色拼音', trigger: 'blur' }
+//                ],
                 valueTime: [
                   { type:'array', required: true, message: '请选择有效期', trigger: 'blur' }
                 ]

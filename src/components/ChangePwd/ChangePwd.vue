@@ -47,7 +47,7 @@
           ],
           tNewPw: [
             { required: true, message: '请输入新密码', trigger: 'blur',  },
-            { pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{10,}$/, message: '请包含字母和数字，且不低于10位', trigger: 'change'}
+            { pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{10,}$/, message: '请包含字母、数字、符号，且不低于10位', trigger: 'change'}
           ],
         },
       }

@@ -196,7 +196,8 @@
 
       handleRowHandle (index, evnet) {
           let id = this.tableData[index].eventId
-          this.$router.push('/Content/AnalysisRegister/'+id);
+          let platId = this.platVal
+          this.$router.push('/Content/AnalysisRegister/'+id+'/'+platId);
       },
       //获取日历时间
       getTime(msg,dateType,curtext){

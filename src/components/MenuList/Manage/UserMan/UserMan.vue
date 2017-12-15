@@ -231,10 +231,10 @@
             <div class="dialog-right-top">
               <el-form :model="form5" label-width="80px" inline="">
                 <el-form-item label="面板编码">
-                  <el-input v-model="form.ID"></el-input>
+                  <el-input v-model="form.ID" style="width: 150px"></el-input>
                 </el-form-item>
                 <el-form-item label="面板名称">
-                  <el-input v-model="form.name"></el-input>
+                  <el-input v-model="form.name" style="width: 150px"></el-input>
                 </el-form-item>
                 <el-button type="primary">查询</el-button>
               </el-form>
@@ -275,10 +275,10 @@
             <div class="dialog-right-bottom">
               <el-form :model="form7" label-width="80px" inline="">
                 <el-form-item label="元素编码">
-                  <el-input v-model="form.ID"></el-input>
+                  <el-input v-model="form.ID" style="width: 150px"></el-input>
                 </el-form-item>
                 <el-form-item label="元素名称">
-                  <el-input v-model="form.name"></el-input>
+                  <el-input v-model="form.name" style="width: 150px"></el-input>
                 </el-form-item>
                 <el-button type="primary">查询</el-button>
               </el-form>
@@ -892,6 +892,7 @@
           if (valid) {
             let data = {
               adoptToken: this.token,
+              userId: this.userId,
               ...this.form2
             }
             this.$http.put(this.$store.state.domain+'/user',qs.stringify(data)).then((res)=>{

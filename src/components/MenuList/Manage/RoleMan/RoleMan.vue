@@ -76,9 +76,9 @@
             <el-form-item label="角色名称" :label-width="formLabelWidth" prop="roleName">
               <el-input v-model="form2.roleName" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="角色拼音" :label-width="formLabelWidth" prop="roleNameQp">
-              <el-input v-model="form2.roleNameQp" auto-complete="off"></el-input>
-            </el-form-item>
+            <!--<el-form-item label="角色拼音" :label-width="formLabelWidth" prop="roleNameQp">-->
+              <!--<el-input v-model="form2.roleNameQp" auto-complete="off"></el-input>-->
+            <!--</el-form-item>-->
             <el-form-item label="有效时间" :label-width="formLabelWidth" prop="valueTime">
               <el-date-picker
                 v-model="form2.valueTime"
@@ -134,9 +134,9 @@
           roleName: [
             { required: true, message: '请输入角色名称', trigger: 'blur' }
           ],
-          roleNameQp: [
-            { required: true, message: '请输入角色拼音', trigger: 'blur' }
-          ],
+//          roleNameQp: [
+//            { required: true, message: '请输入角色拼音', trigger: 'blur' }
+//          ],
           valueTime: [
             { type:'array', required: true, message: '请选择有效期', trigger: 'blur' }
           ]

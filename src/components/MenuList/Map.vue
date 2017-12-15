@@ -58,11 +58,11 @@
       </div>
       <div class="region-wrapper">
         <el-table :data="tableData" style="width: 100%">
-          <el-table-column prop="index" label="序号" width="180">
+          <el-table-column prop="index" label="序号" width="80">
           </el-table-column>
-          <el-table-column prop="region" label="地区" width="180">
+          <el-table-column prop="region" label="地区" width="120">
           </el-table-column>
-          <el-table-column prop="value" label="数量">
+          <el-table-column prop="value" label="数量" width="80">
           </el-table-column>
           <el-table-column prop="percentage" label="百分比">
           </el-table-column>
@@ -300,6 +300,8 @@
         this.getEditions();
         this.getStatistics();
       },
+      // 线上
+
       drawLine(){
         this.myChart = echarts.init(document.getElementById('map-chart'));
         axios.get('../map.json',).then((res)=>{
@@ -307,6 +309,17 @@
           this.myChart.setOption(this.options);
         })
       },
+
+      //线下
+
+//      drawLine(){
+//        this.myChart = echarts.init(document.getElementById('map-chart'))
+//        this.myChart.setOption(this.options)
+//        axios.post('/api/getMapData').then((res)=>{
+//          echarts.registerMap('china', res.data.data.data);
+//        })
+//      },
+
       getStatistics: function () {
         let Params2 = new URLSearchParams();
         Params2.append('adoptToken', this.token);
@@ -380,7 +393,7 @@
             let tableData = res.data.result.result.topTen;
             for (let i=0;i<reginData.length;i++){
                 var str = reginData[i].name;
-                str = str.slice(0,str.length-1);
+//                str = str.slice(0,str.length-1);
                 this.loginTimesChartData.push({name:str,value:reginData[i].signinTimesCount,title:'登录次数'})
                 this.loginChartData.push({name:str,value:reginData[i].signinUserCount,title:'登录用户'});
                 this.regChartData.push({name:str,value:reginData[i].newUserCount,title:'注册用户'});

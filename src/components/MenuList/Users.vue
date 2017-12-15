@@ -87,6 +87,7 @@
             Eval: '2',
             label: '1.4'
           }],
+        backGroundData:[],
         sexOptions: {
           title:{
               text: '性别比例',
@@ -244,7 +245,7 @@
             silent: true,
             barWidth: 30,
             barGap: '-100%', // Make series be overlap
-            data: [100,100,100,100,100,100,100,100,100,100,100,100]
+            data: []
           }, {
             type: 'bar',
             barWidth: 30,
@@ -340,12 +341,15 @@
           Params.append('channelId', this.canalVal);
           Params.append('versionId', this.evalVal);
 
+        this.backGroundData = []
         this.$http.post(this.$store.state.domain+'/userAttr',Params).then((res)=>{
           if(res.data.status == 0){
             let sexData = res.data.result.result.gender;
             let ageData = res.data.result.result.age;
             let indData = res.data.result.result.industry;
-            indData.y = indData.y.map(function (item) {
+
+            indData.y = indData.y.map((item) => {
+                this.backGroundData.push('100')
                 return item.toFixed(2);
             })
             this.sexChart.setOption({
@@ -372,7 +376,9 @@
               xAxis: {
                 data: indData.x
               },
-              series: [{},{
+              series: [{
+                  data: this.backGroundData
+              },{
                 // 根据名字对应到相应的系列
                 data: indData.y
               }]

@@ -33,14 +33,17 @@
                       <el-form-item label="菜单名称" prop="menuName">
                         <el-input v-model="form3.menuName"></el-input>
                       </el-form-item>
-                      <el-form-item label="菜单拼音" prop="menuNameQp">
-                        <el-input v-model="form3.menuNameQp"></el-input>
-                      </el-form-item>
+                      <!--<el-form-item label="菜单拼音" prop="menuNameQp">-->
+                        <!--<el-input v-model="form3.menuNameQp"></el-input>-->
+                      <!--</el-form-item>-->
                       <el-form-item label="菜单别名" prop="alias">
                         <el-input v-model="form3.alias"></el-input>
                       </el-form-item>
                       <el-form-item label="菜单层次" prop="menuLevel">
                         <el-input v-model="form3.menuLevel"></el-input>
+                      </el-form-item>
+                      <el-form-item label="URL路径" label-width="120px" prop="urlPath">
+                        <el-input v-model="form3.urlPath" auto-complete="off"></el-input>
                       </el-form-item>
                       <el-form-item label="菜单类型" label-width="120px" prop="menuType">
                         <el-select style="width: 264px" v-model="form3.menuType" placeholder="请选择菜单类型">
@@ -51,9 +54,6 @@
                             :value="item.enumValue">
                           </el-option>
                         </el-select>
-                      </el-form-item>
-                      <el-form-item label="URL路径" label-width="120px" prop="urlPath">
-                        <el-input v-model="form3.urlPath" auto-complete="off"></el-input>
                       </el-form-item>
                       <el-form-item label="排序索引" label-width="120px" prop="sortIndex">
                         <el-input v-model="form3.sortIndex" auto-complete="off"></el-input>
@@ -388,9 +388,9 @@
           <el-form-item label="菜单名" :label-width="formLabelWidth" prop="menuName">
             <el-input v-model="form8.menuName" style="width: 220px;" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="菜单拼音" :label-width="formLabelWidth" prop="menuNameQp">
-            <el-input v-model="form8.menuNameQp" style="width: 220px;" auto-complete="off"></el-input>
-          </el-form-item>
+          <!--<el-form-item label="菜单拼音" :label-width="formLabelWidth" prop="menuNameQp">-->
+            <!--<el-input v-model="form8.menuNameQp" style="width: 220px;" auto-complete="off"></el-input>-->
+          <!--</el-form-item>-->
           <el-form-item label="菜单别名" :label-width="formLabelWidth" prop="alias">
             <el-input v-model="form8.alias" style="width: 220px;" auto-complete="off"></el-input>
           </el-form-item>
@@ -636,13 +636,13 @@
             menuName: [
               { required: true, message: '请输入菜单名', trigger: 'blur' }
             ],
-            menuNameQp: [
-              { required: true, message: '请输入菜单拼音', trigger: 'blur' },
-              { pattern: /^[A-Za-z]+$/, message: '请输入正确的菜单拼音', trigger: 'blur' },
-            ],
+//            menuNameQp: [
+//              { required: true, message: '请输入菜单拼音', trigger: 'blur' },
+//              { pattern: /^[A-Za-z]+$/, message: '请输入正确的菜单拼音', trigger: 'blur' },
+//            ],
             alias: [
               { required: true, message: '请输入菜单别名', trigger: 'blur'},
-              { pattern: /^[A-Za-z]+$/, message: '请输入正确的菜单拼音', trigger: 'blur' },
+              { pattern: /^[A-Za-z]+$/, message: '请输入正确的菜单别名', trigger: 'blur' },
             ],
             menuLevel: [
               {  required: true, message: '请输入菜单层次', trigger: 'blur' }
@@ -650,21 +650,21 @@
             menuType: [
               {  required: true, message: '请选择菜单类型', trigger: 'change' }
             ],
-            urlPath: [
-              { required: true, message: '请输入路径', trigger: 'blur',  },
-            ],
-            loadTarget: [
-              { required: true, message: '请选择加载类型', trigger: 'change' },
-            ],
-            fullPath: [
-              { required: true, message: '请输入全路径', trigger: 'blur' },
-            ],
+//            urlPath: [
+//              { required: true, message: '请输入路径', trigger: 'blur',  },
+//            ],
+//            loadTarget: [
+//              { required: true, message: '请选择加载类型', trigger: 'change' },
+//            ],
+//            fullPath: [
+//              { required: true, message: '请输入全路径', trigger: 'blur' },
+//            ],
             isShare: [
               { required: true, message: '请选择', trigger: 'change' },
             ],
-            remark: [
-              { required: true, message: '请输入描述', trigger: 'blur' },
-            ],
+//            remark: [
+//              { required: true, message: '请输入描述', trigger: 'blur' },
+//            ],
             sortIndex: [
               {   required: true, message: '请输入排序索引', trigger: 'blur' }
             ]

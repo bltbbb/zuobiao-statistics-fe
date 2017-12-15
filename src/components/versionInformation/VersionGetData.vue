@@ -29,12 +29,7 @@
 
 <script type="text/ecmascript-6">
     export default {
-        props: {
-          allPlat:{
-            type: Boolean,
-            default: true
-          }
-        },
+        props: ['allPlat','platId'],
         data () {
             return {
               port: this.$store.state.domain,
@@ -55,10 +50,10 @@
           this.init();
         },
         methods: {
-
           initParams () {
             this.token = this.$cookie.get('adoptToken');
             this.$emit('canalVal1',this.canalVal)
+
           },
 
           init () {
@@ -83,6 +78,9 @@
                     this.plats.shift()
                   }
                   this.platVal = this.plats[0].id
+                  if(this.platId){
+                    this.platVal = +this.platId
+                  }
                   this.$emit('Platform',this.platVal)
                 }
                 else if (res.data.status == 1) {

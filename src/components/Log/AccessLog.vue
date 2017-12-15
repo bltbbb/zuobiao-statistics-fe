@@ -97,7 +97,7 @@
         </el-table-column>
         <el-table-column
           prop="visitBeginTime"
-          label="调用时间">
+          label="访问时间">
           <template scope="scope">
             <span>{{scope.row.visitBeginTime}}</span><br>
             <span>-</span><br>

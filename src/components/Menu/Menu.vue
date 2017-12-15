@@ -4,13 +4,13 @@
 <!--      <li class="logo"><img src="../../assets/img/logo.png"></li>-->
       <div class="menu-div" v-for="(item,key1,index1) in menuList" :key="index1">
         <el-menu-item :index="key1+''" v-if="!item.children && !item.emptyFolder && !(item.isShare == 2)">
-          <router-link :to="'/Content/'+item.menuNameQp" style="text-align: left"><i :class="'el-icon-'+iconFont[item.menuNameQp]"></i>{{item.menuName}}</router-link>
+          <router-link :to="'/Content/'+item.alias" style="text-align: left"><i :class="'el-icon-'+iconFont[item.alias]"></i>{{item.menuName}}</router-link>
         </el-menu-item>
         <el-submenu :index="key1+''" v-if="item.children && !item.emptyFolder && !(item.isShare == 2)">
-          <template slot="title"><i :class="'el-icon-'+iconFont[item.menuNameQp]"></i>{{item.menuName}}</template>
+          <template slot="title"><i :class="'el-icon-'+iconFont[item.alias]"></i>{{item.menuName}}</template>
           <el-menu-item-group v-if="item.children && !item.emptyFolder && !(item.isShare == 2)" >
             <el-menu-item v-for="(list,key2,index2) in item.children"  :index="key1+'-'+key2"  :key="index2" v-if="list.menuType != 3 && list.isShare != 2">
-              <router-link :to="'/Content/'+list.menuNameQp">{{list.menuName}}</router-link>
+              <router-link :to="'/Content/'+list.alias">{{list.menuName}}</router-link>
             </el-menu-item>
           </el-menu-item-group>
         </el-submenu>
@@ -81,15 +81,15 @@
       return {
           iconFont: {
               //动态拼接icon class 关键字
-            Survey: 'menu',
-            Basicindex: 'information',
-            UserAnalysis: 'star-on',
-            EventAnalysis: 'document',
-            LogAnalysis: 'plus',
-            Manage: 'setting',
-            LogMan:'date',
-            MemberMan: 'sta-neirong',
-            ContentMan: 'sta-huiyuan'
+            Survey: 'sta-gaikuang',
+            Basicindex: 'sta-jibenzhibiao',
+            UserAnalysis: 'sta-visitor',
+            EventAnalysis: 'sta-shijianfenxi',
+            LogAnalysis: 'sta-rizhifenxi',
+            Manage: 'sta-xitongguanli',
+            LogMan:'sta-rizhi',
+            MemberMan: 'sta-huiyuanguanli',
+            ContentMan: 'sta-neirongguanli'
           }
 //        options: {
 //            survey : {

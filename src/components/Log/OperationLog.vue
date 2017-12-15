@@ -93,7 +93,7 @@
         </el-table-column>
         <el-table-column
           prop="oprBeginTime"
-          label="开始时间-结束时间"
+          label="操作时间"
           width="200">
           <template scope="scope">
             <span>{{scope.row.oprBeginTime}}</span><br>
