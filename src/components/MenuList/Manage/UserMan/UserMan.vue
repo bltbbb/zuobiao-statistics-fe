@@ -695,9 +695,12 @@
         let arrTemp = value.split('~')
         this.form8.validBegin = arrTemp[0]
         this.form8.validEnd = arrTemp[1]
-        console.log(this.form8.valueTime)
       },
       dataChange2(value){
+        if(!value){
+            this.form2.valueTime = []
+            return
+        }
         let arrTemp = value.split('~')
         this.form2.validBegin = arrTemp[0]
         this.form2.validEnd = arrTemp[1]
@@ -898,6 +901,7 @@
             this.$http.put(this.$store.state.domain+'/user',qs.stringify(data)).then((res)=>{
               if(res.data.status == 0){
                 this.$message('修改成功！')
+                this.getRoleList()
               }else{
 
               }

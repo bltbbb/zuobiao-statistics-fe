@@ -851,7 +851,7 @@
 
           },
           searchDataSource(){
-
+            this.getDataByRole()
           },
           dataChange(value){
             let arrTemp = value.split('~')

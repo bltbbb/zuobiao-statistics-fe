@@ -277,12 +277,9 @@
             <div class="tab-2-wrapper">
               <el-form :model="form7" label-width="80px" inline="">
                 <el-form-item label="描述">
-                  <el-input v-model="form.remark"></el-input>
+                  <el-input v-model="form7.remark"></el-input>
                 </el-form-item>
-                <el-form-item label="JSON参数">
-                  <el-input v-model="form.jsonInfo"></el-input>
-                </el-form-item>
-                <el-button type="primary">查询</el-button>
+                <el-button type="primary" @click="searchDataAuth">查询</el-button>
                 <el-button type="success" @click="addDataAuth">新增</el-button>
               </el-form>
               <el-table
@@ -488,7 +485,7 @@
       </el-dialog>
     </div>
     <div class="addDataAuthDialog">
-      <el-dialog title="新增数据权限" :visible.sync="addDataAuthDialog" size="small">
+      <el-dialog title="数据权限" :visible.sync="addDataAuthDialog" size="small">
         <el-form :model="form11">
           <el-form-item label="json数据" :label-width="formLabelWidth">
             <el-input
@@ -1168,6 +1165,7 @@
       getDataAuth(){
         let data = {
           adoptToken: this.token,
+          remark: this.form7.remark,
           currentPage: this.currentPage5,
           pageSize: this.pageSize5
         }
@@ -1197,7 +1195,22 @@
         this.form11.remark = data.remark
         this.form11.id = data.id
       },
+      isJSON(str) {
+        if (typeof str == 'string') {
+          try {
+            JSON.parse(str);
+            return true;
+          } catch(e) {
+            return false;
+          }
+        }
+      },
       commitDataAuthHandle(){
+        let isJSON = this.isJSON(this.form11.jsonInfo)
+        if(!isJSON){
+            this.$message('请输入有效JSON')
+            return
+        }
         let data = {
           adoptToken: this.token,
           ...this.form11
@@ -1338,6 +1351,9 @@
         },(err)=>{
 
         })
+      },
+      searchDataAuth(){
+        this.getDataAuth()
       }
     }
   }
