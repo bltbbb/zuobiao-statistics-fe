@@ -23,6 +23,7 @@
         @changeVal="childplatVal1"
         @changeEvalVal="childchangeEvalVal"
         @canalVal1="childcanalVal1"
+        :allPlat="true"
       >
       </versiongetdata>
 

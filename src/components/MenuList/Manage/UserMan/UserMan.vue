@@ -49,7 +49,7 @@
         </div>
         <div class="list-content">
           <div class="list-btn">
-            <el-button @click="addUserDialog = true">新增</el-button>
+            <el-button @click="addUser">新增</el-button>
             <el-button @click="deleteUser">删除</el-button>
           </div>
           <div class="list-table">
@@ -132,7 +132,7 @@
         </div>
       </div>
     </div>
-    <el-dialog title="用户维护" :visible.sync="dialogFormVisible">
+    <el-dialog title="用户维护" :visible.sync="dialogFormVisible" v-if="dialogFormVisible">
       <el-tabs type="border-card">
         <el-tab-pane label="用户资料">
           <el-form :model="form2" label-width="80px" :rules="rules" ref="editeUserForm">
@@ -211,7 +211,7 @@
               <el-input style="width: 216px" v-model="form4.newPw"></el-input>
             </el-form-item>
             <el-form-item label="确认密码" prop="tNewPw">
-              <el-input style="width: 216px" v-model="form4.tNewPw"></el-input>
+              <el-input style="width: 216px" v-model="form4.tNewPw" @blur="bothPwd"></el-input>
             </el-form-item>
           </el-form>
           <div class="tab-3-btn">
@@ -346,7 +346,7 @@
         </el-tab-pane>
       </el-tabs>
     </el-dialog>
-    <el-dialog title="新增用户"  :visible.sync="addUserDialog" size="small">
+    <el-dialog title="新增用户"  :visible.sync="addUserDialog" size="small" v-if="addUserDialog">
       <el-form :model="form8" :rules="rules" ref="addUserForm" label-width="100px" inline>
         <el-form-item label="用户昵称" prop="nickName">
           <el-input v-model="form8.nickName" style="width: 220px;"  auto-complete="off"></el-input>
@@ -506,10 +506,11 @@
           ],
           newPw: [
             { required: true, message: '请输入新密码', trigger: 'blur',  },
+            { pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{10,}$/, message: '请包含字母、数字、符号，且不低于10位', trigger: 'change,blur'}
           ],
           tNewPw: [
-            { required: true, message: '请输入新密码', trigger: 'blur',  },
-            { pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{10,}$/, message: '请包含字母、数字、符号，且不低于10位', trigger: 'change'}
+            { required: true, message: '请确认新密码', trigger: 'blur',  },
+            { pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{10,}$/, message: '请包含字母、数字、符号，且不低于10位', trigger: 'change,blur'}
           ],
         },
         treeData: [],
@@ -705,6 +706,23 @@
         this.form2.validBegin = arrTemp[0]
         this.form2.validEnd = arrTemp[1]
       },
+      addUser(){
+        this.form8 = {
+          nickName: '',
+          phoneNo:'',
+          sex:'',
+          pwd:'',
+          postcode:'',
+          address:'',
+          remark:'',
+          validBegin:'',
+          validEnd:'',
+          valueTime:'',
+          userName:'',
+          birthday:''
+        }
+        this.addUserDialog = true
+      },
       addUserHandle(){
         this.$refs.addUserForm.validate((valid) => {
           if (valid) {
@@ -801,12 +819,20 @@
         arr.push(this.form2.validEnd)
         this.form2.valueTime = arr
 
+        this.form4 = {
+          oldPw: '',
+          newPw: '',
+          tNewPw: ''
+        }
+
         this.dialogFormVisible = true
       },
-      commitPwd(){
+      bothPwd(){
         if(this.form4.newPw != this.form4.tNewPw){
-            this.$message('新密码不一致，请重新输入')
+          this.$message('新密码不一致，请重新输入')
         }
+      },
+      commitPwd(){
         this.$refs.changeFrom.validate((valid) => {
           if (valid) {
             let data = {

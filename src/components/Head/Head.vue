@@ -21,6 +21,17 @@
       </div>
 
     </el-breadcrumb>
+    <el-dialog
+      :visible.sync="dialogVisible"
+      size="tiny"
+      :before-close="handleClose"
+      ref="dialog">
+      <span>这是一段信息</span>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -31,6 +42,7 @@
   export default {
       data(){
         return {
+          dialogVisible:false,
           changePwd: false,
           token:'',
           userInfo: {},
@@ -84,9 +96,15 @@
               this.loginOut()
           }
           if(command == 'changePwd'){
-            this.$router.push('/Content/ChangePwd')
+            this.dialogVisible = true
+            this.$refs.dialog.style.zIndex = 3000
+            console.log(this.$refs.dialog.style.cssText)
+            //this.$router.push('/Content/ChangePwd')
           }
         },
+        handleClose(){
+
+        }
       }
   }
 </script>

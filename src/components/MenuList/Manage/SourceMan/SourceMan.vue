@@ -377,7 +377,7 @@
       </el-dialog>
     </div>
     <div class="addMenuDialog">
-      <el-dialog title="新增菜单" :visible.sync="addMenuDialog" size="small">
+      <el-dialog title="新增菜单" :visible.sync="addMenuDialog" size="small" v-if="addMenuDialog">
         <el-form :model="form8" inline :rules="rules" ref="addMenuForm">
           <el-form-item label="所属菜单" :label-width="formLabelWidth">
             <el-input v-model="fatherMenu" style="width: 220px;" readonly auto-complete="off"></el-input>
@@ -857,7 +857,20 @@
         this.selectedUrl = []
       },
       addMenuHandle(){
-          this.addMenuDialog = true
+        this.form8 = {
+          menuName:'',
+          menuNameQp:'',
+          remark:'',
+          menuLevel:'',
+          menuType:'',
+          urlPath:'',
+          loadTarget:'',
+          sortIndex:'',
+          isShare:'',
+          fullPath:'',
+          alias:''
+        }
+        this.addMenuDialog = true
       },
       deleteMenuHandle(){
         this.$http.delete(this.$store.state.domain+'/menu',{

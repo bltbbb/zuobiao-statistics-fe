@@ -68,7 +68,7 @@
           <template scope="scope">
             <div class="detail">
               <div >
-                <div class="detail-title detail-box" :class="{active: type == scope.row.id}"  v-html="scope.row.crashMessage"></div>
+                <div class="detail-title detail-box" :class="{active: type == scope.row.id}"  v-html="scope.row.errorMessage"></div>
               </div>
               <div class="detail-text">
                 <div @click="more(scope.$index,scope.row)" >{{ type == scope.row.id ? '收起':'展开' }}</div>
@@ -328,6 +328,7 @@
                 let data = res.data.result.result;
                 this.tableData = data;
                 this.totalCount = res.data.result.totalCount;
+                console.log(this.tableData)
                 for (let i in data){
                   this.tableData[i].errorMessage = data[i].errorMessage.replace(/\r\n/g,"<br>").replace(/ /g,"&nbsp;&nbsp;");
                 }

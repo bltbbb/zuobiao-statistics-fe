@@ -75,7 +75,7 @@
         </el-pagination>
       </div>
     </div>
-    <el-dialog :title="title" :visible.sync="addDialog" size="small">
+    <el-dialog :title="title" :visible.sync="addDialog" size="small" v-if="addDialog">
       <el-form :model="form2" label-width="100px" inline :rules="rules" ref="addFrom">
         <el-form-item label="CODE" prop="enumCode">
           <el-input v-model="form2.enumCode" style="width: 192px;"  auto-complete="off"></el-input>
