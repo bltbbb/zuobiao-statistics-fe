@@ -3,6 +3,7 @@ var utils = require('./utils')
 var config = require('../config')
 var vueLoaderConfig = require('./vue-loader.conf')
 var webpack = require("webpack")
+var ZipPlugin = require('zip-webpack-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -65,6 +66,10 @@ module.exports = {
     new webpack.ProvidePlugin({
       jQuery: "jquery",
       $: "jquery"
+    }),
+    new ZipPlugin({
+      path:path.join(__dirname,'../dist'),
+      filename: 'statistics.zip'
     })
   ]
 }

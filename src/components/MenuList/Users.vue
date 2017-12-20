@@ -100,7 +100,7 @@
           },
           legend: {
             orient: 'horizontal',
-            x: 'center',
+            x: 'left',
             y: 'bottom',
             data:['男','女','未知'],
             formatter: "{name}"
