@@ -91,7 +91,7 @@
         sexOptions: {
           title:{
               text: '性别比例',
-              x: 'center',
+              x: 'left',
               y: 'top'
           },
           tooltip: {
@@ -102,7 +102,7 @@
             orient: 'horizontal',
             x: 'center',
             y: 'bottom',
-            data:['男','女'],
+            data:['男','女','未知'],
             formatter: "{name}"
           },
           series: [
@@ -139,7 +139,7 @@
               ]
             }
           ],
-          color:['#009999', '#FF9999']
+          color:['#009999', '#FF9999','#AAAAAA']
         },
         ageOptions: {
           title:{
@@ -357,7 +357,8 @@
                 // 根据名字对应到相应的系列
                 data:[
                   {value:sexData.y[0], name:sexData.x[0]},
-                  {value:sexData.y[1], name:sexData.x[1]}
+                  {value:sexData.y[1], name:sexData.x[1]},
+                  {value:sexData.y[2], name:sexData.x[2]}
                 ]
               }]
             })

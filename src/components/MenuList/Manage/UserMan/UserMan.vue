@@ -203,15 +203,17 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="密码修改">
-          <el-form :model="form4" label-width="80px" :rules="pwdRules" ref="changeFrom">
+          <el-form :model="form4" label-width="80px" :rules="pwdRules" ref="changeFrom" style="text-align: center;" inline>
             <el-form-item label="旧密码" prop="oldPw">
               <el-input style="width: 216px" v-model="form4.oldPw"></el-input>
             </el-form-item>
+            <br>
             <el-form-item label="新密码" prop="newPw">
-              <el-input style="width: 216px" v-model="form4.newPw"></el-input>
+              <el-input style="width: 216px" v-model="form4.newPw" @keyup.native="keyDownHandle($event)"></el-input>
             </el-form-item>
+            <br>
             <el-form-item label="确认密码" prop="tNewPw">
-              <el-input style="width: 216px" v-model="form4.tNewPw" @blur="bothPwd"></el-input>
+              <el-input style="width: 216px" v-model="form4.tNewPw" @blur="bothPwd" @keyup.native="keyDownHandle($event)"></el-input>
             </el-form-item>
           </el-form>
           <div class="tab-3-btn">
@@ -351,7 +353,7 @@
         <el-form-item label="用户昵称" prop="nickName">
           <el-input v-model="form8.nickName" style="width: 220px;"  auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="登录名称" prop="userName">
+        <el-form-item label="登录名称" prop="userName" ref="userName" :error="nameError">
           <el-input v-model="form8.userName" style="width: 220px;"  auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="性别" prop="sex">
@@ -364,10 +366,10 @@
           <el-input v-model="form8.passWord" style="width: 220px;"  auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="手机" prop="phoneNo">
-          <el-input v-model="form8.phoneNo" style="width: 220px;"  auto-complete="off"></el-input>
+          <el-input v-model="form8.phoneNo" style="width: 220px;"  auto-complete="off" ref="phoneNo"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="form8.email" style="width: 220px;"  auto-complete="off"></el-input>
+          <el-input v-model="form8.email" style="width: 220px;"  auto-complete="off" ref="email"></el-input>
         </el-form-item>
         <el-form-item label="生日" prop="birthday">
           <el-date-picker
@@ -411,6 +413,7 @@
   export default {
     data(){
       return {
+        nameError:'',
         pageSize2:10,
         currentPage2:1,
         totalCount2:0,
@@ -476,25 +479,29 @@
             { required: true, message: '请输入用户昵称', trigger: 'blur' }
           ],
           userName: [
-            { required: true, message: '请输入登录名称', trigger: 'change' }
+            { required: true, message: '请输入登录名称', trigger: 'blur' },
+            { validator: this.nameValid, message: '登录名称重复，请重新输入', trigger: 'blur' },
           ],
           phoneNo: [
             { required: true, message: '请输入手机号', trigger: 'blur'},
             { message: '请输入正确的手机号', trigger: 'blur,change', pattern: /^[1][3,4,5,7,8][0-9]{9}$/},
+            { validator: this.phoneValid, message: '手机号重复，请重新输入', trigger: 'blur' },
           ],
           sex: [
             { required: true, message: '请选择性别', trigger: 'change' }
           ],
-          birthday: [
-            { required: true, message: '请选择生日', trigger: 'change' }
-          ],
+//          birthday: [
+//            { required: true, message: '请选择生日', trigger: 'change' }
+//          ],
           passWord: [
-            { required: true, message: '请输入密码', trigger: 'change',  },
-            { pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{10,}$/, message: '请包含字母、数字、符号，且不低于10位', trigger: 'blur'}
+            { required: true, message: '请输入新密码', trigger: 'blur',  },
+            { pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*.,()_?`])[\da-zA-Z~!@#$%^&*.,()_?`]{1,}$/, message: '请包含字母、数字、符号(非空格)', trigger: 'change,blur'},
+            { min: 10, message: '不能低于10位', trigger: 'blur' },
           ],
           email: [
             { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-            { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur,change' }
+            { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur,change' },
+            { validator: this.emailValid, message: '邮箱地址重复，请重新输入', trigger: 'blur' },
           ],
           valueTime: [
             { type: 'array', required: true, message: '请选择有效时间', trigger: 'blur' }
@@ -506,11 +513,13 @@
           ],
           newPw: [
             { required: true, message: '请输入新密码', trigger: 'blur',  },
-            { pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{10,}$/, message: '请包含字母、数字、符号，且不低于10位', trigger: 'change,blur'}
+            { pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*.,()_?`])[\da-zA-Z~!@#$%^&*.,()_?`]{1,}$/, message: '请包含字母、数字、符号(非空格)', trigger: 'change,blur'},
+            { min: 10, message: '不能低于10位', trigger: 'blur' },
           ],
           tNewPw: [
             { required: true, message: '请确认新密码', trigger: 'blur',  },
-            { pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{10,}$/, message: '请包含字母、数字、符号，且不低于10位', trigger: 'change,blur'}
+            { pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*.,()_?`])[\da-zA-Z~!@#$%^&*.,()_?`]{1,}$/, message: '请包含字母、数字、符号(非空格)', trigger: 'change,blur'},
+            { min: 10, message: '不能低于10位', trigger: 'blur' },
           ],
         },
         treeData: [],
@@ -532,7 +541,8 @@
         selectUserId: [],
         userId:'',
         privVisitId:'',
-        panelId:''
+        panelId:'',
+        configFlag: false
       }
     },
     mounted(){
@@ -567,6 +577,13 @@
           //view('网络错误')
           this.$message.error('网络错误');
         })
+      },
+      keyDownHandle(ev){
+          if(ev.keyCode == 32){
+            this.form4.newPw = this.form4.newPw.trim()
+            this.form4.tNewPw = this.form4.tNewPw.trim()
+            return
+          }
       },
       searchRole(){
           let data = {
@@ -707,6 +724,8 @@
         this.form2.validEnd = arrTemp[1]
       },
       addUser(){
+        this.userId = ''
+        this.configFlag = false
         this.form8 = {
           nickName: '',
           phoneNo:'',
@@ -801,6 +820,7 @@
       },
       configUser(index,data){
         this.userId = data.userId
+        this.configFlag = true
         this.generateData()
         this.getSlectedRole()
         this.form2.nickName = data.nickName
@@ -945,7 +965,82 @@
       },
       birthChange2(value){
         this.form2.birthday = value
-      }
+      },
+      nameValid(rule, value, callback){
+          if(value.trim() == ''){
+              return
+          }
+          let data  = {
+            adoptToken: this.token,
+          }
+          if(this.configFlag){
+            data.userName = this.form2.userName
+            data.userId = this.userId
+          }else {
+            data.userName = this.form8.userName
+          }
+          this.$http.get(this.$store.state.domain+'/user/verificationUserName',{
+            params:data
+          }).then((res)=>{
+            if(res.data.status != 0){
+              callback(new Error('用户名重复'));
+            }else{
+              callback();
+            }
+          },(err)=>{
+              callback();
+          })
+      },
+      phoneValid(rule, value, callback){
+        if(value.trim() == ''){
+          return
+        }
+        let data  = {
+          adoptToken: this.token,
+        }
+        if(this.configFlag){
+          data.phone = this.form2.phoneNo
+          data.userId = this.userId
+        }else {
+          data.phone = this.form8.phoneNo
+        }
+        this.$http.get(this.$store.state.domain+'/user/verificationPhone',{
+          params:data
+        }).then((res)=>{
+          if(res.data.status != 0){
+            callback(new Error());
+          }else{
+            callback();
+          }
+        },(err)=>{
+          callback();
+        })
+      },
+      emailValid(rule, value, callback){
+        if(value.trim() == ''){
+          return
+        }
+        let data  = {
+          adoptToken: this.token,
+        }
+        if(this.configFlag){
+          data.email = this.form2.email
+          data.userId = this.userId
+        }else {
+          data.email = this.form8.email
+        }
+        this.$http.get(this.$store.state.domain+'/user/verificationEmail',{
+          params:data
+        }).then((res)=>{
+          if(res.data.status != 0){
+            callback(new Error());
+          }else{
+            callback();
+          }
+        },(err)=>{
+          callback();
+        })
+      },
     }
   }
 </script>

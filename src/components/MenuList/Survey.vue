@@ -397,6 +397,9 @@
     .select-box {
       box-sizing: border-box;
       padding: 20px;
+      .el-select {
+        float: left;
+      }
     }
     .chart {
       box-sizing: border-box;

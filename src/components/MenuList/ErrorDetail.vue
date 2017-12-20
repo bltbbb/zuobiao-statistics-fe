@@ -287,7 +287,7 @@
         let Params = new URLSearchParams();
         Params.append('adoptToken', this.token);
         Params.append('appPlatId', this.platVal)
-        this.$http.post(this.port + '/getLogOrEventEdition',Params).then( (res) => {
+        this.$http.post(this.port + '/getEdition',Params).then( (res) => {
           if (res.status == 200) {
             if (res.data.status == 0) {
               let data = res.data.result.result;

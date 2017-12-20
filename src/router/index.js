@@ -18,6 +18,7 @@ import Error from '@/components/MenuList/Error'
 import AnalysisRegister from '@/components/MenuList/AnalysisRegister'
 import ErrorDetail from '@/components/MenuList/ErrorDetail'
 import DetailMore from '@/components/MenuList/DetailMore'
+import CrashQuery from '@/components/MenuList/CrashQuery/CrashQuery'
 
 //系统管理
 import UserMan from '@/components/MenuList/Manage/UserMan/UserMan'
@@ -210,6 +211,11 @@ const router = new Router({
           path: '/Content/ChangePwd',
           name: 'ChangePwd',
           component: ChangePwd
+        },
+        {
+          path: '/Content/CrashQuery',
+          name: 'CrashQuery',
+          component: CrashQuery
         },
       ]
     },
