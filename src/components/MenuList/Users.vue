@@ -100,7 +100,7 @@
           },
           legend: {
             orient: 'horizontal',
-            x: 'left',
+            x: 'center',
             y: 'bottom',
             data:['男','女','未知'],
             formatter: "{name}"
@@ -133,10 +133,7 @@
                   length: 40
                 }
               },
-              data:[
-                {value:68, name:'男'},
-                {value:45, name:'女'}
-              ]
+              data:[]
             }
           ],
           color:['#009999', '#FF9999','#AAAAAA']

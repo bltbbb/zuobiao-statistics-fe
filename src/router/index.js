@@ -35,6 +35,12 @@ import InterfaceLog from '@/components/Log/InterfaceLog'
 import MessagePush from '@/components/Log/MessagePush'
 import OperationLog from '@/components/Log/OperationLog'
 
+//内容管理
+import MessageMan from '@/components/MenuList/ContentMan/MessageMan'
+import Feedback from '@/components/MenuList/ContentMan/Feedback'
+import ReportMan from '@/components/MenuList/ContentMan/ReportMan'
+import ScheduleMan from '@/components/MenuList/ContentMan/ScheduleMan'
+
 //无权限
 import Jurisdiction from '@/components/Jurisdiction/Jurisdiction'
 
@@ -216,6 +222,26 @@ const router = new Router({
           path: '/Content/CrashQuery',
           name: 'CrashQuery',
           component: CrashQuery
+        },
+        {
+          path: '/Content/MessageMan',
+          name: 'MessageMan',
+          component: MessageMan
+        },
+        {
+          path: '/Content/Feedback',
+          name: 'Feedback',
+          component: Feedback
+        },
+        {
+          path: '/Content/ReportMan',
+          name: 'ReportMan',
+          component: ReportMan
+        },
+        {
+          path: '/Content/ScheduleMan',
+          name: 'ScheduleMan',
+          component: ScheduleMan
         },
       ]
     },

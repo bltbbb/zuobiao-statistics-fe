@@ -38,7 +38,7 @@
       <!-- 平台切换-->
       <el-tabs type="border-card" v-model="activeName">
           <el-tab-pane v-for="gameName in gameNames" :key="gameName.id+''" :name="gameName.id+''">
-            <span slot="label"><i class="el-icon-date"></i> {{gameName.name}}</span>
+            <span slot="label"><i class="el-icon-information"></i> {{gameName.name}}</span>
               <div class="box" :key="gameName.id+''">
                 <div class="headText">
                   <p class="slot"></p>
@@ -139,13 +139,13 @@
             top: 80
           },
           tooltip: {
-            trigger: 'axis'
+            trigger: 'axis',
           },
           xAxis: {
             data: []
           },
           yAxis: {
-            type: 'value'
+            type: 'value',
           },
           series: [{
             name: '新增用户',
@@ -167,27 +167,50 @@
                 color: '#7a8fe0'
               }
             }
-          }]
-
+          }],
+          animation: true,
+          animationEasing: 'quarticIn',
         });
         window.onresize = this.myChart.resize;
       },
       //平台内数据
       choice:function(value){
           this.type = value;
-          this.myChart.setOption({
-            title: {
-              text: this.chartName[value-1]
-            },
-            xAxis: {
-              data: this.chartData[value-1].x
-            },
-            series: [{
-              // 根据名字对应到相应的系列
-              name: this.chartName[value-1],
-              data: this.chartData[value-1].y
-            }]
-          })
+          if(value == 4){
+            this.myChart.setOption({
+              title: {
+                text: this.chartName[value-1]
+              },
+              tooltip: {
+                formatter: '{c}%'
+              },
+              xAxis: {
+                data: this.chartData[value-1].x
+              },
+              series: [{
+                // 根据名字对应到相应的系列
+                name: this.chartName[value-1],
+                data: this.chartData[value-1].y
+              }]
+            })
+          }else{
+            this.myChart.setOption({
+              title: {
+                text: this.chartName[value-1]
+              },
+              tooltip: {
+                formatter: ''
+              },
+              xAxis: {
+                data: this.chartData[value-1].x
+              },
+              series: [{
+                // 根据名字对应到相应的系列
+                name: this.chartName[value-1],
+                data: this.chartData[value-1].y
+              }]
+            })
+          }
       },
       initParams: function () {
         let date = new Date();

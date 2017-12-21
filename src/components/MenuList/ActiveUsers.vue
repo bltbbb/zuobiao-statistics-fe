@@ -63,7 +63,7 @@
         </el-table-column>
         <el-table-column
           prop="signinUserCount"
-          label="登录用户">
+          label="日活跃用户">
         </el-table-column>
         <!--8-15需求去掉-->
         <!--<el-table-column-->
@@ -141,10 +141,10 @@
           }],
         // 第一部分
         list: [
-          {id: "1", title: "登录用户", message: 'Foo', number: "8096798"},
+          {id: "1", title: "日活跃用户", message: 'Foo', number: "8096798"},
           {id: "2", title: "日活/月活", message: 'Bar', number: "8096798"}
         ],
-        title: {signinUserCount:'登录用户',dayMonthRatio:'日活/月活'},
+        title: {signinUserCount:'日活跃用户',dayMonthRatio:'日活/月活'},
         // 表格数据
         tableData: [],
         myChart: null,
@@ -185,12 +185,12 @@
         this.myChart = echarts.init(document.getElementById('activeChart'));
         // 绘制图表
         this.myChart.setOption({
-          title: {text: '登录用户'},
+          title: {text: '日活跃用户'},
           tooltip: {
             trigger: 'axis'
           },
           xAxis: {
-            data: ["0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59"]
+            data: []
           },
           yAxis: {
             type: 'value'
@@ -198,7 +198,7 @@
           series: [{
             name: '注册用户',
             type: 'line',
-            data: [5, 20, 36, 10, 10, 20],
+            data: [],
             areaStyle: {
               normal: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{

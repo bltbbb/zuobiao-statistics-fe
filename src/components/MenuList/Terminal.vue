@@ -182,7 +182,7 @@
         explain: '这是菜单的说明文字',
         equipTooltip: '安装应用程序的手机型号和浏览器',
         equipTooltipOption:['安装应用程序设备的型号和浏览器','安装应用程序设备的操作系统','安装应用程序设备的运营商','安装应用程序设备的联网方式'],
-        loginTooltip: '累计登录过的次数',
+        loginTooltip: '累计启动过的次数',
         myChart: null,
         radioVal: '1',
         platVal: '-1',
@@ -266,7 +266,7 @@
           },
           series : {
               top: 'top',
-              name:'累计登录次数',
+              name:'累计登录用户数',
               type:'bar',
               barWidth: '60%',
               data:[]
@@ -274,7 +274,7 @@
         },
         tableData: [],
         titleArr: ['登录次数','新用户注册数','登录用户数'],
-        titleSingle: '累计登录次数',
+        titleSingle: '累计登录用户数',
         tableName: '设备型号',
         tableNameOption:['设备型号','操作系统','运营商','联网方式']
       }

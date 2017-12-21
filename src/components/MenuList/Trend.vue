@@ -67,10 +67,10 @@
       <!--</div>-->
       <div id="TendChart" class="chart" :style="{width: '100%', height: '400px'}"></div>
       <el-radio-group v-model="radioVal" class="radio-box">
-        <el-radio :label="0">注册用户</el-radio>
-        <el-radio :label="1">注册用户占比</el-radio>
-        <el-radio :label="2">登录用户</el-radio>
-        <el-radio :label="3">登录次数</el-radio>
+        <el-radio :label="0">新增用户</el-radio>
+        <el-radio :label="1">新增用户占比</el-radio>
+        <el-radio :label="2">启动用户</el-radio>
+        <el-radio :label="3">启动次数</el-radio>
       </el-radio-group>
       <!--表格-->
       <el-table
@@ -99,7 +99,7 @@
         <!--</el-table-column>-->
         <el-table-column
           prop="signinTimesCount"
-          label="登录次数">
+          label="启动次数">
         </el-table-column>
         <!--8-15需求去掉-->
         <!--<el-table-column-->
@@ -138,7 +138,7 @@
         editions: [],
         // 第一部分
         list: [],
-        title:['注册用户','注册用户占比','登录用户','登录次数'],
+        title:['新增用户','新增用户占比','启动用户','启动次数'],
         myChart: null,
         // 表格数据
         tableData: [],
@@ -179,20 +179,20 @@
         this.myChart = echarts.init(document.getElementById('TendChart'));
         // 绘制图表
         this.myChart.setOption({
-          title: {text: '注册用户'},
+          title: {text: '新增用户'},
           tooltip: {
             trigger: 'axis'
           },
           xAxis: {
-            data: ["0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59"]
+            data: []
           },
           yAxis: {
             type: 'value'
           },
           series: [{
-            name: '注册用户',
+            name: '新增用户',
             type: 'line',
-            data: [5, 20, 36, 10, 10, 20],
+            data: [],
             areaStyle: {
               normal: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -287,7 +287,6 @@
 
         //初始化
         this.chartData = [];
-
         this.$http.post(this.$store.state.domain+'/trendAnalysis',Params).then((res)=>{
           if(res.data.status == 0){
             let data = res.data.result.result;

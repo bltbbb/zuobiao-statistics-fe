@@ -164,7 +164,7 @@
             trigger: 'axis'
           },
           xAxis: {
-            data: ["0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59", "0:00-0:59"]
+            data: []
           },
           yAxis: {
             type: 'value'
@@ -172,7 +172,7 @@
           series: [{
             name: '注册用户',
             type: 'line',
-            data: [5, 20, 36, 10, 10, 20],
+            data: [],
             areaStyle: {
               normal: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{

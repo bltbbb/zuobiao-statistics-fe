@@ -243,7 +243,7 @@
             trigger: 'axis'
           },
           xAxis: {
-            data: ["00:00", "5月18日","5月21日","5月24日","5月27日","5月30日","6月2日","6月5日","6月8日","6月11日"]
+            data: []
           },
           yAxis: {
             type: 'value'
@@ -251,7 +251,7 @@
           series: [{
             name: '所有平台',
             type: 'line',
-            data: [5, 20, 36, 10, 10, 20, 10, 10, 20, 13],
+            data: [],
             areaStyle: {
               normal: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
