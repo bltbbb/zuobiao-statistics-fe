@@ -371,6 +371,11 @@
         //异步请求数据
         this.getData();
         this.getFullPlat();
+        this.myChart.setOption({
+          title: {
+            text: this.chartName[0]
+          }
+        })
       }
     }
   }
