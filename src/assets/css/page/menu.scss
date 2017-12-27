@@ -92,6 +92,9 @@
 .el-menu-item .router-link-active, .el-submenu__title .router-link-active {
   color: #fff;
 }
+.el-menu-item.is-active a {
+  color: #fff;
+}
 
 /*.el-submenu .el-menu {
   background: #889ff8 !important;

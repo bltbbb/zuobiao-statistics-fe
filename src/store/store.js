@@ -19,7 +19,8 @@ export default new Vuex.Store({
     userInfo: [],
     //保存菜单信息
     menuInfo: [],
-    menuArr: []
+    menuArr: [],
+    activeIndex: 'Survey'
   },
   mutations: {
     //更新用户信息
@@ -31,6 +32,9 @@ export default new Vuex.Store({
     },
     updateMenuArr(state){
       state.menuArr = lockr.get('menuArr');
+    },
+    updateActiveIndex(state){
+      state.activeIndex = lockr.get('activeIndex');
     }
   }
 })

@@ -160,16 +160,16 @@
 
       }
     },
+    created(){
+      this.$store.commit('updateActiveIndex','5-1')
+    },
     // 平台图表格-->
     mounted() {
-//      this.drawLine();
       this.initParams();
       this.getPlatform();
-//      this.getEdition();
       this.datarangeChange();
-//      this.init();
-    },
 
+    },
 //    components: {
 //      Calendar,
 //      versiongetdata
@@ -328,7 +328,6 @@
                 let data = res.data.result.result;
                 this.tableData = data;
                 this.totalCount = res.data.result.totalCount;
-                console.log(this.tableData)
                 for (let i in data){
                   this.tableData[i].errorMessage = data[i].errorMessage.replace(/\r\n/g,"<br>").replace(/ /g,"&nbsp;&nbsp;");
                 }

@@ -373,7 +373,7 @@
         this.getFullPlat();
         this.myChart.setOption({
           title: {
-            text: this.chartName[0] 
+            text: this.chartName[0]
           }
         })
       }
