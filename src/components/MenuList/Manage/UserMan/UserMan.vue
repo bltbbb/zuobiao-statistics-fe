@@ -410,6 +410,8 @@
 
 <script>
   import qs from 'qs'
+  import md5 from 'js-md5'
+
   export default {
     data(){
       return {
@@ -858,9 +860,9 @@
             let data = {
               adoptToken: this.token,
               userId: this.userId,
-              passWord: this.form4.oldPw,
-              newPassword: this.form4.newPw,
-              repeatPassword: this.form4.tNewPw,
+              passWord: md5(this.form4.oldPw),
+              newPassword: md5(this.form4.newPw),
+              repeatPassword: md5(this.form4.tNewPw),
             }
             this.$http.post(this.$store.state.domain+'/user/updatePwd',qs.stringify(data)).then((res)=>{
               if(res.data.status == 0){

@@ -37,6 +37,7 @@
   import lockr from 'lockr'
   import axios from 'axios'
   import qs from 'qs'
+  import md5 from 'js-md5';
 
   Vue.use(VueCookie);
   export default {
@@ -79,7 +80,7 @@
 //          loginParams.append('password', this.password);
           let data = {
             loginName:this.userName,
-            password:this.password
+            password: md5(this.password)
           };
 
           //测试接口 登录成功后将获取的token保存在cookie中

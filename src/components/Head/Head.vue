@@ -52,6 +52,8 @@
   import axios from 'axios'
   import lockr from 'lockr'
   import qs from 'qs'
+  import md5 from 'js-md5'
+
   export default {
       data(){
         return {
@@ -144,9 +146,9 @@
               let data = {
                 adoptToken: this.token,
                 userId: this.userInfo.userId,
-                passWord: this.form.oldPw,
-                newPassword: this.form.newPw,
-                repeatPassword: this.form.tNewPw,
+                passWord: md5(this.form.oldPw),
+                newPassword: md5(this.form.newPw),
+                repeatPassword: md5(this.form.tNewPw),
               }
               this.$http.post(this.$store.state.domain+'/user/updatePwd',qs.stringify(data)).then((res)=>{
                 if(res.data.status == 0){
