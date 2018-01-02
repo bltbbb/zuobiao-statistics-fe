@@ -28,8 +28,7 @@
     <div class="log-table">
       <el-table
         :data="tableData"
-        style="width: 100%"
-        border>
+        style="width: 100%">
         <el-table-column
           type="selection"
           width="55">
@@ -100,7 +99,7 @@
       </el-table>
       <div class="batchDelete" style="margin-top: 10px;" v-if="this.tableData.length != 0">
         <el-button
-          @click="batchDelete()"
+          @click="batchDelete"
           size="small"
           type="danger">批量删除</el-button>
       </div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="MessageMan">
+  <div class="Feedback">
     <div class="header-wrapper">
       <h1>
         消息管理
@@ -15,8 +15,8 @@
       <el-form ref="form" :model="form" inline>
         <div class="form-input">
           <Calendar @timeValue="getTime"></Calendar>
-          <el-form-item label="发送者ID">
-            <el-input style="width: 146px;" v-model="form.mainAccount"></el-input>
+          <el-form-item label="发送者ID或昵称">
+            <el-input style="width: 146px;" v-model="form.id"></el-input>
           </el-form-item>
           <el-form-item style="margin-left: 30px;">
             <el-button @click="searchHandle">查询</el-button>
@@ -29,42 +29,80 @@
       <el-table
         :data="tableData"
         style="width: 100%"
-        border>
+        @selection-change="handleSelectionChange">
         <el-table-column
-          prop="logId"
-          label="日志Id"
-          width="150">
+          type="selection"
+          width="55">
         </el-table-column>
         <el-table-column
-          prop="clientIp"
-          label="客户端Id"
+          type="index"
+          width="70"
+          label="序号">
+        </el-table-column>
+        <!--<el-table-column-->
+          <!--prop="SN"-->
+          <!--label="SN"-->
+          <!--width="150">-->
+        <!--</el-table-column>-->
+        <el-table-column
+          prop="master"
+          label="发送者ID">
+        </el-table-column>
+        <el-table-column
+          prop="displayName"
+          label="发送者昵称">
+        </el-table-column>
+        <el-table-column
+          prop="to"
+          label="接收者ID">
+        </el-table-column>
+        <el-table-column
+          prop="toDisplayName"
+          label="接收者昵称">
+        </el-table-column>
+        <el-table-column
+          label="消息类型">
+          <template scope="scope">
+            <span v-if="scope.row.type == 1">文本</span>
+            <span v-if="scope.row.type == 2">文件</span>
+            <span v-if="scope.row.type == 3">图片</span>
+            <span v-if="scope.row.type == 4">短语音</span>
+            <span v-if="scope.row.type == 5">短视频</span>
+            <span v-if="scope.row.type == 6">卡片消息</span>
+            <span v-if="scope.row.type == 7">历史消息</span>
+            <span v-if="scope.row.type == 8">富文本消息</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="是否群消息"
           width="120">
+          <template scope="scope">
+            <span v-if="scope.row.isGroup == 1">是</span>
+            <span v-if="scope.row.isGroup == 2">否</span>
+          </template>
         </el-table-column>
         <el-table-column
-          prop="browserType"
-          label="浏览器类型"
-          width="150">
+          label="消息时间"
+          width="200">
+          <template scope="scope">{{(new Date(scope.row.timestamp)).Format("yyyy-MM-dd hh:mm:ss")}}</template>
         </el-table-column>
-        <el-table-column
-          prop="loginTime"
-          label="登陆时间"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="serverIp"
-          label="服务IP"
-          width="150">
-        </el-table-column>
-        <el-table-column
-          prop="mainAccount"
-          label="登录名"
-          width="120">
-        </el-table-column>
-        <el-table-column
-          prop="userAgent"
-          label="客户端ua信息">
-        </el-table-column>
+        <!--<el-table-column-->
+          <!--label="操作"-->
+          <!--width="100">-->
+          <!--<template scope="scope">-->
+            <!--<el-button-->
+              <!--size="small"-->
+              <!--@click="feedbackDelete(scope.$index, scope.row)"-->
+              <!--type="danger">删除</el-button>-->
+          <!--</template>-->
+        <!--</el-table-column>-->
       </el-table>
+      <!--<div class="batchDelete" style="margin-top: 10px;" v-if="this.tableData.length != 0">-->
+        <!--<el-button-->
+          <!--@click="batchDelete()"-->
+          <!--size="small"-->
+          <!--type="danger">批量删除</el-button>-->
+      <!--</div>-->
       <div class="pagination-wrapper">
         <el-pagination
           @size-change="handleSizeChange"
@@ -91,11 +129,11 @@
         currentPage: 1,
         pageSize: 10,
         form:{
-          startDate:'',
-          stopDate:'',
-          mainAccount:'',
-          browserType:''
-        }
+          startTime:'',
+          stopTime:'',
+          id:'',
+        },
+        feedbackId:[]
       }
     },
     mounted(){
@@ -115,20 +153,19 @@
         let start = new Date();
         date.setTime(date.getTime() - 3600 * 1000 * 24);
         start.setTime(start.getTime() - 3600 * 1000 * 24);
-        this.form.startDate = start.Format("yyyy-MM-dd");
-        this.form.stopDate = date.Format("yyyy-MM-dd");
+        this.form.startTime = start.Format("yyyy-MM-dd");
+        this.form.stopTime = date.Format("yyyy-MM-dd");
       },
       getAllLog(){
         let data = {
           adoptToken: this.token,
           currentPage: this.currentPage,
           pageSize: this.pageSize,
-          startDate: this.form.startDate,
-          stopDate: this.form.stopDate,
-          mainAccount: this.form.mainAccount,
-          browserType: this.form.browserType,
+          startDate: this.form.startTime,
+          stopDate: this.form.stopTime,
+          user: this.form.id
         }
-        this.$http.post(this.$store.state.domain+'/logLogin/page',qs.stringify(data)).then((res)=>{
+        this.$http.post(this.$store.state.domain+'/engineMessage/page',qs.stringify(data)).then((res)=>{
           if(res.data.status == 0){
             this.totalCount = res.data.result.totalCount
             this.tableData = res.data.result.result
@@ -154,30 +191,50 @@
         this.getAllLog()
       },
       reset(){
-        this.form = {
-          startDate:'',
-          stopDate:'',
-          mainAccount:'',
-          browserType:''
-        }
+        this.form.id = ''
         this.getAllLog()
       },
-//      dateStart(data){
-//        this.form.startDate = data
-//      },
-//      dateEnd(data){
-//        this.form.stopDate = data
-//      },
       getTime(msg){
-        this.form.startDate = msg[0].Format("yyyy-M-d");
-        this.form.stopDate = msg[1].Format("yyyy-M-d");
+        this.form.startTime = msg[0].Format("yyyy-M-d");
+        this.form.stopTime = msg[1].Format("yyyy-M-d");
         this.getAllLog()
       },
+      feedbackDelete(index,data){
+        let id = data.feedbackId
+        this.deleteHandle(id)
+      },
+      handleSelectionChange(val){
+        this.feedbackId = []
+        val.forEach(item=>{
+          this.feedbackId.push(item.feedbackId)
+        })
+      },
+      batchDelete(){
+        this.deleteHandle(this.feedbackId.join(','))
+      },
+      deleteHandle(id){
+        this.$http.delete(this.$store.state.domain+'/feedback',{
+          params:{
+            adoptToken: this.token,
+            id: id
+          }
+        }).then((res)=>{
+          if(res.data.status == 0){
+            this.$message('删除成功')
+            this.getAllLog()
+          }
+          else{
+
+          }
+        },(err)=>{
+          this.$message.error('接口错误');
+        })
+      }
     }
   }
 </script>
 <style lang="sass" scoped>
-  .MessageMan
+  .Feedback
     margin-top: 40px
     background: #fff
     .log-table

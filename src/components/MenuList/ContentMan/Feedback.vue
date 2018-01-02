@@ -29,8 +29,7 @@
       <el-table
         :data="tableData"
         style="width: 100%"
-        @selection-change="handleSelectionChange"
-        border>
+        @selection-change="handleSelectionChange">
         <el-table-column
           type="selection"
           width="55">
