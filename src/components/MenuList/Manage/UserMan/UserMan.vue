@@ -56,7 +56,6 @@
             <el-table
               reff="multipleTable"
               :data="tableData"
-              border
               tooltip-effect="dark"
               style="width: 100%"
               @selection-change="handleSelectionChange">
@@ -243,7 +242,6 @@
               <div class="dialog-right-table">
                 <el-table
                   :data="tableData2"
-                  border
                   style="width: 100%"
                   max-height="450"
                   highlight-current-row
@@ -287,7 +285,6 @@
               <div class="dialog-right-table">
                 <el-table
                   :data="tableData3"
-                  border
                   style="width: 100%">
                   <el-table-column
                     prop="elementName"
@@ -319,8 +316,7 @@
         <el-tab-pane label="数据权限">
           <el-table
             :data="tableData4"
-            style="width: 100%"
-            border>
+            style="width: 100%">
             <el-table-column
               label="json数据">
               <template scope="scope">

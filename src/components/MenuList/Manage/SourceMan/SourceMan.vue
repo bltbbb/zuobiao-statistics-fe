@@ -106,7 +106,6 @@
                     <div class="bottom">
                       <el-table
                         :data="tableData"
-                        border
                         style="width: 100%">
                         <el-table-column
                           prop="urlPath"
@@ -162,7 +161,6 @@
                         <div class="right-table">
                           <el-table
                             :data="tableData2"
-                            border
                             style="width: 100%"
                             :row-class-name="tableRowClassName"
                             @cell-click="panelTableClick">
@@ -217,7 +215,6 @@
                         <div class="dialog-right-table">
                           <el-table
                             :data="tableData3"
-                            border
                             style="width: 100%">
                             <el-table-column
                               prop="elementName"
@@ -284,7 +281,6 @@
               </el-form>
               <el-table
                 :data="tableData4"
-                border
                 style="width: 100%">
                 <el-table-column
                   prop="jsonInfo"
@@ -344,7 +340,6 @@
         </div>
         <el-table
           :data="addUrlData"
-          border
           ref="urlTable"
           style="width: 100%"
           @selection-change="handleSelectionChange"

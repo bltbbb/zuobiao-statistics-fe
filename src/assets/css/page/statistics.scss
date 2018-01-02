@@ -38,6 +38,30 @@
   .calendar {
     margin-top: 0;
   }
+  .partBox {
+    position: relative;
+  }
+  .sticky{
+    width: 0;
+    height: 0;
+    border-right: 50px solid rgba(73, 93, 113, 0.99);
+    border-bottom: 50px solid transparent;
+    border-left: 50px solid transparent;
+    position: absolute;
+    top:0;
+    right:0;
+    color: #fff;
+    text-align: right;
+  }
+  .trangle {
+    position: absolute;
+    right:10px;
+    top:5px;
+    color:#fff;
+    font-size: 20px;
+  }
 }
+
+
 
 

@@ -51,7 +51,6 @@
                 <h1>已提交</h1>
                 <el-table
                   :data="tableData4"
-                  border
                   style="width: 100%"
                   max-height="450"
                   @selection-change="handleSelectionChange"
@@ -96,7 +95,6 @@
                 <h1>待提交</h1>
                 <el-table
                   :data="tableData"
-                  border
                   style="width: 100%"
                   max-height="450"
                   @selection-change="handleSelectionChange"
@@ -142,7 +140,6 @@
             </el-form>
             <el-table
               :data="tableData2"
-              border
               style="width: 100%">
               <el-table-column
                 prop="nickName"
@@ -193,7 +190,6 @@
             </el-form>
             <el-table
               :data="tableData5"
-              border
               style="width: 100%">
               <el-table-column
                 label="json数据">
@@ -355,7 +351,6 @@
             </div>
             <el-table
                 :data="panelSourceData"
-                border
                 ref="urlTable"
                 style="width: 100%"
                 @selection-change="handleSelectionChange"

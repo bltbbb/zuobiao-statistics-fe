@@ -17,8 +17,7 @@
     <div class="log-table">
       <el-table
         :data="tableData"
-        style="width: 100%"
-        border>
+        style="width: 100%">
         <el-table-column
           prop="enumCode"
           label="CODE">

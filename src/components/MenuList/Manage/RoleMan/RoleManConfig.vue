@@ -30,7 +30,6 @@
         <div class="bottom">
           <el-table
             :data="tableData"
-            border
             style="width: 100%"
             :row-class-name="tableRowClassName"
             @cell-click="panelTableClick">
@@ -86,7 +85,6 @@
       <div class="bottom">
         <el-table
           :data="tableData2"
-          border
           style="width: 100%">
           <el-table-column
             prop="elementName"
@@ -148,7 +146,6 @@
           </div>
           <el-table
             :data="panelData"
-            border
             ref="panelTable"
             style="width: 100%"
             @selection-change="handleSelectionChange"
@@ -199,7 +196,6 @@
         </div>
         <el-table
           :data="elementData"
-          border
           ref="elementTable"
           style="width: 100%"
           @selection-change="handleSelectionChange2"

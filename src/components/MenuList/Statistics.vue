@@ -44,7 +44,9 @@
         <div class="part1">
           <el-row :gutter="20">
             <el-col :span="6" v-for="(item,index) in list" :key="index">
-              <div class="grid-content bg-purple" @click="tabSwitch(index)">
+              <div class="grid-content bg-purple partBox" @click="tabSwitch(index)">
+                <div class="sticky" v-if="isActiveIndex == index"></div>
+                <div class="trangle" v-if="isActiveIndex == index">*</div>
                 <div class="top-title">{{item.name}}
                   <h2><span>{{item.newsName}}</span> <span>{{item.newsCount}}</span></h2>
                   <h2 v-if="item.timeName"><span>{{item.timeName}}</span> <span>{{item.timeCount}}</span></h2>
@@ -77,6 +79,7 @@
   export default {
     data() {
       return {
+        isActiveIndex: 0,
         explain: '这是菜单的说明文字',
         plats: [{
           value: '-1',
@@ -252,27 +255,27 @@
         })
       },
       tabSwitch(id){
-          //异步请求待用
-          let has = this.list[id].timeCount;
-          if(has == undefined){
-              this.showRadio = false;
-          }else {
-              this.showRadio = true;
-              this.radioData = this.chartData[id].Chart;
-              this.radioName.news = this.chartData[id].newsName;
-              this.radioName.size = this.chartData[id].timeName;
-          }
-          this.myChart.setOption({
-            title: {text: this.list[id].name},
-            xAxis: {
-              data: this.chartData[id].Chart.news.x
-            },
-            series: [{
-              // 根据名字对应到相应的系列
-              name: this.chartData[id].newsName,
-              data: this.chartData[id].Chart.news.y
-            }]
-          })
+        this.isActiveIndex = id;
+        let has = this.list[id].timeCount;
+        if(has == undefined){
+            this.showRadio = false;
+        }else {
+            this.showRadio = true;
+            this.radioData = this.chartData[id].Chart;
+            this.radioName.news = this.chartData[id].newsName;
+            this.radioName.size = this.chartData[id].timeName;
+        }
+        this.myChart.setOption({
+          title: {text: this.list[id].name},
+          xAxis: {
+            data: this.chartData[id].Chart.news.x
+          },
+          series: [{
+            // 根据名字对应到相应的系列
+            name: this.chartData[id].newsName,
+            data: this.chartData[id].Chart.news.y
+          }]
+        })
       },
       getFunctionCensus: function () {
         let Params = new URLSearchParams();
