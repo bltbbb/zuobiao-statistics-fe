@@ -66,8 +66,3 @@ new Vue({
     }
   }
 })
-
-
-//路由跳转验证token是否有效
-//1.axios 拦截器
-//2.router.beforeEach

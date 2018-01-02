@@ -8,17 +8,6 @@
 
   export default {
     name: 'app',
-    mounted(){
-      //组件开始挂载时获取用户信息
-      //this.getUserInfo();
-    },
-    methods:{
-//      getUserInfo(){
-//          setTimeout(()=>{
-//              console.log(this.$store)
-//          },500)
-//      }
-    },
     created(){
       document.title="统计分析-坐标";
     }
