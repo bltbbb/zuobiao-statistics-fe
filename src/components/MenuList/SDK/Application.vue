@@ -24,7 +24,7 @@
             <el-input style="width: 146px;" v-model="form2.appLicenseKey"></el-input>
           </el-form-item>
           <el-form-item label="平台类型">
-            <el-select v-model="form2.appPlatId" style="width: 192px;" placeholder="请选择">
+            <el-select v-model="form2.appPlatId" style="width: 162px;" placeholder="请选择">
               <el-option
                 v-for="plat in plats"
                 :key="plat.id+''"
@@ -34,7 +34,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="状态">
-            <el-select v-model="form2.status" style="width: 192px;" placeholder="请选择">
+            <el-select v-model="form2.status" style="width: 162px;" placeholder="请选择">
               <el-option label="启用" value="1"></el-option>
               <el-option label="禁用" value="0"></el-option>
               <el-option label="已删除" value="-1"></el-option>
@@ -185,7 +185,7 @@
       return {
         title: '新增',
         addDialog: false,
-        domain:'http://192.168.1.21:8088',
+        domain:'http://gather.workinggo.com',
         token:'',
         tableData: [],
         form:{

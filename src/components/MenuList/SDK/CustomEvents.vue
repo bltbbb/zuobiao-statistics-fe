@@ -15,7 +15,7 @@
       <el-form ref="form" :model="form" inline>
         <div class="form-input">
           <el-form-item label="Application">
-            <el-select v-model="form2.appId" style="width: 192px;" placeholder="请选择" filterable>
+            <el-select v-model="form2.appId" style="width: 162px;" placeholder="请选择">
               <el-option
                 v-for="plat in appIdData"
                 :key="plat.id+''"
@@ -31,7 +31,7 @@
             <el-input style="width: 146px;" v-model="form2.eventName"></el-input>
           </el-form-item>
           <el-form-item label="状态">
-            <el-select v-model="form2.status" style="width: 192px;" placeholder="请选择">
+            <el-select v-model="form2.status" style="width: 162px;" placeholder="请选择">
               <el-option label="启用" value="1"></el-option>
               <el-option label="禁用" value="0"></el-option>
               <el-option label="已删除" value="-1"></el-option>
@@ -114,8 +114,15 @@
       </el-table>
       <el-dialog :title="title" :visible.sync="addDialog" size="small" v-if="addDialog">
         <el-form :model="form" label-width="100px" inline ref="addFrom">
-          <el-form-item label="appId" prop="appId">
-            <el-input v-model="form.appId" style="width: 192px;"  auto-complete="off"></el-input>
+          <el-form-item label="Application" prop="appId">
+            <el-select v-model="form.appId" style="width: 192px;" placeholder="请选择" filterable>
+              <el-option
+                v-for="plat in appIdData"
+                :key="plat.id+''"
+                :label="plat.appName"
+                :value="plat.id+''">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="事件ID" prop="eventId">
             <el-input v-model="form.eventId" style="width: 192px;"  auto-complete="off"></el-input>
@@ -190,7 +197,7 @@
       return {
         title: '新增',
         addDialog: false,
-        domain:'http://192.168.1.21:8088',
+        domain:'http://gather.workinggo.com',
         token:'',
         tableData: [],
         form:{
@@ -331,17 +338,17 @@
         this.deleteHandle(data)
       },
       appChange(index,data){
+        this.title = '修改'
         this.addDialog = true
         this.form.status = data.status +''
-        this.form.appId  = data.appId
+        this.form.appId  = data.appId + ''
         this.form.eventId  = data.eventId
         this.form.eventName  = data.eventName
         this.form.describe = data.describe
         this.form.id = data.id
         this.change = true
-        this.form.classifyId = []
+        this.form.classifyId = !data.classifyId ? '' : data.classifyId + ''
         this.getPlat()
-
       },
       handleSelectionChange(val){
         this.feedbackId = []
@@ -390,7 +397,9 @@
           status: '',
           classifyId:''
         }
+        this.title = '新增'
         this.addDialog = true
+        this.getPlat()
       },
       addHandle(){
         if(this.change){
@@ -407,7 +416,7 @@
             this.addDialog = false
           }
           else{
-
+            this.$message('新增失败')
           }
         },(err)=>{
           this.$message.error('接口错误');

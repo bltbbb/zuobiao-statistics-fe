@@ -117,7 +117,7 @@
     </div>
     <div class="dialog">
       <el-dialog title="举报详情" :visible.sync="dialogTableVisible">
-        <table width="100%" cellspacing="0" cellpadding="0" border="1" class="dialogTable">
+        <table width="100%" cellspacing="0" cellpadding="0" border="1" class="dialogTable" style="table-layout:fixed;">
           <tr>
             <th>举报类型</th>
             <td>{{detailData.type ? '用户' : '群组'}}</td>
@@ -139,6 +139,10 @@
             <td>{{detailData.targetName}}</td>
           </tr>
           <tr>
+            <th>举报内容</th>
+            <td><div style="word-wrap:break-word;word-break:break-all;padding: 0 8px;">{{detailData.content}}</div></td>
+          </tr>
+          <tr>
             <th>举报人时间</th>
             <td>{{(new Date(detailData.createTime)).Format("yyyy-MM-dd hh:mm:ss")}}</td>
           </tr>
@@ -149,10 +153,6 @@
               <span v-if="detailData.status == 1">处理中</span>
               <span v-if="detailData.status == 2">处理完成</span>
             </td>
-          </tr>
-          <tr v-if="detailData.status == 2">
-            <th>举报内容</th>
-            <td>{{detailData.content}}</td>
           </tr>
           <tr v-if="detailData.status == 2">
             <th>处理人员</th>
