@@ -37,7 +37,8 @@
             Manage: 'sta-xitongguanli',
             LogMan:'sta-rizhi',
             MemberMan: 'sta-huiyuanguanli',
-            ContentMan: 'sta-neirongguanli'
+            ContentMan: 'sta-neirongguanli',
+            SDK: 'sta-SDK',
           },
           activeIndex: 'Survey'
       }

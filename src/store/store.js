@@ -14,7 +14,7 @@ export default new Vuex.Store({
   state: {
     domain:'http://192.168.1.21:9968', //保存后台请求的地址
     //domain:'http://analysisapi.workinggo.com', //保存后台请求的地址
-    //domain:'http://125.208.1.67:9101', //保存后台请求的地址
+    //domain:'http://125.208.1.67:9968', //保存后台请求的地址
     //保存用户信息
     userInfo: [],
     //保存菜单信息

@@ -41,6 +41,10 @@ import Feedback from '@/components/MenuList/ContentMan/Feedback'
 import ReportMan from '@/components/MenuList/ContentMan/ReportMan'
 import ScheduleMan from '@/components/MenuList/ContentMan/ScheduleMan'
 
+//SDK
+import Application from '@/components/MenuList/SDK/Application'
+import CustomEvents from '@/components/MenuList/SDK/CustomEvents'
+
 //无权限
 import Jurisdiction from '@/components/Jurisdiction/Jurisdiction'
 
@@ -242,6 +246,16 @@ const router = new Router({
           path: '/Content/ScheduleMan',
           name: 'ScheduleMan',
           component: ScheduleMan
+        },
+        {
+          path: '/Content/Application',
+          name: 'Application',
+          component: Application
+        },
+        {
+          path: '/Content/CustomEvents',
+          name: 'CustomEvents',
+          component: CustomEvents
         },
       ]
     },
