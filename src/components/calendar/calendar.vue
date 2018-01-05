@@ -39,6 +39,10 @@
       showToday:{
           type: Boolean,
           default: true
+      },
+      containToday:{
+          type:Boolean,
+          default:false
       }
     },
     data () {
@@ -60,7 +64,8 @@
           }
         },
         dateType: '',
-        curtext: ''
+        curtext: '',
+        difference: this.containToday ? 3600 * 1000 * 24 : 0
       }
     },
     // 平台图表格-->
@@ -76,16 +81,16 @@
         }
         else if (val == "最近7天") {
           start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-          date.setTime(date.getTime() - 3600 * 1000 * 24);
+          date.setTime(date.getTime() - this.difference);
           this.value2 = [start, date];
         }
         else if (val == "最近30天") {
-          date.setTime(date.getTime() - 3600 * 1000 * 24);
+          date.setTime(date.getTime() - this.difference);
           start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
           this.value2 = [start, date];
         }
         else if (val == "最近60天") {
-          date.setTime(date.getTime() - 3600 * 1000 * 24);
+          date.setTime(date.getTime() - this.difference);
           start.setTime(start.getTime() - 3600 * 1000 * 24 * 60);
           this.value2 = [start, date];
         }

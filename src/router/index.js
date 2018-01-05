@@ -45,6 +45,9 @@ import ScheduleMan from '@/components/MenuList/ContentMan/ScheduleMan'
 import Application from '@/components/MenuList/SDK/Application'
 import CustomEvents from '@/components/MenuList/SDK/CustomEvents'
 
+//会员管理
+import MemberMan from '@/components/MenuList/MemberMan/MemberMan'
+
 //无权限
 import Jurisdiction from '@/components/Jurisdiction/Jurisdiction'
 
@@ -256,6 +259,11 @@ const router = new Router({
           path: '/Content/CustomEvents',
           name: 'CustomEvents',
           component: CustomEvents
+        },
+        {
+          path: '/Content/MemberMan',
+          name: 'MemberMan',
+          component: MemberMan
         },
       ]
     },

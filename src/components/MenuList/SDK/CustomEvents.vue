@@ -128,7 +128,7 @@
             <el-input v-model="form.eventId" style="width: 192px;"  auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="事件分类" prop="classifyId">
-            <el-select v-model="form.classifyId" style="width: 192px;" placeholder="请选择" filterable allow-create>
+            <el-select v-model="form.classifyId" style="width: 192px;" placeholder="请选择" clearable allow-create>
               <el-option
                 v-for="plat in plats"
                 :key="plat.id+''"

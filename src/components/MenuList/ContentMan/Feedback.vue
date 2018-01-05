@@ -14,7 +14,7 @@
     <div class="log-form">
       <el-form ref="form" :model="form" inline>
         <div class="form-input">
-          <Calendar @timeValue="getTime"></Calendar>
+          <Calendar @timeValue="getTime" :difference="true"></Calendar>
           <el-form-item label="反馈ID">
             <el-input style="width: 146px;" v-model="form.id"></el-input>
           </el-form-item>
