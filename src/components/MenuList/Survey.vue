@@ -245,7 +245,7 @@
             }
         },(err)=>{
             //view('网络错误')
-          this.$message.error('网络错误');
+//          this.$message.error('网络错误');
         });
 
         this.$http.get(this.$store.state.domain+'/getPlatform',{
@@ -298,7 +298,7 @@
           }
         },(err)=>{
           //view('网络错误')
-          this.$message.error('网络错误');
+//          this.$message.error('网络错误');
         })
       },
       getFullPlat(){
@@ -328,7 +328,7 @@
           }
         },(err)=>{
           //view('网络错误')
-          this.$message.error('网络错误');
+//          this.$message.error('网络错误');
         });
       }
     }

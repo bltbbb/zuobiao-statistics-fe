@@ -14,7 +14,7 @@
     <div class="log-form">
       <el-form ref="form" :model="form" inline>
         <div class="form-input">
-          <Calendar @timeValue="getTime"></Calendar>
+          <Calendar @timeValue="getTime" :containToday="true"></Calendar>
           <!--<el-form-item label="开始时间">-->
             <!--<el-date-picker-->
               <!--v-model="form.invokeBeginTimeStart"-->
@@ -166,7 +166,7 @@
           }
         },(err)=>{
           //view('网络错误')
-          this.$message.error('网络错误');
+//          this.$message.error('网络错误');
         })
       },
       handleSizeChange(data){

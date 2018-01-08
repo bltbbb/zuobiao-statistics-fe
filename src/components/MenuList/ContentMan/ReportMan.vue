@@ -14,7 +14,7 @@
     <div class="log-form">
       <el-form ref="form" :model="form" inline>
         <div class="form-input">
-          <Calendar @timeValue="getTime"></Calendar>
+          <Calendar @timeValue="getTime" :containToday="true"></Calendar>
           <el-form-item label="举报人ID">
             <el-input style="width: 146px;" v-model="form.id"></el-input>
           </el-form-item>
@@ -249,7 +249,7 @@
           }
         },(err)=>{
           //view('网络错误')
-          this.$message.error('网络错误');
+//          this.$message.error('网络错误');
         })
       },
       handleSizeChange(data){
@@ -303,7 +303,7 @@
           }
         },(err)=>{
           //view('网络错误')
-          this.$message.error('网络错误');
+//          this.$message.error('网络错误');
         })
       },
       reportDelete(index,data){

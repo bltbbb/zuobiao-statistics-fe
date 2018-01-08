@@ -107,7 +107,7 @@
                   this.password = '';
                 },(err)=>{
                   this.showScreen = false;
-                  this.$message.error('网络错误');
+//        //          this.$message.error('网络错误');
                   this.showScreen = false;
                 })
 
@@ -120,7 +120,7 @@
                 this.$message.error('用户名或密码错误');
             }
           },(err)=>{
-            this.$message.error('网络错误');
+//  //          this.$message.error('网络错误');
             this.showScreen = false;
           });
         },

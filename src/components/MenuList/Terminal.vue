@@ -383,7 +383,7 @@
           }
         },(err)=>{
           //view('网络错误')
-          this.$message.error('网络错误');
+//          this.$message.error('网络错误');
         })
       },
       getTerminalPages:function () {
@@ -413,7 +413,7 @@
           }
         },(err)=>{
           //view('网络错误')
-          this.$message.error('网络错误');
+//          this.$message.error('网络错误');
         })
       }
     },

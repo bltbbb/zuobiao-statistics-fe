@@ -365,9 +365,8 @@
             this.$router.push('/login');
           }
         },(err)=>{
-          console.log(err+' 123')
           //view('网络错误')
-          this.$message.error('网络错误');
+////          this.$message.error('网络错误');
         })
       },
       getUserFlow: function () {
@@ -406,7 +405,7 @@
           }
         },(err)=>{
           //view('网络错误')
-          this.$message.error('网络错误');
+////          this.$message.error('网络错误');
         })
       },
       getFlowAnalyzePages: function () {
@@ -435,7 +434,7 @@
           }
         },(err)=>{
           //view('网络错误')
-          this.$message.error('网络错误');
+////          this.$message.error('网络错误');
         })
       }
     },

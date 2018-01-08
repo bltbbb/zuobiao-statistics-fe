@@ -14,7 +14,7 @@
     <div class="log-form">
       <el-form ref="form" :model="form" inline>
         <div class="form-input">
-          <Calendar @timeValue="getTime"></Calendar>
+          <Calendar @timeValue="getTime" :containToday="true"></Calendar>
           <el-form-item label="操作用户">
             <el-input style="width: 146px;" v-model="form.mainAccount"></el-input>
           </el-form-item>
@@ -171,7 +171,7 @@
           }
         },(err)=>{
           //view('网络错误')
-          this.$message.error('网络错误');
+//          this.$message.error('网络错误');
         })
       },
       handleSizeChange(data){

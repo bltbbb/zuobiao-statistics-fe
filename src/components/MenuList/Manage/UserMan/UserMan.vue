@@ -573,7 +573,7 @@
           }
         },(err)=>{
           //view('网络错误')
-          this.$message.error('网络错误');
+//          this.$message.error('网络错误');
         })
       },
       keyDownHandle(ev){
@@ -606,7 +606,7 @@
             }
           },(err)=>{
             //view('网络错误')
-            this.$message.error('网络错误');
+  //          this.$message.error('网络错误');
           })
       },
       reset(){
@@ -770,7 +770,7 @@
               }
             },(err)=>{
               //view('网络错误')
-              this.$message.error('网络错误');
+    //          this.$message.error('网络错误');
             })
           } else {
             return false;
@@ -794,7 +794,7 @@
             }
           },(err)=>{
             //view('网络错误')
-            this.$message.error('网络错误');
+  //          this.$message.error('网络错误');
           })
       },
       getSlectedRole(){

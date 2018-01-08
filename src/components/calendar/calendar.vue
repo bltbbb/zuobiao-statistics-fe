@@ -65,7 +65,7 @@
         },
         dateType: '',
         curtext: '',
-        difference: this.containToday ? 3600 * 1000 * 24 : 0
+        difference: this.containToday ? 0 : 3600 * 1000 * 24
       }
     },
     // 平台图表格-->

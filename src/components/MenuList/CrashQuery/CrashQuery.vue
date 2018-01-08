@@ -43,8 +43,7 @@
     <div class="log-table">
       <el-table
         :data="tableData"
-        style="width: 100%"
-        border>
+        style="width: 100%">
         <el-table-column
           prop="crashMessageId"
           label="崩溃信息ID"
@@ -223,7 +222,7 @@
           }
         },(err)=>{
           //view('网络错误')
-          this.$message.error('网络错误');
+//          this.$message.error('网络错误');
         })
       },
       handleSizeChange(data){

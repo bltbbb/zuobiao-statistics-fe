@@ -14,7 +14,7 @@
     <div class="log-form">
       <el-form ref="form" :model="form" inline>
         <div class="form-input">
-          <Calendar @timeValue="getTime"></Calendar>
+          <Calendar @timeValue="getTime" :containToday="true"></Calendar>
           <el-form-item label="会员账号">
             <el-input style="width: 146px;" v-model="form.id"></el-input>
           </el-form-item>
@@ -99,10 +99,10 @@
               size="small"
               @click="seeReport(scope.$index, scope.row)"
               type="primary">查看</el-button>
-            <el-button
-              size="small"
-              @click="reportDelete(scope.$index, scope.row)"
-              type="danger">删除</el-button>
+            <!--<el-button-->
+              <!--size="small"-->
+              <!--@click="reportDelete(scope.$index, scope.row)"-->
+              <!--type="danger">删除</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -271,7 +271,7 @@
           }
         },(err)=>{
           //view('网络错误')
-          this.$message.error('网络错误');
+////          this.$message.error('网络错误');
         })
       },
       handleSizeChange(data){
@@ -325,7 +325,7 @@
           }
         },(err)=>{
           //view('网络错误')
-          this.$message.error('网络错误');
+////          this.$message.error('网络错误');
         })
       },
       reportDelete(index,data){
