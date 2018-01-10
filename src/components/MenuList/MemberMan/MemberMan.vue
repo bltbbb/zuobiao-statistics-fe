@@ -90,7 +90,7 @@
         <el-table-column
           label="在线设备">
           <template scope="scope">
-            <span v-if="scope.row.iosstatus == 1">ios</span><span v-if="scope.row.androidStatus == 1">,</span><span v-if="scope.row.androidStatus == 1">android</span><span v-if="scope.row.macOSStatus == 1">,</span><span v-if="scope.row.macOSStatus == 1">mac</span><span v-if="scope.row.pcStatus == 1">,</span><span v-if="scope.row.pcStatus == 1">pc</span><span v-if="scope.row.webStatus == 1">,</span><span v-if="scope.row.webStatus == 1">WEB</span><span v-if="scope.row.windowsStatus == 1">,</span><span v-if="scope.row.windowsStatus == 1">windows</span><span v-if="scope.row.unKnowStatus == 1">,</span><span v-if="scope.row.unKnowStatus == 1">未知</span>
+            <span v-if="scope.row.iosstatus == 1">ios</span><span v-if="scope.row.androidStatus == 1">,</span><span v-if="scope.row.androidStatus == 1">android</span><span v-if="scope.row.macOSStatus == 1">,</span><span v-if="scope.row.macOSStatus == 1">mac</span><span v-if="scope.row.pcStatus == 1">,</span><span v-if="scope.row.pcStatus == 1">pc</span><span v-if="scope.row.webStatus == 1">,</span><span v-if="scope.row.webStatus == 1">WEB</span><span v-if="scope.row.windowsStatus == 1">,</span><span v-if="scope.row.windowsStatus == 1">windows</span><span v-if="scope.row.unKnowStatus == 1&&scope.row.windowsStatus == 1">,</span><span v-if="scope.row.unKnowStatus == 1">未知</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -142,7 +142,8 @@
               <span v-if="detailData.sex == 2">女</span>
             </td>
             <th>年龄</th>
-            <td>{{detailData.age}}</td>
+            <td v-if="detailData.age == '-9'">未知</td>
+            <td v-if="detailData.age != '-9'">{{detailData.age}}</td>
           </tr>
           <tr>
             <th>生日</th>
@@ -152,7 +153,7 @@
           </tr>
           <tr>
             <th>行业</th>
-            <td>{{detailData.industryId}}</td>
+            <td>{{detailData.industryName}}</td>
             <th>公司</th>
             <td>{{detailData.company}}</td>
           </tr>
@@ -164,7 +165,7 @@
           </tr>
           <tr>
             <th>邮箱</th>
-            <td>{{detailData.email}}</td>
+            <td style="word-wrap:break-word;word-break:break-all;padding: 0 5px;">{{detailData.email}}</td>
             <th>注册时间</th>
             <td>{{(new Date(detailData.registerDate)).Format("yyyy-MM-dd hh:mm:ss")}}</td>
           </tr>
@@ -185,8 +186,8 @@
             <td>{{detailData.profileEmail}}</td>
           </tr>
           <tr>
-            <th>邮箱数</th>
-            <td>{{detailData.targetName}}</td>
+            <th>日程数</th>
+            <td>{{detailData.scheNum ? detailData.scheNum : 0}}</td>
             <th>PC端在线时长</th>
             <td>{{detailData.pcTimes | toDateString}}</td>
           </tr>
@@ -221,18 +222,15 @@
             </el-table-column>
             <el-table-column
               prop="ip"
-              label="IP"
-              width="130">
+              label="IP">
             </el-table-column>
             <el-table-column
               prop="addr"
-              label="地区"
-              width="130">
+              label="地区">
             </el-table-column>
             <el-table-column
               prop="platName"
-              label="登录方式"
-              width="100">
+              label="登录方式">
             </el-table-column>
           </el-table>
         </div>
@@ -500,4 +498,9 @@
     .pagination-wrapper
       text-align: center
       margin-top: 10px
+</style>
+<style lang="sass">
+  .MemberMan
+    .el-dialog--small
+      width: 55%
 </style>
