@@ -39,11 +39,11 @@
           width="70"
           label="序号">
         </el-table-column>
-        <!--<el-table-column-->
-          <!--prop="SN"-->
-          <!--label="SN"-->
-          <!--width="150">-->
-        <!--</el-table-column>-->
+        <el-table-column
+          prop="sn"
+          label="SN"
+          width="150">
+        </el-table-column>
         <el-table-column
           prop="master"
           label="发送者ID">

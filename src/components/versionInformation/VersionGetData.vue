@@ -29,7 +29,7 @@
 
 <script type="text/ecmascript-6">
     export default {
-        props: ['allPlat','platId'],
+        props: ['allPlat','platId','versionId'],
         data () {
             return {
               port: this.$store.state.domain,
@@ -59,7 +59,6 @@
           init () {
             this.initParams();
             this.getPlatform();
-            this.getEdition();
           },
 
           //  获取平台信息
@@ -100,6 +99,7 @@
 
           //  获取版本信息
           getEdition () {
+            console.log(1)
             let Params = new URLSearchParams();
             Params.append('adoptToken', this.token);
             Params.append('appPlatId', this.platVal)
@@ -109,6 +109,9 @@
                   let data = res.data.result.result;
                   this.editions = data;
                   this.evalVal = data[0].appVersionId;
+                  if(this.versionId){
+                    this.evalVal = +this.versionId
+                  }
                 }
                 else if (res.data.status == 1) {
                   console.log('版本信息请求数据为空');

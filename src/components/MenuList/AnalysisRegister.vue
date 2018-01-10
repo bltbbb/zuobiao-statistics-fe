@@ -34,6 +34,7 @@
         @changeEvalVal="changeEdition"
         :allPlat="false"
         :platId="this.$route.params.platId"
+        :versionId="this.$route.params.versionId"
       >
       </versiongetdata>
     </div>
@@ -117,7 +118,8 @@
         stopDate: '',
         messageChartData: [],
         userChartData: [],
-        platId:''
+        platId:'',
+        eventId:''
       }
     },
 
@@ -141,9 +143,8 @@
       },
       initParams () {
         this.token = this.$cookie.get('adoptToken');
-        this.pageVal = this.$route.params.id
         this.platId = this.$route.params.platId
-        this.platVal = this.platId
+        this.eventId = this.$route.params.id
         let date = new Date();
         let start = new Date();
         let stop = new Date();
@@ -167,8 +168,7 @@
       // 改变平台
       changeplatVal1 (val) {
         this.platVal = val;
-        this.getAnalyzeChart();
-        this.getAnalyzePages();
+        this.getInteractionView();
       },
 
       //  改变版本
@@ -199,6 +199,15 @@
               if (res.data.status == 0) {
                 let data = res.data.result.result;
                 this.pages = data;
+                if(data.length > 0){
+                  this.pageVal = data[0].eventId
+                }else{
+                  this.pageVal = ''
+                }
+                if(this.eventId){
+                  this.pageVal = this.eventId
+                }
+
               }
               else if (res.data.result == 1) {
               }

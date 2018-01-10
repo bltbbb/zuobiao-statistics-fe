@@ -88,8 +88,10 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop=""
           label="在线设备">
+          <template scope="scope">
+            <span v-if="scope.row.iosstatus == 1">ios</span><span v-if="scope.row.androidStatus == 1">,</span><span v-if="scope.row.androidStatus == 1">android</span><span v-if="scope.row.macOSStatus == 1">,</span><span v-if="scope.row.macOSStatus == 1">mac</span><span v-if="scope.row.pcStatus == 1">,</span><span v-if="scope.row.pcStatus == 1">pc</span><span v-if="scope.row.webStatus == 1">,</span><span v-if="scope.row.webStatus == 1">WEB</span><span v-if="scope.row.windowsStatus == 1">,</span><span v-if="scope.row.windowsStatus == 1">windows</span><span v-if="scope.row.unKnowStatus == 1">,</span><span v-if="scope.row.unKnowStatus == 1">未知</span>
+          </template>
         </el-table-column>
         <el-table-column
           label="操作"
@@ -144,9 +146,9 @@
           </tr>
           <tr>
             <th>生日</th>
-            <td>{{detailData.masterName}}</td>
+            <td></td>
             <th>地区</th>
-            <td>{{detailData.masterName}}</td>
+            <td></td>
           </tr>
           <tr>
             <th>行业</th>
@@ -156,7 +158,7 @@
           </tr>
           <tr>
             <th>职位</th>
-            <td>{{detailData.targetName}}</td>
+            <td></td>
             <th>手机</th>
             <td>{{detailData.mobile}}</td>
           </tr>
@@ -169,15 +171,11 @@
           <tr>
             <th>最近登录时间</th>
             <td>
-              <span v-if="detailData.status == 0">未处理</span>
-              <span v-if="detailData.status == 1">处理中</span>
-              <span v-if="detailData.status == 2">处理完成</span>
+              {{(new Date(detailData.updateTime)).Format("yyyy-MM-dd hh:mm:ss")}}
             </td>
             <th>在线设备</th>
             <td>
-              <span v-if="detailData.status == 0">未处理</span>
-              <span v-if="detailData.status == 1">处理中</span>
-              <span v-if="detailData.status == 2">处理完成</span>
+              <span v-if="detailData.iosstatus == 1">ios</span><span v-if="detailData.androidStatus == 1">,</span><span v-if="detailData.androidStatus == 1">android</span><span v-if="detailData.macOSStatus == 1">,</span><span v-if="detailData.macOSStatus == 1">mac</span><span v-if="detailData.pcStatus == 1">,</span><span v-if="detailData.pcStatus == 1">pc</span><span v-if="detailData.webStatus == 1">,</span><span v-if="detailData.webStatus == 1">WEB</span><span v-if="detailData.windowsStatus == 1">,</span><span v-if="detailData.windowsStatus == 1">windows</span><span v-if="detailData.unKnowStatus == 1">,</span><span v-if="detailData.unKnowStatus == 1">未知</span>
             </td>
           </tr>
           <tr>
@@ -190,15 +188,54 @@
             <th>邮箱数</th>
             <td>{{detailData.targetName}}</td>
             <th>PC端在线时长</th>
-            <td>{{detailData.pcTimes}}</td>
+            <td>{{detailData.pcTimes | toDateString}}</td>
           </tr>
           <tr>
             <th>ios端在线时长</th>
-            <td>{{detailData.iostimes}}</td>
+            <td>{{detailData.iostimes | toDateString}}</td>
             <th>Android端在线时长</th>
-            <td>{{detailData.androidTimes}}</td>
+            <td>{{detailData.androidTimes | toDateString}}</td>
           </tr>
         </table>
+        <div class="sTable">
+          <el-table
+            :data="tableData2"
+            style="width: 100%">
+            <el-table-column
+              type="index"
+              width="65"
+              label="序号">
+            </el-table-column>
+            <!--<el-table-column-->
+            <!--label="举报类型">-->
+            <!--<template scope="scope">-->
+            <!--<span>{{scope.type ? '用户' : '群组'}}</span>-->
+            <!--</template>-->
+            <!--</el-table-column>-->
+            <el-table-column
+              prop="timestamp"
+              label="登录时间">
+              <template scope="scope">
+                {{(new Date(scope.row.timestamp)).Format("yyyy-MM-dd hh:mm:ss")}}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="ip"
+              label="IP"
+              width="130">
+            </el-table-column>
+            <el-table-column
+              prop="addr"
+              label="地区"
+              width="130">
+            </el-table-column>
+            <el-table-column
+              prop="platName"
+              label="登录方式"
+              width="100">
+            </el-table-column>
+          </el-table>
+        </div>
         <!--<div class="btn-wrapper" v-if="detailData.status != 2">-->
           <!--<el-button-->
             <!--@click="repoertHanle(1)"-->
@@ -207,6 +244,17 @@
             <!--@click="repoertHanle(2)"-->
             <!--type="danger">恶意举报</el-button>-->
         <!--</div>-->
+        <div class="pagination-wrapper" v-if="this.tableData2.length > 0">
+          <el-pagination
+            @size-change="handleSizeChange2"
+            @current-change="handleCurrentChange2"
+            :current-page="currentPage2"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="pageSize2"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalCount2">
+          </el-pagination>
+        </div>
       </el-dialog>
     </div>
   </div>
@@ -219,10 +267,14 @@
       return {
         token:'',
         tableData: [],
+        tableData2: [],
         detailData:{},
         totalCount: 0,
+        totalCount2: 0,
         currentPage: 1,
+        currentPage2: 1,
         pageSize: 10,
+        pageSize2: 10,
         form:{
           startTime:'',
           stopTime:'',
@@ -274,6 +326,26 @@
 ////          this.$message.error('网络错误');
         })
       },
+      getTable(){
+        let data = {
+          adoptToken: this.token,
+          currentPage: this.currentPage,
+          pageSize: this.pageSize,
+          cubeId: this.detailData.userId
+        }
+        this.$http.post(this.$store.state.domain+'/userInfo/loginInfo',qs.stringify(data)).then((res)=>{
+          if(res.data.status == 0){
+            this.totalCount2 = res.data.result.totalCount
+            this.tableData2 = res.data.result.result
+          }
+          else{
+
+          }
+        },(err)=>{
+          //view('网络错误')
+////          this.$message.error('网络错误');
+        })
+      },
       handleSizeChange(data){
         this.pageSize = data
         this.getAllLog()
@@ -282,6 +354,15 @@
       handleCurrentChange(data){
         this.currentPage = data
         this.getAllLog()
+      },
+      handleSizeChange2(data){
+        this.pageSize2 = data
+        this.getTable()
+
+      },
+      handleCurrentChange2(data){
+        this.currentPage2 = data
+        this.getTable()
       },
       searchHandle(){
         this.getAllLog()
@@ -307,6 +388,7 @@
         this.dialogTableVisible = true
         this.detailData = data
         this.remark = ''
+        this.getTable()
       },
       repoertHanle(isMalice){
         let data = {
@@ -413,4 +495,9 @@
     .btn-wrapper
       text-align: center
       margin-top: 15px
+    .sTable
+      margin-top: 15px
+    .pagination-wrapper
+      text-align: center
+      margin-top: 10px
 </style>

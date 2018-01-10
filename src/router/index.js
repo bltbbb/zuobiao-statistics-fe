@@ -145,7 +145,7 @@ const router = new Router({
           name:'BuriedPoint'
         },
         {
-          path: '/Content/AnalysisRegister/:id/:platId',
+          path: '/Content/AnalysisRegister/:id/:platId/:versionId',
           component: AnalysisRegister,
           name: 'AnalysisRegister'
         },
