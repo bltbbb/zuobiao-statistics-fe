@@ -167,17 +167,7 @@
             <th>邮箱</th>
             <td style="word-wrap:break-word;word-break:break-all;padding: 0 5px;">{{detailData.email}}</td>
             <th>注册时间</th>
-            <td>{{(new Date(detailData.registerDate)).Format("yyyy-MM-dd hh:mm:ss")}}</td>
-          </tr>
-          <tr>
-            <th>最近登录时间</th>
-            <td>
-              {{(new Date(detailData.updateTime)).Format("yyyy-MM-dd hh:mm:ss")}}
-            </td>
-            <th>在线设备</th>
-            <td>
-              <span v-if="detailData.iosstatus == 1">ios</span><span v-if="detailData.androidStatus == 1">,</span><span v-if="detailData.androidStatus == 1">android</span><span v-if="detailData.macOSStatus == 1">,</span><span v-if="detailData.macOSStatus == 1">mac</span><span v-if="detailData.pcStatus == 1">,</span><span v-if="detailData.pcStatus == 1">pc</span><span v-if="detailData.webStatus == 1">,</span><span v-if="detailData.webStatus == 1">WEB</span><span v-if="detailData.windowsStatus == 1">,</span><span v-if="detailData.windowsStatus == 1">windows</span><span v-if="detailData.unKnowStatus == 1">,</span><span v-if="detailData.unKnowStatus == 1">未知</span>
-            </td>
+            <td>{{(new Date(detailData.createTime)).Format("yyyy-MM-dd hh:mm:ss")}}</td>
           </tr>
           <tr>
             <th>绑定手机</th>
@@ -197,10 +187,21 @@
             <th>Android端在线时长</th>
             <td>{{detailData.androidTimes | toDateString}}</td>
           </tr>
+          <tr>
+            <!--<th>最近登录时间</th>-->
+            <!--<td>-->
+            <!--{{(new Date(detailData.updateTime)).Format("yyyy-MM-dd hh:mm:ss")}}-->
+            <!--</td>-->
+            <th>在线设备</th>
+            <td>
+              <span v-if="detailData.iosstatus == 1">ios</span><span v-if="detailData.androidStatus == 1">,</span><span v-if="detailData.androidStatus == 1">android</span><span v-if="detailData.macOSStatus == 1">,</span><span v-if="detailData.macOSStatus == 1">mac</span><span v-if="detailData.pcStatus == 1">,</span><span v-if="detailData.pcStatus == 1">pc</span><span v-if="detailData.webStatus == 1">,</span><span v-if="detailData.webStatus == 1">WEB</span><span v-if="detailData.windowsStatus == 1">,</span><span v-if="detailData.windowsStatus == 1">windows</span><span v-if="detailData.unKnowStatus == 1&&detailData.windowsStatus == 1">,</span><span v-if="detailData.unKnowStatus == 1">未知</span>
+            </td>
+          </tr>
         </table>
         <div class="sTable">
           <el-table
             :data="tableData2"
+            max-height="200"
             style="width: 100%">
             <el-table-column
               type="index"
