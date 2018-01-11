@@ -15,7 +15,7 @@
       <el-form ref="form" :model="form" inline>
         <div class="form-input">
           <Calendar @timeValue="getTime" :containToday="true"></Calendar>
-          <el-form-item label="用户ID">
+          <el-form-item label="用户ID或反馈内容">
             <el-input style="width: 146px;" v-model="form.id"></el-input>
           </el-form-item>
           <el-form-item style="margin-left: 30px;">
@@ -146,8 +146,7 @@
 
           }
         },(err)=>{
-          //view('网络错误')
-//          this.$message.error('网络错误');
+         this.tableData = []
         })
       },
       handleSizeChange(data){
