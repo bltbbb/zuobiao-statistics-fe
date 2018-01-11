@@ -101,7 +101,7 @@
           legend: {
             orient: 'horizontal',
             x: 'center',
-            y: 'bottom',
+            bottom: 0,
             data:['男','女','未知'],
             formatter: "{name}"
           },
@@ -444,19 +444,19 @@
       margin-top: 20px
       width: 100%
       .top-wrapper
-        height: 400px
-        margin-bottom: 50px
+        height: 500px
+        margin-bottom: 25px
         #sexRatio
           box-sizing: border-box
           float: left
           border-right: 1px solid #eeeeee
-          padding: 20px 0 0 30px
+          padding: 0 0 0 30px
           width: 50%
           height: 100%
         #ageChart
           box-sizing: border-box
           float: right
-          padding: 20px 0 0 30px
+          padding: 0 0 0 30px
           width: 50%
           height: 100%
       #industry

@@ -207,6 +207,7 @@
       getTime(msg){
         this.form.visitBeginTimeStart = msg[0].Format("yyyy-M-d");
         this.form.visitBeginTimeStop = msg[1].Format("yyyy-M-d");
+        this.getAllLog()
       },
     }
   }

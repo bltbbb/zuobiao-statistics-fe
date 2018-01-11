@@ -173,6 +173,7 @@
       getTime(msg){
         this.form.startDate = msg[0].Format("yyyy-M-d");
         this.form.stopDate = msg[1].Format("yyyy-M-d");
+        this.getAllLog();
       },
     }
   }
