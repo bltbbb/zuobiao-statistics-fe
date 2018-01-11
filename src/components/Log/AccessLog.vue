@@ -191,8 +191,8 @@
       },
       reset(){
         this.form = {
-          visitBeginTimeStart:'',
-          visitBeginTimeStop:'',
+          visitBeginTimeStart:this.form.visitBeginTimeStart,
+          visitBeginTimeStop:this.form.visitBeginTimeStop,
           mainAccount:'',
           isError:''
         }

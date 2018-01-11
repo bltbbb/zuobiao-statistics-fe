@@ -15,7 +15,7 @@
       <el-form ref="form" :model="form" inline>
         <div class="form-input">
           <Calendar @timeValue="getTime" :containToday="true"></Calendar>
-          <el-form-item label="反馈ID">
+          <el-form-item label="用户ID">
             <el-input style="width: 146px;" v-model="form.id"></el-input>
           </el-form-item>
           <el-form-item style="margin-left: 30px;">
@@ -40,8 +40,8 @@
           label="序号">
         </el-table-column>
         <el-table-column
-          prop="feedbackId"
-          label="反馈ID"
+          prop="userId"
+          label="用户ID"
           width="150">
         </el-table-column>
         <el-table-column
@@ -135,7 +135,7 @@
           pageSize: this.pageSize,
           startTime: this.form.startTime,
           stopTime: this.form.stopTime,
-          id: this.form.id
+          userOrContent: this.form.id
         }
         this.$http.post(this.$store.state.domain+'/feedback/page',qs.stringify(data)).then((res)=>{
           if(res.data.status == 0){
@@ -164,7 +164,9 @@
       },
       reset(){
         this.form = {
-          id:''
+          id:'',
+          startTime: this.form.startTime,
+          stopTime: this.form.stopTime,
         }
         this.getAllLog()
       },

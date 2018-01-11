@@ -157,8 +157,8 @@
       },
       reset(){
         this.form = {
-            startDate:'',
-            stopDate:'',
+            startDate: this.form.startDate,
+            stopDate: this.form.stopDate,
             mainAccount:'',
             browserType:''
         }

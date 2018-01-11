@@ -367,9 +367,7 @@
         this.getAllLog()
       },
       reset(){
-        this.form = {
-          id:''
-        }
+        this.form.id = ''
         this.getAllLog()
       },
 //      dateStart(data){

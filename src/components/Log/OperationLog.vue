@@ -188,8 +188,8 @@
       },
       reset(){
         this.form = {
-          oprBeginTimeStart:'',
-          oprBeginTimeStop:'',
+          oprBeginTimeStart:this.form.oprBeginTimeStart,
+          oprBeginTimeStop:this.form.oprBeginTimeStop,
           mainAccount:'',
           isError:''
         }

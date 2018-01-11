@@ -161,10 +161,10 @@
       },
       reset(){
         this.form = {
-          sendBeginTimeStart:'',
-            sendBeginTimeStop:'',
-            msgTitle:'',
-            receiver:''
+          sendBeginTimeStart:this.form.sendBeginTimeStart,
+          sendBeginTimeStop:this.form.sendBeginTimeStop,
+          msgTitle:'',
+          receiver:''
         }
         this.getAllLog()
       },

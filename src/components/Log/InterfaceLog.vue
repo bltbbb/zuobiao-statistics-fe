@@ -183,8 +183,8 @@
       },
       reset(){
         this.form = {
-          invokeBeginTimeStart:'',
-          invokeBeginTimeStop:'',
+          invokeBeginTimeStart:this.form.invokeBeginTimeStart,
+          invokeBeginTimeStop:this.form.invokeBeginTimeStop,
           invokeCont:'',
           isFail:''
         }

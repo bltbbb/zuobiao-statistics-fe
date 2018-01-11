@@ -237,7 +237,7 @@
           pageSize: this.pageSize,
           startTime: this.form.startDate,
           stopTime: this.form.stopDate,
-          id: this.form.id
+          complaintId: this.form.id
         }
         this.$http.post(this.$store.state.domain+'/complaint/page',qs.stringify(data)).then((res)=>{
           if(res.data.status == 0){
@@ -265,9 +265,7 @@
         this.getAllLog()
       },
       reset(){
-        this.form = {
-          id:''
-        }
+        this.form.id = ''
         this.getAllLog()
       },
 //      dateStart(data){
