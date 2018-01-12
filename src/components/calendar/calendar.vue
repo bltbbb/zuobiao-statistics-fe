@@ -43,7 +43,7 @@
       containToday:{
           type:Boolean,
           default:false
-      }
+      },
     },
     data () {
       return {
@@ -146,7 +146,7 @@
       focusPiker() {
         // 模拟点击自定义 使其获得is-active类名
         this.$refs.custom.$el.click()
-      }
+      },
     }
   }
 </script>

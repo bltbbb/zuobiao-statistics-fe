@@ -14,9 +14,30 @@
     <div class="log-form">
       <el-form ref="form" :model="form" inline>
         <div class="form-input">
-          <Calendar @timeValue="getTime" :containToday="true"></Calendar>
-          <el-form-item label="会员账号">
-            <el-input style="width: 146px;" v-model="form.id"></el-input>
+          <el-form-item label="注册时间">
+            <el-date-picker
+              v-model="dateRange"
+              type="daterange"
+              @change="getTime"
+              range-separator="~"
+              placeholder="选择日期范围">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="登录账号">
+            <el-input style="width: 146px;" v-model="form.loginId"></el-input>
+          </el-form-item>
+          <el-form-item label="昵称">
+            <el-input style="width: 146px;" v-model="form.nickName"></el-input>
+          </el-form-item>
+          <el-form-item label="行业">
+            <el-select v-model="form.industryName" style="width: 162px;" placeholder="请选择">
+              <el-option
+                v-for="item in industryData"
+                :key="item.id+''"
+                :label="item.name"
+                :value="item.id+''">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item style="margin-left: 30px;">
             <el-button @click="searchHandle">查询</el-button>
@@ -50,8 +71,22 @@
           width="100">
         </el-table-column>
         <el-table-column
+          label="登录账号"
+          width="200">
+          <template scope="scope">
+            <span>{{scope.row.profileMobile}}</span><br v-if="scope.row.profileMobile">
+            <span>{{scope.row.profileEmail}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="displayName"
-          label="昵称">
+          label="昵称"
+          width="130">
+        </el-table-column>
+        <el-table-column
+          prop="industryName"
+          label="行业"
+          width="130">
         </el-table-column>
         <el-table-column
           prop="scheNum"
@@ -69,14 +104,16 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="IOS端在线时长">
+          label="IOS端在线时长"
+          width="140">
           <template scope="scope">
             <span>{{scope.row.iostimes | toDateString}}</span>
           </template>
         </el-table-column>
         <el-table-column
           prop="androidTimes"
-          label="Android在线时长">
+          label="Android在线时长"
+          width="150">
           <template scope="scope">
             <span>{{scope.row.androidTimes | toDateString}}</span>
           </template>
@@ -88,14 +125,15 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="在线设备">
+          label="在线设备"
+          width="150">
           <template scope="scope">
             <span v-if="scope.row.iosstatus == 1">ios</span><span v-if="scope.row.androidStatus == 1">,</span><span v-if="scope.row.androidStatus == 1">android</span><span v-if="scope.row.macOSStatus == 1">,</span><span v-if="scope.row.macOSStatus == 1">mac</span><span v-if="scope.row.pcStatus == 1">,</span><span v-if="scope.row.pcStatus == 1">pc</span><span v-if="scope.row.webStatus == 1">,</span><span v-if="scope.row.webStatus == 1">WEB</span><span v-if="scope.row.windowsStatus == 1">,</span><span v-if="scope.row.windowsStatus == 1">windows</span><span v-if="scope.row.unKnowStatus == 1&&scope.row.windowsStatus == 1">,</span><span v-if="scope.row.unKnowStatus == 1">未知</span>
           </template>
         </el-table-column>
         <el-table-column
           label="操作"
-          width="150">
+          width="100">
           <template scope="scope">
             <el-button
               size="small"
@@ -264,9 +302,11 @@
   export default {
     data() {
       return {
+        dateRange: '',
         token:'',
         tableData: [],
         tableData2: [],
+        industryData: [],
         detailData:{},
         totalCount: 0,
         totalCount2: 0,
@@ -275,9 +315,9 @@
         pageSize: 10,
         pageSize2: 10,
         form:{
-          startTime:'',
-          stopTime:'',
-          id:'',
+          loginId:'',
+          nickName:'',
+          industryName:'',
         },
         remark:'',
         dialogTableVisible: false
@@ -293,15 +333,16 @@
     methods:{
       init(){
         this.getAllLog()
+        this.getIndustryData()
       },
       initParams(){
         this.token = this.$cookie.get('adoptToken');
-        let date = new Date();
-        let start = new Date();
-        date.setTime(date.getTime() - 3600 * 1000 * 24);
-        start.setTime(start.getTime() - 3600 * 1000 * 24);
-        this.form.startDate = start.Format("yyyy-MM-dd");
-        this.form.stopDate = date.Format("yyyy-MM-dd");
+//        let date = new Date();
+//        let start = new Date();
+//        date.setTime(date.getTime() - 3600 * 1000 * 24);
+//        start.setTime(start.getTime() - 3600 * 1000 * 24);
+        this.form.startDate = '';
+        this.form.stopDate = '';
       },
       getAllLog(){
         let data = {
@@ -310,7 +351,10 @@
           pageSize: this.pageSize,
           startDate: this.form.startDate,
           stopDate: this.form.stopDate,
-          id: this.form.id
+          id: this.form.id,
+          loginId: this.form.loginId,
+          nickName: this.form.nickName,
+          industryId: this.form.industryName,
         }
         this.$http.post(this.$store.state.domain+'/userInfo/page',qs.stringify(data)).then((res)=>{
           if(res.data.status == 0){
@@ -345,6 +389,7 @@
 ////          this.$message.error('网络错误');
         })
       },
+
       handleSizeChange(data){
         this.pageSize = data
         this.getAllLog()
@@ -367,18 +412,23 @@
         this.getAllLog()
       },
       reset(){
-        this.form.id = ''
+        this.form = {
+          adoptToken: this.token,
+          currentPage: this.currentPage,
+          pageSize: this.pageSize,
+          startDate: '',
+          stopDate: '',
+          loginId: '',
+          nickName: '',
+          industryName: '',
+        }
+        this.dateRange = ''
         this.getAllLog()
       },
-//      dateStart(data){
-//        this.form.startDate = data
-//      },
-//      dateEnd(data){
-//        this.form.stopDate = data
-//      },
       getTime(msg){
-        this.form.startDate = msg[0].Format("yyyy-M-d");
-        this.form.stopDate = msg[1].Format("yyyy-M-d");
+        let arr = msg.split('~')
+        this.form.startDate = arr[0]
+        this.form.stopDate = arr[1]
         this.getAllLog()
       },
       seeReport(index,data){
@@ -436,7 +486,23 @@
         },(err)=>{
           this.$message.error('接口错误');
         })
-      }
+      },
+      getIndustryData(){
+        this.$http.get(this.$store.state.domain+'/userInfo/industry',{
+          params:{
+            adoptToken: this.token,
+          }
+        }).then((res)=>{
+          if(res.data.status == 0){
+            this.industryData = res.data.result.result
+          }
+          else{
+
+          }
+        },(err)=>{
+          this.$message.error('接口错误');
+        })
+      },
     },
     filters:{
         toDateString: function (mss) {
@@ -462,7 +528,7 @@
           }
           return date
         }
-    }
+    },
   }
 </script>
 <style lang="sass" scoped>
