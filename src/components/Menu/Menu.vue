@@ -39,6 +39,7 @@
             MemberMan: 'sta-huiyuanguanli',
             ContentMan: 'sta-neirongguanli',
             SDK: 'sta-SDK',
+            EditionPublish: 'sta-fabu',
           },
           activeIndex: 'Survey'
       }

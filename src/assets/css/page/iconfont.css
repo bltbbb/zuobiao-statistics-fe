@@ -23,6 +23,8 @@
 
 .el-icon-sta-jibenzhibiao:before { content: "\e604"; }
 
+.el-icon-sta-fabu:before { content: "\e78a"; }
+
 .el-icon-sta-rizhi:before { content: "\e619"; }
 
 .el-icon-sta-neirongguanli:before { content: "\e60a"; }
@@ -34,4 +36,3 @@
 .el-icon-sta-shijianfenxi:before { content: "\e629"; }
 
 .el-icon-sta-SDK:before { content: "\e789"; }
-

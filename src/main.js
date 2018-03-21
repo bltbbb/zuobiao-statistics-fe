@@ -10,7 +10,7 @@ import store from './store/store'
 import VueCookie from 'vue-cookie'
 import lockr from 'lockr'
 import axios from 'axios'
-import HightLight from './highLight/highLight'
+import HighLight from './highLight/highLight'
 
 import './assets/js/function/DateFormat'
 import './assets/css/page/iconfont.css'
@@ -18,7 +18,7 @@ import './assets/css/page/iconfont.css'
 Vue.use(Vuex);
 Vue.use(ElementUI);
 Vue.use(VueCookie);
-Vue.use(HightLight);
+Vue.use(HighLight);
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;
 

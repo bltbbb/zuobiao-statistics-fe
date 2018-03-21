@@ -54,6 +54,9 @@ import Jurisdiction from '@/components/Jurisdiction/Jurisdiction'
 //修改密码
 import ChangePwd from '@/components/ChangePwd/ChangePwd'
 
+//版本发布
+import EditionPublish from '@/components/EditionPublish/EditionPublish'
+
 //404
 import notFound from '@/components/404/404'
 
@@ -264,6 +267,11 @@ const router = new Router({
           path: '/Content/MemberMan',
           name: 'MemberMan',
           component: MemberMan
+        },
+        {
+          path: '/Content/EditionPublish',
+          name: 'EditionPublish',
+          component: EditionPublish
         },
       ]
     },

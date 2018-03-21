@@ -274,17 +274,17 @@
             this.tableData2 = [data.reportNum]
             this.myChart.setOption({
               xAxis: {
-                data: this.chartData['historyNumCount'].x
+                data: this.chartData['addNumCount'].x
               },
               series: [{
                 // 根据名字对应到相应的系列
-                name: this.chartData['historyNumCount'].name,
-                data: this.chartData['historyNumCount'].y
+                name: this.chartData['addNumCount'].name,
+                data: this.chartData['addNumCount'].y
               },
               {
                 // 根据名字对应到相应的系列
-                name: this.chartData['theDayNumCount'].name,
-                data: this.chartData['theDayNumCount'].y
+                name: this.chartData['userNumCount'].name,
+                data: this.chartData['userNumCount'].y
               }
               ]
             })
